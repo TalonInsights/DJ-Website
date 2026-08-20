@@ -25,6 +25,6 @@ export const SUPABASE_ANON_KEY = "sb_publishable_3yEdmjD7lk8L0Tj6MaxfqQ_O8XZICrt
    An address listed here still cannot sign in until a matching user
    exists under Authentication → Users. */
 export const ALLOWED_EMAILS = [
-  "cogtalon@gmail.com",            // Talon Insights — testing
+  "taloninsights@gmail.com",       // Talon Insights — testing
   "info@davidjacksonandson.com"    // workshop owner — create the user before this works
 ];
