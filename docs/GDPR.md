@@ -1,6 +1,6 @@
 # Data protection — Production Planning board
 
-Internal record for **David Jackson & Son Carpentry & Joinery**, covering the
+Internal record for **David Jackson & Son Joinery**, covering the
 staff-only production planner at `/planner/`.
 
 > This is an engineering and record-keeping document, written to make the
@@ -36,7 +36,7 @@ discipline point, not a technical guarantee.
 
 ## 2. Roles
 
-- **Controller:** David Jackson & Son Carpentry & Joinery — decides what is
+- **Controller:** David Jackson & Son Joinery — decides what is
   recorded and why.
 - **Processor:** Supabase — hosts the Postgres database and the auth service.
 - **Processor:** Vercel — serves the website and the planner's HTML/JS.
