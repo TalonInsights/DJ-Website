@@ -198,80 +198,10 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
 .card .tlink,.card .btn{margin-top:auto;align-self:flex-start}
 
 /* ============================================================
-   DRAWING BOARD
+   SHARED ODDMENTS
    ============================================================ */
-.cfg{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,3.5vw,3.2rem);align-items:start}
-/* header above the configurator uses the identical grid so the columns line up */
-.head-cfg{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,3.5vw,3.2rem);align-items:end;margin-bottom:clamp(1.8rem,3.5vw,2.6rem)}
-@media (max-width:980px){.head-cfg{grid-template-columns:1fr;align-items:start;gap:1rem}}
-@media (max-width:980px){.cfg{grid-template-columns:1fr}}
-.stage{position:sticky;top:88px;background:#fff;border:1px solid var(--rule);border-radius:8px;overflow:hidden;box-shadow:var(--shadow-s)}
-@media (max-width:980px){.stage{position:static}}
-.stage-top{display:flex;justify-content:space-between;align-items:center;gap:.8rem;padding:.85rem 1.2rem;border-bottom:1px solid var(--rule);min-height:52px}
-.stage-top span{font-size:.63rem;text-transform:uppercase;letter-spacing:.2em;color:var(--mute)}
-.stage-top b{font-family:var(--display);font-weight:400;font-size:1.05rem;letter-spacing:-.01em}
-.canvas{padding:clamp(.8rem,2.5vw,1.8rem);background:radial-gradient(120% 90% at 50% 0%,#FAFAF7 0%,#EDEEE9 70%,#E4E6E0 100%)}
-.canvas svg{width:100%;height:auto;max-height:54vh;display:block;margin-inline:auto}
-.timberbar{display:flex;align-items:center;gap:.7rem;padding:.7rem 1.2rem;border-top:1px solid var(--rule);background:#FCFCFA}
-.timberbar i{width:52px;height:22px;border-radius:3px;border:1px solid rgba(0,0,0,.13);flex:none}
-.timberbar span{font-size:.78rem;color:var(--slate)}
-.stage-spec{border-top:1px solid var(--rule);padding:1rem 1.2rem;max-height:none}
-.spec-row{display:flex;justify-content:space-between;gap:1rem;font-size:.85rem;padding:.28rem 0;border-bottom:1px dotted var(--rule)}
-.spec-row:last-of-type{border-bottom:0}
-.spec-row dt{color:var(--mute);flex:none}
-.spec-row dd{margin:0;text-align:right;font-weight:500}
-.stage-acts{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.55rem;padding:0 1.2rem 1.25rem}
-.stage-acts .btn{width:100%}
-@media (max-width:420px){.stage-acts{grid-template-columns:1fr}}
-
-.panel{border-top:1px solid var(--rule)}
-.grp{border-bottom:1px solid var(--rule);padding:1.4rem 0;animation:grpIn .4s var(--ease) both}
 @keyframes grpIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-.grp:first-child{padding-top:1.05rem}
-.grp > h4{font-size:.67rem;font-family:var(--body);font-weight:600;text-transform:uppercase;letter-spacing:.2em;color:var(--mute);margin:0 0 .9rem;display:flex;align-items:center;gap:.6rem}
-.grp > h4 i{font-style:normal;color:var(--brass)}
-.grp .note{font-size:.79rem;color:var(--mute);margin:.7rem 0 0;line-height:1.5}
 .sub{font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:1rem 0 .55rem}
-
-.seg{display:flex;flex-wrap:wrap;gap:.4rem}
-.seg label{position:relative}
-.seg input{position:absolute;opacity:0;inset:0;cursor:pointer;width:100%;height:100%}
-.seg span{display:flex;align-items:center;padding:.55rem 1.05rem;font-size:.84rem;font-weight:500;border:1px solid var(--rule-dk);color:var(--slate);background:#fff;border-radius:100px;transition:background .3s var(--ease),border-color .3s var(--ease),color .3s var(--ease);white-space:nowrap;min-height:42px}
-.seg span:hover{border-color:var(--green)}
-.seg input:checked + span{background:var(--green);border-color:var(--green);color:#fff}
-.seg input:focus-visible + span{outline:2px solid var(--brass);outline-offset:2px}
-
-.sw{display:flex;flex-wrap:wrap;gap:.5rem}
-.sw label{position:relative;text-align:center;width:72px}
-.sw em{min-height:2.1em}
-.sw input{position:absolute;opacity:0;inset:0;cursor:pointer;width:100%;height:100%}
-.sw i{display:block;height:42px;border:1px solid rgba(0,0,0,.13);border-radius:5px;transition:box-shadow .3s var(--ease),transform .3s var(--ease)}
-.sw label:hover i{transform:translateY(-2px)}
-.sw em{font-style:normal;display:block;font-size:.69rem;color:var(--slate);margin-top:.35rem;line-height:1.25}
-.sw input:checked + i{box-shadow:0 0 0 2px #fff,0 0 0 3px var(--green)}
-.sw input:focus-visible + i{outline:2px solid var(--brass);outline-offset:3px}
-
-.tiles{display:flex;flex-wrap:wrap;gap:.45rem}
-.tiles label{position:relative;width:58px}
-.tiles input{position:absolute;opacity:0;inset:0;cursor:pointer;width:100%;height:100%}
-.tiles i{display:block;border:1px solid var(--rule-dk);background:#fff;padding:4px;border-radius:5px;transition:border-color .3s var(--ease),box-shadow .3s var(--ease),transform .3s var(--ease)}
-.tiles label:hover i{transform:translateY(-2px)}
-.tiles i svg{width:100%;height:auto;display:block}
-.tiles em{font-style:normal;display:block;font-size:.66rem;color:var(--slate);margin-top:.3rem;text-align:center;line-height:1.2}
-.tiles input:checked + i{border-color:var(--green);box-shadow:0 0 0 1px var(--green)}
-.tiles input:focus-visible + i{outline:2px solid var(--brass);outline-offset:2px}
-
-.sel{position:relative}
-.sel select{width:100%;font:inherit;font-size:.9rem;padding:.72rem 2.4rem .72rem .95rem;min-height:48px;border:1px solid var(--rule-dk);background:#fff;border-radius:100px;appearance:none;color:var(--ink);cursor:pointer;transition:border-color .3s var(--ease)}
-.sel::after{content:"";position:absolute;right:1.1rem;top:50%;width:7px;height:7px;border-right:1.4px solid var(--slate);border-bottom:1.4px solid var(--slate);transform:translateY(-70%) rotate(45deg);pointer-events:none}
-.sel select:hover{border-color:var(--green)}
-.sel select:focus{border-color:var(--green);outline:none}
-.sel select:disabled{background:#F6F6F3;color:var(--mute);cursor:not-allowed}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
-@media (max-width:430px){.two{grid-template-columns:1fr}}
-.rng label{display:flex;justify-content:space-between;font-size:.79rem;color:var(--slate);margin-bottom:.25rem}
-.rng label b{color:var(--ink);font-weight:600}
-.rng input[type=range]{width:100%;accent-color:var(--green);height:30px}
 .privacy{display:inline-flex;gap:3px;vertical-align:middle;margin-left:.45rem}
 .privacy i{width:6px;height:6px;background:var(--rule-dk);border-radius:50%}
 .privacy i.on{background:var(--brass)}
@@ -633,15 +563,15 @@ footer.site .fb a:hover{color:var(--brass-lt)}
       <li><a href="#/">Home</a></li>
       <li><a href="#/windows">Windows</a></li>
       <li><a href="#/doors">Doors</a></li>
-      <li><a href="#/drawing-board">The Drawing Board</a></li>
+      <li><a href="#/materials">Materials</a></li>
       <li><a href="#/contact">Contact</a></li>
       <li class="drop">
         <button class="mbtn" id="moreBtn" type="button" aria-expanded="false" aria-controls="moreMenu">More <span class="cv"></span></button>
         <div class="dmenu" id="moreMenu" role="menu">
           <div class="dinner">
+            <a href="#/about" role="menuitem">About us</a>
             <a href="#/guidance" role="menuitem">Guidance</a>
             <a href="#/accreditation" role="menuitem">Accreditation</a>
-            <a href="#/materials" role="menuitem">Materials</a>
             <a href="#/projects" role="menuitem">Projects</a>
             <a href="#/heritage" role="menuitem">Listed &amp; heritage</a>
           </div>
@@ -667,7 +597,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
       <h1 class="fade-up d2">Windows made the way the <em>house</em> was made.</h1>
       <p class="fade-up d3">Sliding sash windows, casements and doors, cut and assembled by hand in our Telford workshop for listed buildings, period homes and conservation areas across Shropshire.</p>
       <div class="acts fade-up d4">
-        <a class="btn btn-brass" href="#/drawing-board">Design your window <span class="ar">→</span></a>
+        <a class="btn btn-brass" href="#/contact">Get a quote <span class="ar">→</span></a>
         <a class="btn btn-lt" href="#/projects">See our work</a>
       </div>
     </div>
@@ -700,15 +630,15 @@ footer.site .fb a:hover{color:var(--brass-lt)}
   <section class="bg-green on-dark">
     <div class="wrap">
       <div class="head-2 rv">
-        <div><p class="label">The Drawing Board</p><h2 class="sect">Draw your window before you ring us.</h2></div>
-        <p class="lede" style="color:#BDCABE">Most people know what their windows look like but not what they're called. Pick the timber, the glazing bars, the glass and the ironmongery — we'll draw it, and send the specification through with your enquiry so we can price it properly first time.</p>
+        <div><p class="label">Materials</p><h2 class="sect">Six timbers, thirty glass patterns, eight metal finishes.</h2></div>
+        <p class="lede" style="color:#BDCABE">Most people know what their windows look like but not what they are called. Here is what we actually hold and work with, in plain terms, so you can tell us what suits the house.</p>
       </div>
       <div class="g3">
-        <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Six timbers</h3><p>Accoya, Sapele, Idigbo, Oak, Redwood Pine and Tulipwood — the stock we actually hold.</p></div>
-        <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Thirty glass patterns</h3><p>The full Pilkington texture and etched privacy ranges, with privacy levels shown.</p></div>
-        <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Heritage ironmongery</h3><p>Monkey tail, shepherds crook, bulb, spoon and more, in eight metal finishes.</p></div>
+        <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Six timbers</h3><p>Accoya, Sapele, Idigbo, Oak, Redwood Pine and Tulipwood — chosen for where the joinery is going and how it is being finished.</p></div>
+        <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Thirty glass patterns</h3><p>The full Pilkington texture and etched privacy ranges, with privacy levels shown from 1 to 5.</p></div>
+        <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Heritage ironmongery</h3><p>Monkey tail, shepherds crook, bulb and reeded patterns, in eight metal finishes.</p></div>
       </div>
-      <p style="margin-top:2.2rem"><a class="btn btn-brass" href="#/drawing-board">Open the Drawing Board <span class="ar">→</span></a></p>
+      <p style="margin-top:2.2rem"><a class="btn btn-brass" href="#/materials">See the materials <span class="ar">&#8594;</span></a></p>
     </div>
   </section>
 
@@ -812,11 +742,11 @@ footer.site .fb a:hover{color:var(--brass-lt)}
       <article class="card rv"><div class="cimg"><img src="https://img1.wsimg.com/isteam/ip/e9b2f055-9f75-45f0-af87-5650a1143928/IMG_0065.jpg/:/rs=w:900,cg:true,m" alt="White-painted timber sliding sash windows on a brick period property."></div>
         <div class="cb"><h3>Sliding sash windows</h3><p>Traditional box sash with weights and cords, or a spiral balance where the box depth won't allow it.</p>
         <ul><li>1-over-1 through to 9-over-9 and margin light patterns</li><li>Moulded or run-through horns to match existing</li><li>Draught sealed as standard</li><li>Single, slimline double or standard double glazing</li></ul>
-        <a class="btn btn-line btn-sm" href="#/drawing-board">Design a sash window <span class="ar">→</span></a></div></article>
+        <a class="btn btn-line btn-sm" href="#/contact">Enquire about this <span class="ar">→</span></a></div></article>
       <article class="card rv"><div class="cimg"><img src="https://img1.wsimg.com/isteam/ip/e9b2f055-9f75-45f0-af87-5650a1143928/IMG_3061.jpeg/:/cr=t:12.5%25,l:0%25,w:100%25,h:75%25/rs=w:900,cg:true" alt="A timber casement window under manufacture in the workshop showing the moulded section."></div>
         <div class="cb"><h3>Casement windows</h3><p>Flush casements that sit level with the frame, or stormproof casements that overlap it.</p>
         <ul><li>One, two or three lights, with or without top lights</li><li>Square, segmental, round and gothic heads</li><li>Mullioned runs and bay configurations</li><li>Monkey tail, shepherds crook and other heritage stays</li></ul>
-        <a class="btn btn-line btn-sm" href="#/drawing-board">Design a casement <span class="ar">→</span></a></div></article>
+        <a class="btn btn-line btn-sm" href="#/contact">Enquire about this <span class="ar">→</span></a></div></article>
     </div>
     <div class="g2" style="margin-top:clamp(1rem,2.5vw,2rem)">
       <article class="card rv"><div class="cimg"><img src="https://img1.wsimg.com/isteam/ip/e9b2f055-9f75-45f0-af87-5650a1143928/frame%20in%20workshop.jpg/:/rs=w:900,cg:true,m" alt="A completed timber window frame standing clamped in the workshop awaiting finishing."></div>
@@ -827,8 +757,8 @@ footer.site .fb a:hover{color:var(--brass-lt)}
   </div></section>
   <section class="bg-green tight on-dark"><div class="wrap narrow" style="text-align:center">
     <h2 class="sect" style="margin:0 auto">Not sure what your windows are called?</h2>
-    <p class="lede" style="color:#BDCABE;margin:1rem auto 1.8rem">Use the Drawing Board. Pick what looks like yours and it produces a written specification you can send us.</p>
-    <a class="btn btn-brass" href="#/drawing-board">Open the Drawing Board <span class="ar">→</span></a>
+    <p class="lede" style="color:#BDCABE;margin:1rem auto 1.8rem">Send us a photograph and rough sizes. We will tell you what you have, what it needs, and what it costs to put right.</p>
+    <a class="btn btn-brass" href="#/contact">Send us a photo <span class="ar">&#8594;</span></a>
   </div></section>
 </div>
 
@@ -843,210 +773,21 @@ footer.site .fb a:hover{color:var(--brass-lt)}
       <article class="card rv"><div class="cimg"><img src="https://img1.wsimg.com/isteam/ip/e9b2f055-9f75-45f0-af87-5650a1143928/IMG_2250.jpeg/:/cr=t:12.5%25,l:0%25,w:100%25,h:75%25/rs=w:760,cg:true" alt="A handmade panelled timber entrance door fitted into a brick opening."></div>
         <div class="cb"><h3>Entrance doors</h3><p>Panelled and glazed door sets with frame, threshold and ironmongery, made to your opening rather than trimmed to fit.</p>
         <ul><li>Four, six panel and half-glazed patterns</li><li>Side lights and fanlights</li><li>Multipoint locking or traditional mortice</li></ul>
-        <a class="btn btn-line btn-sm" href="#/drawing-board">Design a door <span class="ar">→</span></a></div></article>
+        <a class="btn btn-line btn-sm" href="#/contact">Enquire about this <span class="ar">→</span></a></div></article>
       <article class="card rv"><div class="cimg"><img src="https://img1.wsimg.com/isteam/ip/e9b2f055-9f75-45f0-af87-5650a1143928/patio%20doors-0001.jpg/:/rs=w:760,cg:true,m" alt="Timber patio doors with glazed panels installed in a domestic opening."></div>
         <div class="cb"><h3>French &amp; patio doors</h3><p>Double doors with matching side lights where the opening allows, glazed to the same pattern as the windows either side.</p>
         <ul><li>Open in or open out</li><li>Side lights and fanlights</li><li>Weathered and rebated thresholds</li></ul>
-        <a class="btn btn-line btn-sm" href="#/drawing-board">Design a door <span class="ar">→</span></a></div></article>
+        <a class="btn btn-line btn-sm" href="#/contact">Enquire about this <span class="ar">→</span></a></div></article>
       <article class="card rv"><div class="cimg"><img src="https://img1.wsimg.com/isteam/ip/e9b2f055-9f75-45f0-af87-5650a1143928/bifold%20doors.jpg/:/cr=t:12.5%25,l:0%25,w:100%25,h:75%25/rs=w:760,cg:true" alt="Timber bi-fold doors folded back to open a wide aperture onto a garden."></div>
         <div class="cb"><h3>Bi-fold doors</h3><p>Folding sets in hardwood or Accoya, sized to the structural opening and hung on running gear rated for the leaf weight.</p>
         <ul><li>Three to six leaves</li><li>Traffic door option</li><li>Low threshold where levels allow</li></ul>
-        <a class="btn btn-line btn-sm" href="#/drawing-board">Design a bi-fold <span class="ar">→</span></a></div></article>
+        <a class="btn btn-line btn-sm" href="#/contact">Enquire about this <span class="ar">→</span></a></div></article>
     </div>
     <div class="g2" style="margin-top:clamp(1rem,2.5vw,2rem)">
       <article class="card rv"><div class="cimg"><img src="https://img1.wsimg.com/isteam/ip/e9b2f055-9f75-45f0-af87-5650a1143928/under%20stairs%20storage.jpg/:/rs=w:900,cg:true,m" alt="Fitted timber under-stairs storage with panelled doors made to match the existing staircase."></div>
         <div class="cb"><h3>Internal doors &amp; fitted joinery</h3><p>Panelled internal doors, fitted storage, panelling and staircases, matched to the mouldings already in the house.</p><a class="tlink" href="#/contact">Ask about a project <span class="ar">→</span></a></div></article>
       <article class="card rv"><div class="cimg"><img src="https://img1.wsimg.com/isteam/ip/e9b2f055-9f75-45f0-af87-5650a1143928/IMG_2722.jpeg/:/cr=t:12.5%25,l:0%25,w:100%25,h:75%25/rs=w:900,cg:true" alt="Detail of external Accoya joinery showing the cut timber and joint work."></div>
         <div class="cb"><h3>External timberwork</h3><p>Porches, stable doors, outbuilding doors, gates and structural external joinery — including work on listed buildings.</p><a class="tlink" href="#/contact">Ask about a project <span class="ar">→</span></a></div></article>
-    </div>
-  </div></section>
-</div>
-
-<!-- ============================ DRAWING BOARD ============================ -->
-<div class="page" data-page="/drawing-board">
-  <section class="tight"><div class="wrap">
-    <div class="head-2 rv" style="margin-bottom:2rem">
-      <div><p class="label">The Drawing Board</p><h1 class="ptitle">Specify it here. We'll price it from the drawing.</h1></div>
-      <p class="lede">Everything here is something we actually make — the six timbers we hold, the Pilkington glass ranges, the heritage ironmongery and the metal finishes. Pick what matches your property and we'll draw it to scale.</p>
-    </div>
-
-    <div class="cfg">
-      <div class="stage">
-        <div class="stage-top"><b id="stName">Sliding sash window</b><span id="stSize">1200 × 1500 mm</span></div>
-        <div class="canvas"><svg id="win" viewBox="0 0 440 580" role="img" aria-labelledby="winTitle"><title id="winTitle">Scale drawing of the window or door you are specifying, updating with each choice</title></svg></div>
-        <div class="timberbar"><i id="tSwatch"></i><span id="tLabel"></span></div>
-        <div class="stage-spec"><dl id="specList" aria-live="polite"></dl></div>
-        <div class="stage-acts">
-          <button class="btn btn-primary btn-sm" type="button" id="sendSpec">Send this specification <span class="ar">→</span></button>
-          <button class="btn btn-line btn-sm" type="button" id="copySpec">Copy</button>
-        </div>
-      </div>
-
-      <form class="panel" id="cfgForm" onsubmit="return false">
-        <div class="grp">
-          <h4><i>01</i> Product</h4>
-          <div class="seg">
-            <label><input type="radio" name="product" value="sash" checked><span>Sliding sash</span></label>
-            <label><input type="radio" name="product" value="casement"><span>Casement</span></label>
-            <label><input type="radio" name="product" value="door"><span>Entrance door</span></label>
-            <label><input type="radio" name="product" value="french"><span>French doors</span></label>
-            <label><input type="radio" name="product" value="bifold"><span>Bi-fold</span></label>
-          </div>
-        </div>
-
-        <div class="grp" data-when="sash">
-          <h4><i>02</i> Sash mechanism</h4>
-          <div class="seg">
-            <label><input type="radio" name="mech" value="weights" checked><span>Weights &amp; cords</span></label>
-            <label><input type="radio" name="mech" value="spiral"><span>Spiral balances</span></label>
-          </div>
-          <p class="note">Weights need a box frame with the depth to house them. Spiral balances fit a slimmer frame where that depth isn't there.</p>
-        </div>
-
-        <div class="grp" data-when="casement">
-          <h4><i>02</i> Casement layout</h4>
-          <p class="sub" style="margin-top:0">Lights</p>
-          <div class="seg">
-            <label><input type="radio" name="lights" value="1"><span>One</span></label>
-            <label><input type="radio" name="lights" value="2" checked><span>Two</span></label>
-            <label><input type="radio" name="lights" value="3"><span>Three</span></label>
-            <label><input type="radio" name="lights" value="4"><span>Four</span></label>
-          </div>
-          <p class="sub">Top lights</p>
-          <div class="seg">
-            <label><input type="radio" name="toplight" value="no" checked><span>None</span></label>
-            <label><input type="radio" name="toplight" value="yes"><span>Above each light</span></label>
-          </div>
-          <p class="sub">Style</p>
-          <div class="seg">
-            <label><input type="radio" name="cstyle" value="flush" checked><span>Flush</span></label>
-            <label><input type="radio" name="cstyle" value="storm"><span>Stormproof</span></label>
-          </div>
-        </div>
-
-        <div class="grp" data-when="doorish">
-          <h4><i>02</i> Door layout</h4>
-          <p class="sub" style="margin-top:0">Side lights</p>
-          <div class="seg">
-            <label><input type="radio" name="side" value="none" checked><span>None</span></label>
-            <label><input type="radio" name="side" value="one"><span>One side</span></label>
-            <label><input type="radio" name="side" value="both"><span>Both sides</span></label>
-          </div>
-          <p class="sub">Fanlight above</p>
-          <div class="seg">
-            <label><input type="radio" name="fan" value="no" checked><span>None</span></label>
-            <label><input type="radio" name="fan" value="yes"><span>Fanlight</span></label>
-          </div>
-        </div>
-
-        <div class="grp" data-when="bifold">
-          <h4><i>02</i> Bi-fold leaves</h4>
-          <div class="seg">
-            <label><input type="radio" name="leaves" value="3" checked><span>Three</span></label>
-            <label><input type="radio" name="leaves" value="4"><span>Four</span></label>
-            <label><input type="radio" name="leaves" value="5"><span>Five</span></label>
-            <label><input type="radio" name="leaves" value="6"><span>Six</span></label>
-          </div>
-        </div>
-
-        <div class="grp">
-          <h4><i>03</i> Timber</h4>
-          <div class="sw" id="swTimber"></div>
-          <p class="note" id="timberNote"></p>
-          <div class="warn" id="grainWarn" hidden>Opaque paint hides the grain, so the drawing shows the paint colour rather than the timber. Choose a stain or oil under <b>Finish</b> to see the timber itself.</div>
-        </div>
-
-        <div class="grp" data-when="glazed">
-          <h4><i>04</i> Glazing bars</h4>
-          <div class="tiles" id="tlBars"></div>
-          <p class="sub">Bar profile</p>
-          <div class="seg">
-            <label><input type="radio" name="barprof" value="ovolo" checked><span>Ovolo</span></label>
-            <label><input type="radio" name="barprof" value="lambs"><span>Lambs tongue</span></label>
-            <label><input type="radio" name="barprof" value="astragal"><span>Astragal</span></label>
-            <label><input type="radio" name="barprof" value="slim"><span>Slim putty line</span></label>
-          </div>
-        </div>
-
-        <div class="grp" data-when="doorpanel">
-          <h4><i>04</i> Door pattern</h4>
-          <div class="tiles" id="tlPanels"></div>
-        </div>
-
-        <div class="grp">
-          <h4><i>05</i> Head shape</h4>
-          <div class="seg">
-            <label><input type="radio" name="head" value="flat" checked><span>Square</span></label>
-            <label><input type="radio" name="head" value="seg"><span>Segmental arch</span></label>
-            <label><input type="radio" name="head" value="round"><span>Round arch</span></label>
-            <label><input type="radio" name="head" value="gothic"><span>Gothic</span></label>
-          </div>
-          <p class="note" id="headNote"></p>
-        </div>
-
-        <div class="grp" data-when="sash">
-          <h4><i>06</i> Sash horns</h4>
-          <div class="seg">
-            <label><input type="radio" name="horns" value="moulded" checked><span>Moulded</span></label>
-            <label><input type="radio" name="horns" value="run"><span>Run-through</span></label>
-            <label><input type="radio" name="horns" value="none"><span>None</span></label>
-          </div>
-          <p class="note">Horns are the small projections below the top sash. Georgian windows usually have none; Victorian onwards usually do.</p>
-        </div>
-
-        <div class="grp" data-when="glass">
-          <h4><i>07</i> Glazing</h4>
-          <div class="seg" style="margin-bottom:.9rem">
-            <label><input type="radio" name="glazing" value="single"><span>Single</span></label>
-            <label><input type="radio" name="glazing" value="slim" checked><span>Slimline double</span></label>
-            <label><input type="radio" name="glazing" value="double"><span>Standard double</span></label>
-          </div>
-          <div class="two">
-            <div class="sel"><select id="glassRange" aria-label="Glass range">
-              <option value="clear">Clear float glass</option>
-              <option value="texture">Pilkington texture range</option>
-              <option value="etched">Pilkington etched privacy range</option>
-            </select></div>
-            <div class="sel"><select id="glassPattern" aria-label="Glass pattern"></select></div>
-          </div>
-          <p class="note" id="glassNote"></p>
-        </div>
-
-        <div class="grp">
-          <h4><i>08</i> Finish</h4>
-          <p class="sub" style="margin-top:0">Opaque paint</p>
-          <div class="sw" id="swPaint"></div>
-          <p class="sub">Stains &amp; oils</p>
-          <div class="sw" id="swStain"></div>
-          <p class="note">Any RAL or heritage colour can be matched. Stains show the grain; opaque paint doesn't.</p>
-        </div>
-
-        <div class="grp">
-          <h4><i>09</i> Ironmongery</h4>
-          <div class="two" style="margin-bottom:.9rem">
-            <div class="sel"><select id="hwStyle" aria-label="Handle style"></select></div>
-            <div class="sel"><select id="hwFinish" aria-label="Metal finish"></select></div>
-          </div>
-          <div class="sw" id="swMetal"></div>
-        </div>
-
-        <div class="grp">
-          <h4><i>10</i> Approximate size</h4>
-          <div class="two rng">
-            <div><label for="rW">Width <b id="wOut">1200 mm</b></label><input type="range" id="rW" min="400" max="6000" step="50" value="1200"></div>
-            <div><label for="rH">Height <b id="hOut">1500 mm</b></label><input type="range" id="rH" min="600" max="2600" step="50" value="1500"></div>
-          </div>
-          <p class="note">A rough size is fine — we measure everything on site before anything is cut.</p>
-          <div class="warn" id="sizeWarn" hidden></div>
-        </div>
-
-        <div class="grp" style="border-bottom:0">
-          <h4><i>11</i> Quantity</h4>
-          <div class="sel" style="max-width:220px"><select id="qty">
-            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7–10</option><option>11–20</option><option>More than 20</option>
-          </select></div>
-        </div>
-      </form>
     </div>
   </div></section>
 </div>
@@ -1358,7 +1099,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
         <div class="chips" style="margin-top:0"><span class="chip">Reeded</span><span class="chip">Bulb</span><span class="chip">Spoon</span><span class="chip">Monkey Tail</span><span class="chip">Shepherds Crook</span><span class="chip">Tudor</span><span class="chip">Forged</span></div></div>
       <div class="rv"><h3 style="margin-bottom:.8rem">Metal finishes</h3><div class="chips" id="chipMetal" style="margin-top:0"></div></div>
     </div>
-    <p style="margin-top:2rem"><a class="btn btn-primary" href="#/drawing-board">Try combinations on the Drawing Board <span class="ar">→</span></a></p>
+    <p style="margin-top:2rem"><a class="btn btn-primary" href="#/contact">Talk to us about your project <span class="ar">→</span></a></p>
   </div></section>
 </div>
 
@@ -1483,6 +1224,49 @@ footer.site .fb a:hover{color:var(--brass-lt)}
   </div></section>
 </div>
 
+<!-- ============================ ABOUT ============================ -->
+<div class="page" data-page="/about">
+  <section class="bg-sage tight"><div class="wrap">
+    <p class="label rv">About us</p>
+    <h1 class="ptitle rv">A father and son, and fifty years between them.</h1>
+    <p class="lede rv" style="margin-top:1.2rem">David Jackson &amp; Son is a two-generation joinery workshop in Telford. We make bespoke timber windows, doors and joinery for listed buildings, period homes and conservation areas across Shropshire &mdash; by hand, to the detail of the house they are going into.</p>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="head-2 rv">
+      <div><p class="label">How we work</p><h2 class="sect">Measured, made and fitted by the same people.</h2></div>
+      <p class="lede">There is no sales team and no subcontracted manufacturing. The person who measures your windows is the person who makes them, and the person who fits them. That is deliberate &mdash; on heritage work, detail gets lost every time a job changes hands.</p>
+    </div>
+    <div class="g3" style="margin-top:2.4rem">
+      <div class="rv"><h3 style="margin-bottom:.4rem">We survey it ourselves</h3><p>Every opening measured on site. Period houses are rarely square, and a window ordered off a standard size will show it.</p></div>
+      <div class="rv"><h3 style="margin-bottom:.4rem">We machine it in Telford</h3><p>Cut, moulded and assembled at Unit 11, Tweedale Court. Nothing is bought in and rebadged.</p></div>
+      <div class="rv"><h3 style="margin-bottom:.4rem">We fit it</h3><p>Delivered and installed by the workshop, with the making good done properly rather than left for someone else.</p></div>
+    </div>
+  </div></section>
+
+  <section class="bg-sage"><div class="wrap">
+    <div class="head-2 rv">
+      <div><p class="label">Heritage work</p><h2 class="sect">Listed buildings are most of what we do.</h2></div>
+      <p class="lede">Conservation officers ask for specific things: correct sightlines, putty-glazed single glazing or slim-profile units, run-through horns, the right moulding profile. We have made those details often enough to know what gets approved and what gets refused.</p>
+    </div>
+    <p class="rv" style="margin-top:1.6rem"><a class="btn btn-primary" href="#/heritage">Listed &amp; conservation work <span class="ar">&#8594;</span></a></p>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="head-2 rv">
+      <div><p class="label">Accreditation</p><h2 class="sect">An Accoya approved manufacturer.</h2></div>
+      <p class="lede">Accoya is modified softwood with very high durability and very little movement, and it carries a 50-year above-ground guarantee. Only approved manufacturers can supply it with that guarantee intact &mdash; we are one of them.</p>
+    </div>
+    <p class="rv" style="margin-top:1.6rem"><a class="btn btn-line" href="#/accreditation">What approval means <span class="ar">&#8594;</span></a></p>
+  </div></section>
+
+  <section class="bg-green tight on-dark"><div class="wrap narrow" style="text-align:center">
+    <h2 class="sect" style="margin:0 auto">Where we work</h2>
+    <p class="lede" style="color:#BDCABE;margin:1rem auto 1.8rem">From the workshop in Telford we cover Shrewsbury, Ironbridge, Coalbrookdale, Broseley, Much Wenlock, Bridgnorth, Newport, Albrighton, Shifnal, Wellington and the villages between them. Further afield for larger jobs &mdash; ask.</p>
+    <a class="btn btn-brass" href="#/contact">Get a quote <span class="ar">&#8594;</span></a>
+  </div></section>
+</div>
+
 <!-- ============================ CONTACT ============================ -->
 <div class="page" data-page="/contact">
   <section class="bg-green">
@@ -1560,7 +1344,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
                 <div class="field"><label for="f-need">What you need</label><select id="f-need"><option value="">Please choose…</option><option>Sliding sash windows</option><option>Casement windows</option><option>Entrance or French doors</option><option>Bi-fold or patio doors</option><option>Repair or restoration</option><option>Bespoke carpentry</option><option>Trade or contract supply</option></select></div>
                 <div class="field"><label for="f-when">Rough timescale</label><select id="f-when"><option value="">Please choose…</option><option>As soon as possible</option><option>Within 3 months</option><option>3–6 months</option><option>Getting prices for now</option></select></div>
               </div>
-              <div class="field"><label for="f-detail">Tell us about it <span class="hint">How many windows or doors, and anything you know about the style. Specifications from the Drawing Board land here automatically.</span></label>
+              <div class="field"><label for="f-detail">Tell us about it <span class="hint">How many windows or doors, and anything you know about the style.</span></label>
                 <textarea id="f-detail" placeholder="For example: six sash windows to the front of a Victorian terrace in Ironbridge, rotten at the bottom rails."></textarea></div>
               <label class="drop-zone" id="dropZone" for="f-files">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M7.5 8.5 12 4l4.5 4.5"/><path d="M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"/></svg>
@@ -1595,9 +1379,9 @@ footer.site .fb a:hover{color:var(--brass-lt)}
             </ol>
           </div>
           <div class="sidecard" style="background:var(--green-sf)">
-            <h3>Know what you want?</h3>
-            <p style="margin-bottom:1rem">Specify it on the Drawing Board and the written specification drops straight into the form.</p>
-            <a class="btn btn-line btn-sm" href="#/drawing-board">Open the Drawing Board <span class="ar">→</span></a>
+            <h3>Not sure what to ask for?</h3>
+            <p style="margin-bottom:1rem">Have a look at the timbers, glass and ironmongery we hold. Knowing roughly what you want makes the quote quicker and more accurate.</p>
+            <a class="btn btn-line btn-sm" href="#/materials">See the materials <span class="ar">&#8594;</span></a>
           </div>
         </aside>
       </div>
@@ -1620,7 +1404,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
   <div class="fg">
     <div><h4>David Jackson &amp; Son</h4><p>Carpentry &amp; Joinery. Bespoke timber windows, doors and joinery for listed, period and heritage properties across Shropshire.</p><p class="small" style="color:#7B857D;margin:0">Accoya® approved manufacturer</p></div>
     <div><h4>Contact</h4><ul><li>Unit 11, Tweedale Court<br>Telford, Shropshire<br>TF7 4JZ</li><li style="padding-top:.7rem"><a href="tel:01952585709">01952 585709</a></li><li><a href="mailto:info@davidjacksonandson.com">info@davidjacksonandson.com</a></li></ul></div>
-    <div><h4>Pages</h4><ul><li><a href="#/windows">Timber windows</a></li><li><a href="#/doors">Timber doors</a></li><li><a href="#/drawing-board">The Drawing Board</a></li><li><a href="#/contact">Get a quote</a></li></ul></div>
+    <div><h4>Pages</h4><ul><li><a href="#/windows">Timber windows</a></li><li><a href="#/doors">Timber doors</a></li><li><a href="#/about">About us</a></li><li><a href="#/contact">Get a quote</a></li></ul></div>
     <div><h4>More</h4><ul><li><a href="#/guidance">Guidance</a></li><li><a href="#/accreditation">Accreditation</a></li><li><a href="#/materials">Materials</a></li><li><a href="#/projects">Projects</a></li><li><a href="#/heritage">Listed &amp; heritage</a></li></ul></div>
   </div>
   <div class="fb"><span>© 2026 David Jackson &amp; Son Carpentry &amp; Joinery</span><span>Privacy Policy · Terms &amp; Conditions · <a class="staff" href="/planner/" rel="nofollow">Production Planning</a></span></div>
@@ -1651,7 +1435,7 @@ var TITLES={
  '/guide-conservation':'Replacing Windows in a Conservation Area | David Jackson & Son',
  '/windows':'Timber Windows Shropshire — Sash & Casement | David Jackson & Son',
  '/doors':'Timber Doors Shropshire — Entrance, French & Bi-fold | David Jackson & Son',
- '/drawing-board':'The Drawing Board — Design Your Window or Door | David Jackson & Son',
+ '/about':'About David Jackson & Son — Father & Son Joiners, Telford | 50 Years',
  '/materials':'Timbers, Glass & Ironmongery | David Jackson & Son Joinery',
  '/accreditation':'Accoya Approved Manufacturer | David Jackson & Son Joinery',
  '/projects':'Heritage Joinery Projects in Shropshire | David Jackson & Son',
@@ -1669,7 +1453,7 @@ function route(){
   if(!TITLES[h]) h='/';
   pages.forEach(function(p){ p.classList.toggle('on', p.dataset.page===h); });
   navLinks.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href')==='#'+h); });
-  var inMore=['/guidance','/guide-repair','/guide-conservation','/accreditation','/materials','/projects','/heritage'].indexOf(h)>=0;
+  var inMore=['/about','/guidance','/guide-repair','/guide-conservation','/accreditation','/projects','/heritage'].indexOf(h)>=0;
   document.getElementById('moreBtn').classList.toggle('active', inMore);
   document.title=TITLES[h];
   window.scrollTo({top:0,behavior:'auto'});
@@ -1705,27 +1489,6 @@ function observe(){
 }
 
 /* ============================ DATA ============================ */
-var TIMBERS=[
- {id:'accoya',name:'Accoya',base:'#DCC49B',grain:'#C0A276',dark:'#A8895C',cat:'Modified softwood',note:'Very high durability, very low movement. External joinery. Carries the 50-year guarantee.'},
- {id:'sapele',name:'Sapele',base:'#8A4C2C',grain:'#6B3620',dark:'#4E2716',cat:'Hardwood',note:'Dark brown hardwood, high durability, internal or external. Takes a stain beautifully.'},
- {id:'idigbo',name:'Idigbo',base:'#C9A76F',grain:'#AC8A50',dark:'#8E6F3B',cat:'Hardwood',note:'Pale hardwood, high durability, good value where the work is being painted.'},
- {id:'oak',name:'Oak',base:'#BE9764',grain:'#9C7642',dark:'#7E5C30',cat:'Hardwood',note:'European oak. High durability with pronounced grain — best shown under a clear finish.'},
- {id:'pine',name:'Redwood Pine',base:'#E2C89E',grain:'#C7A87B',dark:'#A98C60',cat:'Softwood',note:'Softwood for interior joinery. Medium durability, lowest cost of the six.'},
- {id:'tulip',name:'Tulipwood',base:'#E3DABE',grain:'#C7BC9A',dark:'#ABA07E',cat:'Softwood',note:'Fine even grain with a slight green cast. Ideal for painted internal doors and panelling.'}
-];
-var PAINTS=[
- {id:'white',name:'Traditional white',hex:'#F1F0EB'},{id:'cream',name:'Cream',hex:'#E7DEC7'},
- {id:'green',name:'Brunswick green',hex:'#2F4739'},{id:'sage',name:'Sage',hex:'#8D9A83'},
- {id:'grey',name:'Slate grey',hex:'#6B7378'},{id:'black',name:'Off-black',hex:'#24272A'},
- {id:'blue',name:'Heritage blue',hex:'#3D5061'},{id:'ral',name:'Any RAL',hex:'#B0453B'}
-];
-var STAINS=[
- {id:'clear',name:'Clear',tint:null,op:0},
- {id:'light',name:'Light oak',tint:'#C08A45',op:.2},
- {id:'medium',name:'Medium oak',tint:'#8E5A25',op:.34},
- {id:'walnut',name:'Dark walnut',tint:'#4B2E17',op:.46},
- {id:'oiled',name:'Oiled',tint:'#7A5528',op:.16}
-];
 var GLASS_TEXTURE=[
  {n:'Warwick',p:4,f:'stipple'},{n:'Chantilly',p:1,f:'fine'},{n:'Reeded',p:3,f:'reeded'},
  {n:'Digital',p:3,f:'blocks'},{n:'Taffeta',p:3,f:'fine'},{n:'Oak',p:3,f:'flemish'},
@@ -1740,567 +1503,20 @@ var GLASS_ETCHED=[
  {n:'Canterbury',p:2,f:'etchline'},{n:'Burdock',p:3,f:'floral'},{n:'Saturn',p:3,f:'etchline'},
  {n:'Bay Opal',p:5,f:'opal'},{n:'Canterbury Opal',p:5,f:'opal'},{n:'Optifloat Opal',p:5,f:'opal'}
 ];
-var HW_STYLES=['Reeded','Bulb','Spoon','Monkey Tail','Shepherds Crook','Tudor','Forged'];
 var HW_FINISH=[
  {n:'Polished chrome',a:'#EFF2F4',b:'#969DA3'},{n:'Satin chrome',a:'#D8DCDE',b:'#A0A6AA'},
  {n:'Satin nickel',a:'#DAD6CC',b:'#A19C90'},{n:'Polished nickel',a:'#E9E5DB',b:'#ABA493'},
  {n:'Polished brass',a:'#F0D084',b:'#A4802C'},{n:'Antique brass',a:'#BE9853',b:'#6A5023'},
  {n:'Matt bronze',a:'#8E7A63',b:'#4A3C2F'},{n:'Matt black',a:'#505354',b:'#1B1D1E'}
 ];
-var BARS=[
- {id:'1over1',label:'1 / 1',grid:[1,1],era:'Late Victorian onward'},
- {id:'2over2',label:'2 / 2',grid:[2,1],era:'Victorian'},
- {id:'3over3',label:'3 / 3',grid:[3,1],era:'Victorian'},
- {id:'4over4',label:'4 / 4',grid:[2,2],era:'Regency'},
- {id:'6over6',label:'6 / 6',grid:[3,2],era:'Georgian'},
- {id:'8over8',label:'8 / 8',grid:[4,2],era:'Early Georgian'},
- {id:'9over9',label:'9 / 9',grid:[3,3],era:'Early Georgian'},
- {id:'12over12',label:'12 / 12',grid:[4,3],era:'Early Georgian'},
- {id:'margin',label:'Margin',grid:'margin',era:'Edwardian'},
- {id:'split',label:'2 / 1',grid:'split',era:'Victorian'}
-];
-var PANELS=[
- {id:'4panel',label:'4 panel'},{id:'6panel',label:'6 panel'},{id:'half',label:'Half glazed'},
- {id:'topglaze',label:'Top glazed'},{id:'fullglaze',label:'Fully glazed'},{id:'ledge',label:'Ledge &amp; brace'}
-];
-var BARPROF={ovolo:5.5,lambs:5,astragal:7,slim:3.4};
-
 /* ============================ CONTROL BUILD ============================ */
 function h(s){ var d=document.createElement('div'); d.innerHTML=s.trim(); return d.firstChild; }
-function woodCss(t){ return 'linear-gradient(100deg,'+t.base+' 0%,'+t.grain+' 26%,'+t.base+' 48%,'+t.dark+' 66%,'+t.base+' 100%)'; }
-
-var swT=document.getElementById('swTimber');
-TIMBERS.forEach(function(t,i){ swT.appendChild(h('<label title="'+t.cat+'"><input type="radio" name="timber" value="'+t.id+'"'+(i?'':' checked')+'><i style="background:'+woodCss(t)+'"></i><em>'+t.name+'</em></label>')); });
-
-var swP=document.getElementById('swPaint');
-PAINTS.forEach(function(p,i){ swP.appendChild(h('<label><input type="radio" name="finish" value="paint:'+p.id+'"'+(i?'':' checked')+'><i style="background:'+p.hex+'"></i><em>'+p.name+'</em></label>')); });
-var swS=document.getElementById('swStain');
-STAINS.forEach(function(s){
-  var bg = s.tint ? 'linear-gradient(100deg,'+s.tint+' 0%,'+s.tint+'cc 50%,'+s.tint+' 100%)' : 'repeating-linear-gradient(100deg,#D9BE92 0 7px,#C2A473 7px 14px)';
-  swS.appendChild(h('<label><input type="radio" name="finish" value="stain:'+s.id+'"><i style="background:'+bg+'"></i><em>'+s.name+'</em></label>'));
-});
-var swM=document.getElementById('swMetal');
-HW_FINISH.forEach(function(m,i){ swM.appendChild(h('<label><input type="radio" name="metal" value="'+i+'"'+(i===5?' checked':'')+'><i style="background:linear-gradient(135deg,'+m.a+' 0%,'+m.b+' 58%,'+m.a+' 100%)"></i><em>'+m.n+'</em></label>')); });
-
-var hwStyle=document.getElementById('hwStyle');
-HW_STYLES.forEach(function(s){ hwStyle.appendChild(h('<option>'+s+'</option>')); });
-hwStyle.value='Monkey Tail';
-var hwFinish=document.getElementById('hwFinish');
-HW_FINISH.forEach(function(m,i){ hwFinish.appendChild(h('<option value="'+i+'">'+m.n+'</option>')); });
-hwFinish.value='5';
-
-function miniBars(b){
-  var s='<svg viewBox="0 0 40 52"><rect x="1" y="1" width="38" height="50" fill="#E7EEF1" stroke="#59635D" stroke-width="1.3"/><line x1="1" y1="26" x2="39" y2="26" stroke="#59635D" stroke-width="1.5"/>';
-  function cell(y0,y1){
-    if(b.grid==='margin'){
-      s+='<line x1="8" y1="'+y0+'" x2="8" y2="'+y1+'" stroke="#59635D"/><line x1="32" y1="'+y0+'" x2="32" y2="'+y1+'" stroke="#59635D"/>';
-      s+='<line x1="1" y1="'+(y0+6)+'" x2="39" y2="'+(y0+6)+'" stroke="#59635D"/><line x1="1" y1="'+(y1-6)+'" x2="39" y2="'+(y1-6)+'" stroke="#59635D"/>'; return;
-    }
-    if(b.grid==='split'){ if(y0<20) s+='<line x1="20" y1="'+y0+'" x2="20" y2="'+y1+'" stroke="#59635D"/>'; return; }
-    var c=b.grid[0],r=b.grid[1],i;
-    for(i=1;i<c;i++) s+='<line x1="'+(1+38/c*i)+'" y1="'+y0+'" x2="'+(1+38/c*i)+'" y2="'+y1+'" stroke="#59635D"/>';
-    for(i=1;i<r;i++) s+='<line x1="1" y1="'+(y0+(y1-y0)/r*i)+'" x2="39" y2="'+(y0+(y1-y0)/r*i)+'" stroke="#59635D"/>';
-  }
-  cell(1,26); cell(26,51); return s+'</svg>';
-}
-var tlB=document.getElementById('tlBars');
-BARS.forEach(function(b,i){ tlB.appendChild(h('<label title="'+b.era+'"><input type="radio" name="bars" value="'+b.id+'"'+(i?'':' checked')+'><i>'+miniBars(b)+'</i><em>'+b.label+'</em></label>')); });
-
-function miniPanel(p){
-  var s='<svg viewBox="0 0 40 52"><rect x="1" y="1" width="38" height="50" fill="#D9CCB6" stroke="#59635D" stroke-width="1.3"/>';
-  function bx(x,y,w,ht,g){ s+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+ht+'" fill="'+(g?'#E7EEF1':'#C7B89D')+'" stroke="#59635D" stroke-width="1"/>'; }
-  if(p.id==='4panel'){ bx(6,5,12,18);bx(22,5,12,18);bx(6,28,12,18);bx(22,28,12,18); }
-  else if(p.id==='6panel'){ bx(6,4,12,11);bx(22,4,12,11);bx(6,19,12,13);bx(22,19,12,13);bx(6,36,12,11);bx(22,36,12,11); }
-  else if(p.id==='half'){ bx(6,5,28,18,1);bx(6,28,12,18);bx(22,28,12,18); }
-  else if(p.id==='topglaze'){ bx(6,5,28,11,1);bx(6,20,28,26); }
-  else if(p.id==='fullglaze'){ bx(6,5,28,41,1); }
-  else { for(var i=0;i<5;i++) s+='<line x1="'+(6+i*7)+'" y1="3" x2="'+(6+i*7)+'" y2="48" stroke="#59635D"/>';
-         s+='<line x1="3" y1="16" x2="37" y2="16" stroke="#59635D" stroke-width="1.3"/><line x1="3" y1="38" x2="37" y2="38" stroke="#59635D" stroke-width="1.3"/>'; }
-  return s+'</svg>';
-}
-var tlP=document.getElementById('tlPanels');
-PANELS.forEach(function(p,i){ tlP.appendChild(h('<label><input type="radio" name="panels" value="'+p.id+'"'+(i?'':' checked')+'><i>'+miniPanel(p)+'</i><em>'+p.label+'</em></label>')); });
-
-var gRange=document.getElementById('glassRange'), gPat=document.getElementById('glassPattern');
-function fillPatterns(){
-  gPat.innerHTML='';
-  var list=gRange.value==='texture'?GLASS_TEXTURE:gRange.value==='etched'?GLASS_ETCHED:null;
-  if(!list){ gPat.appendChild(h('<option value="clear">Clear</option>')); gPat.disabled=true; }
-  else { gPat.disabled=false; list.forEach(function(g){ gPat.appendChild(h('<option value="'+g.n+'">'+g.n+' — privacy '+g.p+'</option>')); }); }
-  draw();
-}
-gRange.addEventListener('change',fillPatterns);
-gPat.addEventListener('change',draw);
-
 function chipRow(el,list){ list.forEach(function(g){ var d='';for(var i=1;i<=5;i++) d+='<i class="'+(i<=g.p?'on':'')+'"></i>';
   el.appendChild(h('<span class="chip">'+g.n+'<span class="privacy">'+d+'</span></span>')); }); }
 chipRow(document.getElementById('chipTexture'),GLASS_TEXTURE);
 chipRow(document.getElementById('chipEtched'),GLASS_ETCHED);
 HW_FINISH.forEach(function(m){ document.getElementById('chipMetal').appendChild(
   h('<span class="chip"><span style="display:inline-block;width:13px;height:13px;vertical-align:-2px;margin-right:.45rem;border-radius:3px;border:1px solid rgba(0,0,0,.2);background:linear-gradient(135deg,'+m.a+','+m.b+')"></span>'+m.n+'</span>')); });
-
-/* ============================ DRAWING ENGINE ============================ */
-var NS='http://www.w3.org/2000/svg';
-var svg=document.getElementById('win'), form=document.getElementById('cfgForm');
-var rW=document.getElementById('rW'), rH=document.getElementById('rH');
-var uid=0;
-function E(t,a){ var n=document.createElementNS(NS,t); for(var k in a) n.setAttribute(k,a[k]); return n; }
-function vals(){ var o={}; new FormData(form).forEach(function(v,k){o[k]=v;}); return o; }
-function byId(arr,id){ for(var i=0;i<arr.length;i++) if(arr[i].id===id) return arr[i]; return arr[0]; }
-function sh(hex,amt){ if(!hex) return '#B08A55';
-  var n=parseInt(hex.slice(1),16),r=(n>>16)+amt,g=((n>>8)&255)+amt,b=(n&255)+amt;
-  function c(x){return Math.max(0,Math.min(255,x));}
-  return '#'+((1<<24)+(c(r)<<16)+(c(g)<<8)+c(b)).toString(16).slice(1); }
-
-function glassInfo(){
-  if(gRange.value==='clear') return {n:'Clear float',p:0,f:'clear'};
-  var l=gRange.value==='texture'?GLASS_TEXTURE:GLASS_ETCHED;
-  for(var i=0;i<l.length;i++) if(l[i].n===gPat.value) return l[i];
-  return l[0];
-}
-function finishState(v){
-  var parts=(v.finish||'paint:white').split(':');
-  if(parts[0]==='paint'){ var p=byId(PAINTS,parts[1]); return {opaque:true,name:p.name,col:p.hex}; }
-  var s=byId(STAINS,parts[1]); return {opaque:false,name:s.name+' stain',col:null,tint:s.tint,op:s.op};
-}
-
-function buildDefs(fs,tim,gi,metal){
-  var d=E('defs',{});
-  /* timber grain patterns (horizontal + vertical) */
-  ['H','V'].forEach(function(dir){
-    var p=E('pattern',{id:'wood'+dir,width:110,height:26,patternUnits:'userSpaceOnUse'});
-    if(dir==='V') p.setAttribute('patternTransform','rotate(90)');
-    p.appendChild(E('rect',{x:0,y:0,width:110,height:26,fill:tim.base}));
-    p.appendChild(E('rect',{x:0,y:0,width:110,height:26,fill:'url(#woodgrad)'}));
-    [3,8,13,18,23].forEach(function(y,i){
-      p.appendChild(E('path',{d:'M0 '+y+' q28 '+(i%2?-2.6:2.6)+' 55 0 t55 0',stroke:i%2?tim.dark:tim.grain,'stroke-opacity':i%2?.42:.55,'stroke-width':i%2?1.5:1,fill:'none'}));
-    });
-    p.appendChild(E('ellipse',{cx:74,cy:13,rx:9,ry:3.4,fill:'none',stroke:tim.dark,'stroke-opacity':.3,'stroke-width':1}));
-    if(fs.tint) p.appendChild(E('rect',{x:0,y:0,width:110,height:26,fill:fs.tint,'fill-opacity':fs.op}));
-    d.appendChild(p);
-  });
-  var wg=E('linearGradient',{id:'woodgrad',x1:0,y1:0,x2:1,y2:.3});
-  wg.appendChild(E('stop',{offset:0,'stop-color':'#fff','stop-opacity':.16}));
-  wg.appendChild(E('stop',{offset:.5,'stop-color':'#fff','stop-opacity':0}));
-  wg.appendChild(E('stop',{offset:1,'stop-color':'#000','stop-opacity':.1}));
-  d.appendChild(wg);
-  /* paint */
-  var pg=E('linearGradient',{id:'paintH',x1:0,y1:0,x2:.35,y2:1});
-  pg.appendChild(E('stop',{offset:0,'stop-color':sh(fs.col||'#CCCCCC',16)}));
-  pg.appendChild(E('stop',{offset:.55,'stop-color':fs.col||'#CCCCCC'}));
-  pg.appendChild(E('stop',{offset:1,'stop-color':sh(fs.col||'#CCCCCC',-14)}));
-  d.appendChild(pg);
-  /* glass */
-  var gg=E('linearGradient',{id:'glass',x1:0,y1:0,x2:.8,y2:1});
-  gg.appendChild(E('stop',{offset:0,'stop-color':'#D7E5EC'}));
-  gg.appendChild(E('stop',{offset:.38,'stop-color':'#AFC7D2'}));
-  gg.appendChild(E('stop',{offset:.39,'stop-color':'#7E99A7'}));
-  gg.appendChild(E('stop',{offset:.72,'stop-color':'#617F8D'}));
-  gg.appendChild(E('stop',{offset:1,'stop-color':'#4E6C79'}));
-  d.appendChild(gg);
-  /* obscure texture */
-  var pat=E('pattern',{id:'obsc',width:14,height:14,patternUnits:'userSpaceOnUse'}), f=gi.f, x,y;
-  if(f==='reeded'){ for(x=0;x<14;x+=4.6) pat.appendChild(E('rect',{x:x,y:0,width:2.2,height:14,fill:'#fff','fill-opacity':.5})); }
-  else if(f==='stipple'||f==='fine'){ for(y=0;y<14;y+=3.5) for(x=0;x<14;x+=3.5) pat.appendChild(E('circle',{cx:x+(y%7?1.7:0),cy:y,r:f==='fine'?.75:1.35,fill:'#fff','fill-opacity':.55})); }
-  else if(f==='flemish'){ pat.appendChild(E('path',{d:'M0 3.5 q3.5 3.5 7 0 t7 0 M0 10.5 q3.5 -3.5 7 0 t7 0',stroke:'#fff','stroke-opacity':.5,fill:'none','stroke-width':1.8})); }
-  else if(f==='blocks'){ pat.appendChild(E('rect',{x:0,y:0,width:6,height:6,fill:'#fff','fill-opacity':.45})); pat.appendChild(E('rect',{x:7.5,y:7.5,width:6,height:6,fill:'#fff','fill-opacity':.45})); }
-  else if(f==='sticks'){ pat.appendChild(E('path',{d:'M2.5 0 L4.5 14 M9.5 0 L7.5 14',stroke:'#fff','stroke-opacity':.5,'stroke-width':1.5,fill:'none'})); }
-  else if(f==='floral'){ pat.appendChild(E('circle',{cx:7,cy:7,r:4,fill:'none',stroke:'#fff','stroke-opacity':.5,'stroke-width':1.4})); pat.appendChild(E('circle',{cx:0,cy:0,r:2.6,fill:'none',stroke:'#fff','stroke-opacity':.4,'stroke-width':1.2})); }
-  else if(f==='etchline'){ pat.appendChild(E('path',{d:'M0 7 H14',stroke:'#fff','stroke-opacity':.45,'stroke-width':2.8})); }
-  else if(f==='opal'){ pat.appendChild(E('rect',{x:0,y:0,width:14,height:14,fill:'#fff','fill-opacity':.74})); }
-  d.appendChild(pat);
-  /* metal */
-  var mg=E('linearGradient',{id:'metal',x1:0,y1:0,x2:1,y2:1});
-  mg.appendChild(E('stop',{offset:0,'stop-color':metal.a}));
-  mg.appendChild(E('stop',{offset:.5,'stop-color':metal.b}));
-  mg.appendChild(E('stop',{offset:1,'stop-color':metal.a}));
-  d.appendChild(mg);
-  /* shadows */
-  var f1=E('filter',{id:'sh',x:'-30%',y:'-30%',width:'170%',height:'175%'});
-  f1.appendChild(E('feDropShadow',{dx:0,dy:6,stdDeviation:8,'flood-color':'#232A25','flood-opacity':.3}));
-  d.appendChild(f1);
-  var f2=E('filter',{id:'sh2',x:'-60%',y:'-60%',width:'220%',height:'220%'});
-  f2.appendChild(E('feDropShadow',{dx:.5,dy:1.5,stdDeviation:1.4,'flood-color':'#000','flood-opacity':.45}));
-  d.appendChild(f2);
-  return d;
-}
-
-var FILL_H,FILL_V,EDGE_L,EDGE_D;
-function setFills(fs,tim){
-  if(fs.opaque){ FILL_H=FILL_V='url(#paintH)'; EDGE_L=sh(fs.col,22); EDGE_D=sh(fs.col,-40); }
-  else { FILL_H='url(#woodH)'; FILL_V='url(#woodV)'; EDGE_L=sh(tim.base,26); EDGE_D=sh(tim.dark,-34); }
-}
-/* a single frame member with bevelled edges */
-function memb(g,x,y,w,ht,vert){
-  if(w<=0||ht<=0) return;
-  g.appendChild(E('rect',{x:x,y:y,width:w,height:ht,fill:vert?FILL_V:FILL_H}));
-  g.appendChild(E('rect',{x:x+.55,y:y+.55,width:Math.max(0,w-1.1),height:Math.max(0,ht-1.1),fill:'none',stroke:EDGE_L,'stroke-width':1,'stroke-opacity':.75}));
-  g.appendChild(E('rect',{x:x,y:y,width:w,height:ht,fill:'none',stroke:EDGE_D,'stroke-width':1.1}));
-}
-/* four members forming a sash or frame; returns the inner rect */
-function frameBox(g,x,y,w,ht,t,tb){
-  tb=tb||t;
-  if(w<t*2+2||ht<t+tb+2){ memb(g,x,y,w,ht,true); return {x:x,y:y,w:0,h:0}; }
-  memb(g,x,y,t,ht,true);
-  memb(g,x+w-t,y,t,ht,true);
-  memb(g,x+t,y,w-t*2,t,false);
-  memb(g,x+t,y+ht-tb,w-t*2,tb,false);
-  /* mitre hints */
-  [[x,y],[x+w,y]].forEach(function(){});
-  g.appendChild(E('line',{x1:x+t,y1:y+t,x2:x,y2:y,stroke:EDGE_D,'stroke-width':.6,'stroke-opacity':.5}));
-  g.appendChild(E('line',{x1:x+w-t,y1:y+t,x2:x+w,y2:y,stroke:EDGE_D,'stroke-width':.6,'stroke-opacity':.5}));
-  return {x:x+t,y:y+t,w:w-t*2,h:ht-t-tb};
-}
-function pane(g,x,y,w,ht,gi){
-  if(w<=1||ht<=1) return;
-  var id='cp'+(++uid);
-  g.appendChild(E('rect',{x:x,y:y,width:w,height:ht,fill:'url(#glass)'}));
-  if(gi.f!=='clear') g.appendChild(E('rect',{x:x,y:y,width:w,height:ht,fill:'url(#obsc)'}));
-  var cp=E('clipPath',{id:id}); cp.appendChild(E('rect',{x:x,y:y,width:w,height:ht})); g.appendChild(cp);
-  var r=E('g',{'clip-path':'url(#'+id+')'});
-  r.appendChild(E('path',{d:'M'+(x-ht*.62)+','+(y+ht)+' L'+(x+w*.32)+','+y+' L'+(x+w*.55)+','+y+' L'+(x-ht*.62+w*.23)+','+(y+ht)+' Z',fill:'#fff','fill-opacity':.17}));
-  r.appendChild(E('path',{d:'M'+(x+w*.63)+','+y+' L'+(x+w*.73)+','+y+' L'+(x+w*.3)+','+(y+ht)+' L'+(x+w*.2)+','+(y+ht)+' Z',fill:'#fff','fill-opacity':.1}));
-  r.appendChild(E('rect',{x:x,y:y,width:w,height:Math.min(ht*.3,10),fill:'#0C1A20','fill-opacity':.12}));
-  g.appendChild(r);
-  /* putty line */
-  g.appendChild(E('rect',{x:x,y:y,width:w,height:ht,fill:'none',stroke:EDGE_D,'stroke-width':1.1,'stroke-opacity':.55}));
-}
-function gbar(g,x1,y1,x2,y2,wd){
-  g.appendChild(E('line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:EDGE_D,'stroke-width':wd}));
-  g.appendChild(E('line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:(x1===x2)?FILL_V:FILL_H,'stroke-width':Math.max(.8,wd-1.6)}));
-  g.appendChild(E('line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:EDGE_L,'stroke-width':Math.max(.5,wd*.28),'stroke-opacity':.8}));
-}
-function glazed(g,x,y,w,ht,barsId,gi,wd){
-  if(w<=1||ht<=1) return;
-  var b=byId(BARS,barsId), i, j;
-  if(b.grid==='margin'){
-    var m=Math.max(6,Math.min(w,ht)*.15);
-    if(w<m*2+8||ht<m*2+8){ pane(g,x,y,w,ht,gi); return; }
-    pane(g,x,y,w,ht,gi);
-    gbar(g,x+m,y,x+m,y+ht,wd); gbar(g,x+w-m,y,x+w-m,y+ht,wd);
-    gbar(g,x,y+m,x+w,y+m,wd); gbar(g,x,y+ht-m,x+w,y+ht-m,wd);
-    return;
-  }
-  if(b.grid==='split'){ pane(g,x,y,w,ht,gi); if(w>40) gbar(g,x+w/2,y,x+w/2,y+ht,wd); return; }
-  var c=b.grid[0], r=b.grid[1];
-  /* collapse the grid if panes would be unreadable */
-  while(c>1 && (w-wd*(c-1))/c < 9) c--;
-  while(r>1 && (ht-wd*(r-1))/r < 9) r--;
-  var cw=(w-wd*(c-1))/c, chh=(ht-wd*(r-1))/r;
-  for(i=0;i<c;i++) for(j=0;j<r;j++) pane(g,x+(cw+wd)*i,y+(chh+wd)*j,cw,chh,gi);
-  for(i=1;i<c;i++) gbar(g,x+(cw+wd)*i-wd/2,y,x+(cw+wd)*i-wd/2,y+ht,wd);
-  for(j=1;j<r;j++) gbar(g,x,y+(chh+wd)*j-wd/2,x+w,y+(chh+wd)*j-wd/2,wd);
-}
-function handle(g,x,y,style,s){
-  s=s||1;
-  var gp=E('g',{transform:'translate('+x+','+y+') scale('+s+')',filter:'url(#sh2)'});
-  gp.appendChild(E('rect',{x:-5.5,y:-10,width:11,height:20,rx:2.5,fill:'url(#metal)'}));
-  gp.appendChild(E('circle',{cx:0,cy:-5.5,r:1.3,fill:'#00000055'}));
-  gp.appendChild(E('circle',{cx:0,cy:5.5,r:1.3,fill:'#00000055'}));
-  var d;
-  if(style==='Monkey Tail') d='M0,-2 q0,17 13,19 q10,1 7.5,-8.5 q-2.2,-6.5 -8.5,-2';
-  else if(style==='Shepherds Crook') d='M0,-2 q0,16 14,18 q11,1 6.5,-9.5';
-  else if(style==='Bulb') d='M0,-2 q0,15 12,17';
-  else if(style==='Spoon') d='M0,-2 q0,14 13,16';
-  else if(style==='Tudor') d='M0,-2 L4.5,15 L17,17';
-  else if(style==='Forged') d='M0,-2 L3.5,13 L16,16 L18,11.5';
-  else d='M0,-2 q0,15 14,17';
-  gp.appendChild(E('path',{d:d,fill:'none',stroke:'url(#metal)','stroke-width':5,'stroke-linecap':'round'}));
-  if(style==='Bulb') gp.appendChild(E('circle',{cx:13,cy:16,r:4.6,fill:'url(#metal)'}));
-  if(style==='Spoon') gp.appendChild(E('ellipse',{cx:15,cy:17,rx:5.4,ry:3.6,fill:'url(#metal)'}));
-  if(style==='Reeded'){ for(var i=0;i<4;i++) gp.appendChild(E('line',{x1:3+i*3,y1:1,x2:5+i*3,y2:12,stroke:'#00000033','stroke-width':.9})); }
-  g.appendChild(gp);
-}
-function headPath(x,y,w,ht,type){
-  var r=w/2;
-  if(type==='seg')    return 'M'+x+','+(y+r*.42)+' A'+(r*1.6)+','+(r*.6)+' 0 0 1 '+(x+w)+','+(y+r*.42)+' L'+(x+w)+','+(y+ht)+' L'+x+','+(y+ht)+' Z';
-  if(type==='round')  return 'M'+x+','+(y+r)+' A'+r+','+r+' 0 0 1 '+(x+w)+','+(y+r)+' L'+(x+w)+','+(y+ht)+' L'+x+','+(y+ht)+' Z';
-  if(type==='gothic') return 'M'+x+','+(y+r*1.05)+' Q'+x+','+(y+r*.06)+' '+(x+r)+','+y+' Q'+(x+w)+','+(y+r*.06)+' '+(x+w)+','+(y+r*1.05)+' L'+(x+w)+','+(y+ht)+' L'+x+','+(y+ht)+' Z';
-  return 'M'+x+','+y+' L'+(x+w)+','+y+' L'+(x+w)+','+(y+ht)+' L'+x+','+(y+ht)+' Z';
-}
-
-/* ---------------- main draw ---------------- */
-function draw(){
-  var v=vals();
-  var tim=byId(TIMBERS,v.timber), fs=finishState(v), gi=glassInfo();
-  var metal=HW_FINISH[parseInt(hwFinish.value,10)||0];
-  var isDoor=(v.product==='door'||v.product==='french'), isBifold=v.product==='bifold';
-  var isSash=v.product==='sash', isCase=v.product==='casement';
-  var anyDoor=isDoor||isBifold;
-
-  /* size guards */
-  var mmW=+rW.value, mmH=+rH.value;
-  document.getElementById('wOut').textContent=mmW+' mm';
-  document.getElementById('hOut').textContent=mmH+' mm';
-
-  uid=0;
-  while(svg.childNodes.length>1) svg.removeChild(svg.lastChild);
-  setFills(fs,tim);
-  svg.appendChild(buildDefs(fs,tim,gi,metal));
-
-  var VW=440, VH=580, padX=54, padY=48;
-  var ratio=mmW/mmH, availW=VW-padX*2, availH=VH-padY*2-20;
-  var w=availW, ht=w/ratio;
-  if(ht>availH){ ht=availH; w=ht*ratio; }
-  if(w<40){ w=40; }
-  var x=(VW-w)/2, y=(VH-ht-20)/2;
-
-  var g=E('g',{});
-  /* reveal / wall */
-  g.appendChild(E('rect',{x:x-18,y:y-18,width:w+36,height:ht+38,fill:'#E1DBD0','fill-opacity':.6,rx:2}));
-  g.appendChild(E('rect',{x:x-18,y:y-18,width:w+36,height:ht+38,fill:'none',stroke:'#C6BDAE','stroke-width':1,rx:2}));
-  g.appendChild(E('rect',{x:x-10,y:y-10,width:w+20,height:ht+22,fill:'#00000012'}));
-
-  /* outer frame, clipped for arches */
-  var clipId='hd'+(++uid);
-  var cp=E('clipPath',{id:clipId});
-  cp.appendChild(E('path',{d:headPath(x,y,w,ht,v.head)}));
-  g.appendChild(cp);
-
-  var shell=E('g',{filter:'url(#sh)'});
-  shell.appendChild(E('path',{d:headPath(x,y,w,ht,v.head),fill:fs.opaque?'url(#paintH)':'url(#woodV)',stroke:EDGE_D,'stroke-width':1.6}));
-  g.appendChild(shell);
-
-  var inner=E('g',{'clip-path':'url(#'+clipId+')'});
-  var ft=Math.max(6,Math.min(14,w*0.032));        /* outer frame thickness */
-  var st=Math.max(5,Math.min(11,w*0.026));        /* sash / leaf stile */
-  var ix=x+ft, iy=y+ft, iw=w-ft*2, ih=ht-ft*2;
-  var arch = v.head!=='flat';
-  var drop = v.head==='round'? w*0.5 : v.head==='gothic'? w*0.52 : v.head==='seg'? w*0.2 : 0;
-  var top = Math.min(drop*0.7, ih*0.35);
-  var wd = BARPROF[v.barprof||'ovolo'];
-  wd = Math.max(2.4, Math.min(wd, w*0.022));
-
-  if(isSash){
-    var upH=ih*0.485;
-    var boxT=v.mech==='spiral'?st:st+1.5;
-    var up=frameBox(inner, ix, iy+top, iw, upH-top, boxT, boxT+2);
-    glazed(inner, up.x, up.y, up.w, up.h, v.bars, gi, wd);
-    var loY=iy+upH-3, loH=ih-upH+3;
-    var lo=frameBox(inner, ix, loY, iw, loH, boxT, boxT+3);
-    glazed(inner, lo.x, lo.y, lo.w, lo.h, v.bars, gi, wd);
-    inner.appendChild(E('rect',{x:ix,y:iy+upH-5,width:iw,height:8,fill:FILL_H,stroke:EDGE_D,'stroke-width':1}));
-    if(v.horns!=='none' && iw>50){
-      var hy=iy+upH-4, hw=v.horns==='moulded'?Math.min(10,st*1.1):Math.min(7,st*.8);
-      [[ix+1.5,1],[ix+iw-1.5,-1]].forEach(function(p){
-        var d=v.horns==='moulded'
-          ?'M'+p[0]+','+(hy-7)+' q0,'+(hw+6)+' '+(hw*p[1])+','+(hw+8)+' l'+(-hw*p[1]*1.2)+',0 Z'
-          :'M'+p[0]+','+(hy-7)+' l'+(hw*p[1])+','+(hw+9)+' l'+(-hw*p[1])+',0 Z';
-        inner.appendChild(E('path',{d:d,fill:FILL_V,stroke:EDGE_D,'stroke-width':1}));
-      });
-    }
-    if(iw>60) handle(inner, ix+iw/2, iy+upH+3, 'Bulb', Math.min(.62,w/620));
-  }
-  else if(isCase){
-    var n=Math.max(1,Math.min(4,parseInt(v.lights,10)||2));
-    var mullion=Math.max(4,st*0.85);
-    var tlOn=v.toplight==='yes' && ih>150;
-    var tlH=tlOn?Math.max(34,ih*0.24):0;
-    var storm=v.cstyle==='storm';
-    var totalM=mullion*(n-1);
-    var lw=(iw-totalM)/n;
-    if(lw<18){ n=Math.max(1,Math.floor(iw/26)); lw=(iw-mullion*(n-1))/n; }
-    inner.appendChild(E('rect',{x:ix,y:iy,width:iw,height:ih,fill:FILL_V}));
-    for(var L=0;L<n;L++){
-      var lx=ix+(lw+mullion)*L;
-      if(tlOn){
-        var t1=frameBox(inner,lx,iy+(L===0?top:0),lw,tlH,st);
-        glazed(inner,t1.x,t1.y,t1.w,t1.h,v.bars,gi,wd);
-        inner.appendChild(E('rect',{x:lx,y:iy+tlH-2,width:lw,height:mullion,fill:FILL_H,stroke:EDGE_D,'stroke-width':.9}));
-      }
-      var cy0=iy+tlH+(tlOn?mullion:top), cH=ih-tlH-(tlOn?mullion:top);
-      var off=storm?2.5:0;
-      var cb=frameBox(inner,lx-off,cy0-off,lw+off*2,cH+off,st+(storm?1:0),st+2);
-      glazed(inner,cb.x,cb.y,cb.w,cb.h,v.bars,gi,wd);
-      if(lw>40) handle(inner, L%2===0? lx+lw-st-6 : lx+st+6, cy0+cH*0.5, hwStyle.value, Math.min(.9,w/460));
-    }
-    for(var M=1;M<n;M++) inner.appendChild(E('rect',{x:ix+(lw+mullion)*M-mullion,y:iy,width:mullion,height:ih,fill:FILL_V,stroke:EDGE_D,'stroke-width':.9}));
-  }
-  else {
-    /* doors + bifold */
-    var leaves = isBifold ? Math.max(3,Math.min(6,parseInt(v.leaves,10)||3)) : (v.product==='french'?2:1);
-    var sideOn = !isBifold && (v.side!=='none');
-    var sideN  = !isBifold && v.side==='both' ? 2 : (!isBifold && v.side==='one' ? 1 : 0);
-    var fanOn  = !isBifold && v.fan==='yes' && ih>200;
-    var fanH   = fanOn?Math.max(38,ih*0.16):0;
-    var sideW  = sideN?Math.min(iw*0.18, Math.max(26, iw*0.14)):0;
-    var doorW  = iw - sideW*sideN;
-    if(doorW < 40){ sideW = Math.max(0,(iw-40)/Math.max(1,sideN)); doorW = iw - sideW*sideN; }
-    var dx = ix + (v.side==='one'?sideW:(sideN===2?sideW:0));
-    inner.appendChild(E('rect',{x:ix,y:iy,width:iw,height:ih,fill:FILL_V}));
-
-    if(fanOn){
-      var fb=frameBox(inner,ix,iy+top,iw,fanH,st);
-      glazed(inner,fb.x,fb.y,fb.w,fb.h,'2over2',gi,wd);
-      inner.appendChild(E('rect',{x:ix,y:iy+top+fanH-2,width:iw,height:st+1,fill:FILL_H,stroke:EDGE_D,'stroke-width':.9}));
-    }
-    var dy0=iy+(fanOn?top+fanH+st:top), dh=ih-(fanOn?top+fanH+st:top);
-    /* side lights */
-    for(var S=0;S<sideN;S++){
-      var sx = (v.side==='one') ? ix : (S===0? ix : ix+sideW+doorW);
-      var sb=frameBox(inner,sx,dy0,sideW,dh,Math.max(4,st*0.8));
-      glazed(inner,sb.x,sb.y,sb.w,sb.h,v.bars,gi,Math.max(2.4,wd*0.8));
-    }
-    var lw2=doorW/leaves;
-    for(var D=0;D<leaves;D++){
-      var lx2=dx+lw2*D+(leaves>1?1.5:0), lwd=lw2-(leaves>1?3:0);
-      var lb=frameBox(inner,lx2,dy0,lwd,dh,st+1,st+6);
-      var px=lb.x, py=lb.y, pw=lb.w, ph=lb.h;
-      var p=isBifold?'fullglaze':v.panels;
-      function P(a,b,c,d2,glassOn){
-        if(c<=2||d2<=2) return;
-        if(glassOn){ pane(inner,a,b,c,d2,gi); inner.appendChild(E('rect',{x:a-2.5,y:b-2.5,width:c+5,height:d2+5,fill:'none',stroke:EDGE_D,'stroke-width':2.4})); }
-        else{
-          inner.appendChild(E('rect',{x:a,y:b,width:c,height:d2,fill:FILL_V}));
-          inner.appendChild(E('rect',{x:a,y:b,width:c,height:d2,fill:'none',stroke:EDGE_D,'stroke-width':1.8}));
-          inner.appendChild(E('rect',{x:a+3.5,y:b+3.5,width:Math.max(0,c-7),height:Math.max(0,d2-7),fill:'none',stroke:EDGE_L,'stroke-width':1,'stroke-opacity':.8}));
-        }
-      }
-      if(pw>10&&ph>10){
-        if(p==='4panel'){ P(px,py,pw/2-4,ph*.44); P(px+pw/2+4,py,pw/2-4,ph*.44); P(px,py+ph*.5,pw/2-4,ph*.5); P(px+pw/2+4,py+ph*.5,pw/2-4,ph*.5); }
-        else if(p==='6panel'){ [[0,.23],[.28,.30],[.63,.31]].forEach(function(r){ P(px,py+ph*r[0],pw/2-4,ph*r[1]); P(px+pw/2+4,py+ph*r[0],pw/2-4,ph*r[1]); }); }
-        else if(p==='half'){ P(px,py,pw,ph*.47,true); P(px,py+ph*.54,pw/2-4,ph*.46); P(px+pw/2+4,py+ph*.54,pw/2-4,ph*.46); }
-        else if(p==='topglaze'){ P(px,py,pw,ph*.3,true); P(px,py+ph*.36,pw,ph*.64); }
-        else if(p==='fullglaze'){ glazed(inner,px,py,pw,ph,v.bars,gi,wd); }
-        else { for(var k=1;k<5;k++) gbar(inner,px+pw/5*k,py,px+pw/5*k,py+ph,3);
-               inner.appendChild(E('rect',{x:px,y:py+ph*.28,width:pw,height:7,fill:FILL_H,stroke:EDGE_D,'stroke-width':1}));
-               inner.appendChild(E('rect',{x:px,y:py+ph*.72,width:pw,height:7,fill:FILL_H,stroke:EDGE_D,'stroke-width':1})); }
-      }
-      if(lwd>34){
-        var hx = leaves===2 ? (D===0? lx2+lwd-st-8 : lx2+st+8) : (isBifold ? (D===leaves-1? lx2+lwd-st-8 : null) : lx2+lwd-st-9);
-        if(hx!==null) handle(inner,hx,dy0+dh*0.52,hwStyle.value,Math.min(1,w/440));
-        if(leaves===1 && dh>120) inner.appendChild(E('circle',{cx:lx2+lwd/2,cy:dy0+dh*0.18,r:Math.min(7,lwd*0.09),fill:'url(#metal)',filter:'url(#sh2)'}));
-      }
-    }
-  }
-  g.appendChild(inner);
-
-  /* cill / threshold sits outside the clip */
-  if(anyDoor){
-    g.appendChild(E('rect',{x:x-10,y:y+ht-2,width:w+20,height:9,fill:'url(#metal)',stroke:'#565A55','stroke-width':1}));
-  } else {
-    g.appendChild(E('rect',{x:x-11,y:y+ht-2,width:w+22,height:11,fill:FILL_H,stroke:EDGE_D,'stroke-width':1.3}));
-    g.appendChild(E('rect',{x:x-11,y:y+ht+9,width:w+22,height:3,fill:EDGE_D,'fill-opacity':.6}));
-  }
-
-  /* dimensions */
-  var dy=y+ht+30;
-  g.appendChild(E('line',{x1:x,y1:dy,x2:x+w,y2:dy,stroke:'#98A199','stroke-width':1}));
-  [x,x+w].forEach(function(p2){ g.appendChild(E('line',{x1:p2,y1:dy-4,x2:p2,y2:dy+4,stroke:'#98A199','stroke-width':1})); });
-  var tw=E('text',{x:x+w/2,y:dy-6,'text-anchor':'middle','font-size':10,'font-family':'Archivo, sans-serif',fill:'#7C847C'});
-  tw.textContent=mmW+' mm'; g.appendChild(tw);
-  var dx2=x-30;
-  g.appendChild(E('line',{x1:dx2,y1:y,x2:dx2,y2:y+ht,stroke:'#98A199','stroke-width':1}));
-  [y,y+ht].forEach(function(p3){ g.appendChild(E('line',{x1:dx2-4,y1:p3,x2:dx2+4,y2:p3,stroke:'#98A199','stroke-width':1})); });
-  var th=E('text',{x:dx2-6,y:y+ht/2,'text-anchor':'middle','font-size':10,'font-family':'Archivo, sans-serif',fill:'#7C847C',transform:'rotate(-90 '+(dx2-6)+' '+(y+ht/2)+')'});
-  th.textContent=mmH+' mm'; g.appendChild(th);
-
-  svg.appendChild(g);
-
-  /* ---------- conditional panels ---------- */
-  var showGlazedBars = isSash || isCase || (isDoor && v.panels && ['fullglaze','half','topglaze'].indexOf(v.panels)>=0) || isBifold;
-  var showGlass = showGlazedBars || (isDoor && v.panels!=='4panel' && v.panels!=='6panel' && v.panels!=='ledge') || v.fan==='yes' || v.side!=='none';
-  var cond={sash:isSash,casement:isCase,doorish:isDoor,bifold:isBifold,
-            glazed:showGlazedBars,doorpanel:isDoor,glass:showGlass||true};
-  document.querySelectorAll('[data-when]').forEach(function(el){
-    el.style.display = cond[el.dataset.when] ? '' : 'none';
-  });
-
-  /* ---------- warnings & notes ---------- */
-  document.getElementById('grainWarn').hidden = !fs.opaque;
-  document.getElementById('timberNote').textContent = tim.note;
-  document.getElementById('glassNote').textContent = gi.p? 'Privacy level '+gi.p+' of 5.' : 'Standard clear glass, no obscuration.';
-  var hn={flat:'',seg:'A shallow brick arch — the most common curved head on Shropshire brick properties.',
-          round:'A full semicircle. Needs the structural opening to suit it.',
-          gothic:'A pointed head, usually ecclesiastical or Gothic Revival.'}[v.head];
-  document.getElementById('headNote').textContent=hn;
-
-  /* ------------------------------------------------------------------
-     TALON: every threshold below is MY estimate, not Harry's.
-     They are plausible trade rules of thumb but they are not sourced.
-     Confirm each number with Harry, correct it, then delete the
-     WARN_UNVERIFIED flag beneath to remove the on-screen notice.
-     ------------------------------------------------------------------ */
-  var WARN_UNVERIFIED = true;
-  var sw=document.getElementById('sizeWarn'), msg='';
-  if(isSash && mmW>1500) msg='A sash over 1500 mm wide is unusually large — we would normally split it into a mullioned pair. Worth a conversation.';
-  else if(isSash && mmH<900) msg='Below about 900 mm there is rarely enough height for two working sashes. A casement may suit better.';
-  else if(isBifold && mmW<1800) msg='A bi-fold under 1800 mm wide is often better as a French door pair.';
-  else if(isCase && mmW/Math.max(1,parseInt(v.lights,10)||2) > 700) msg='Individual casement lights over about 700 mm wide get heavy. We would usually add a mullion.';
-  else if(mmH>2400 && !anyDoor) msg='Over 2400 mm tall this is really a screen rather than a window — send us the opening dimensions and we will advise.';
-  else if(anyDoor && mmH<1900) msg='Under 1900 mm is short for a door opening. Double-check the measurement.';
-  if(msg && WARN_UNVERIFIED){
-    msg += '<br><span style="display:inline-block;margin-top:.45rem;font-size:.72rem;letter-spacing:.08em;'
-        +  'text-transform:uppercase;font-weight:600;color:#8A6A28">Confirm threshold with Harry</span>';
-  }
-  sw.innerHTML=msg; sw.hidden=!msg;
-
-  /* ---------- readouts ---------- */
-  var names={sash:'Sliding sash window',casement:'Casement window',door:'Entrance door',french:'French doors',bifold:'Bi-fold doors'};
-  document.getElementById('stName').textContent=names[v.product];
-  document.getElementById('stSize').textContent=mmW+' × '+mmH+' mm';
-  document.getElementById('tSwatch').style.background=woodCss(tim);
-  document.getElementById('tLabel').innerHTML='<b>'+tim.name+'</b> — '+tim.cat.toLowerCase()+(fs.opaque?', painted '+fs.name.toLowerCase():', '+fs.name.toLowerCase());
-
-  var rows=[['Product',names[v.product]]];
-  if(isSash) rows.push(['Mechanism', v.mech==='spiral'?'Spiral balances':'Weights & cords']);
-  if(isCase){ rows.push(['Lights', (parseInt(v.lights,10)||2)+(v.toplight==='yes'?' with top lights':'')]);
-              rows.push(['Style', v.cstyle==='storm'?'Stormproof':'Flush']); }
-  if(isDoor){ rows.push(['Pattern', byId(PANELS,v.panels).label.replace('&amp;','&')]);
-              if(v.side!=='none') rows.push(['Side lights', v.side==='both'?'Both sides':'One side']);
-              if(v.fan==='yes') rows.push(['Fanlight','Yes']); }
-  if(isBifold) rows.push(['Leaves', v.leaves]);
-  rows.push(['Timber', tim.name+' ('+tim.cat.toLowerCase()+')']);
-  if(showGlazedBars){ var b=byId(BARS,v.bars);
-    rows.push(['Glazing bars', b.label+' · '+b.era]);
-    rows.push(['Bar profile', {ovolo:'Ovolo',lambs:'Lambs tongue',astragal:'Astragal',slim:'Slim putty line'}[v.barprof||'ovolo']]); }
-  rows.push(['Head', {flat:'Square',seg:'Segmental arch',round:'Round arch',gothic:'Gothic'}[v.head]]);
-  if(isSash) rows.push(['Horns', {moulded:'Moulded',run:'Run-through',none:'None'}[v.horns]]);
-  rows.push(['Glazing', {single:'Single glazed',slim:'Slimline double',double:'Standard double'}[v.glazing]]);
-  rows.push(['Glass', gi.n+(gi.p?' (privacy '+gi.p+')':'')]);
-  rows.push(['Finish', fs.opaque? fs.name+' (opaque)' : fs.name+' (grain visible)']);
-  rows.push(['Ironmongery', hwStyle.value+' · '+metal.n]);
-  rows.push(['Size', mmW+' × '+mmH+' mm']);
-  rows.push(['Quantity', document.getElementById('qty').value]);
-  document.getElementById('specList').innerHTML=rows.map(function(r){
-    return '<div class="spec-row"><dt>'+r[0]+'</dt><dd>'+r[1]+'</dd></div>'; }).join('');
-}
-
-function specText(){
-  return [].slice.call(document.querySelectorAll('#specList .spec-row')).map(function(r){
-    return r.querySelector('dt').textContent+': '+r.querySelector('dd').textContent; }).join('\n');
-}
-
-form.addEventListener('change',draw);
-form.addEventListener('input',function(e){ if(e.target.type==='range') draw(); });
-hwStyle.addEventListener('change',draw);
-hwFinish.addEventListener('change',function(){ var r=document.querySelector('input[name=metal][value="'+hwFinish.value+'"]'); if(r) r.checked=true; draw(); });
-document.getElementById('swMetal').addEventListener('change',function(e){ hwFinish.value=e.target.value; draw(); });
-document.getElementById('qty').addEventListener('change',draw);
-fillPatterns();
-
-document.getElementById('sendSpec').addEventListener('click',function(){
-  location.hash='#/contact';
-  setTimeout(function(){
-    var ta=document.getElementById('f-detail');
-    var base=ta.value.replace(/\n*SPECIFICATION FROM THE DRAWING BOARD[\s\S]*$/,'').trim();
-    ta.value=(base?base+'\n\n':'')+'SPECIFICATION FROM THE DRAWING BOARD\n'+specText();
-    ta.focus();
-  },120);
-});
-document.getElementById('copySpec').addEventListener('click',function(){
-  var b=this, t=specText();
-  function done(){ b.textContent='Copied'; setTimeout(function(){ b.textContent='Copy'; },1700); }
-  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done).catch(fallback); }
-  else fallback();
-  function fallback(){
-    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0';
-    document.body.appendChild(ta); ta.select();
-    try{ document.execCommand('copy'); done(); }catch(err){ b.textContent='Copy failed'; }
-    document.body.removeChild(ta);
-  }
-});
-
 
 /* ============================ GUIDANCE ============================ */
 /* Line-drawn technical sketches, generated in the brand palette.
