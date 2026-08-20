@@ -12,8 +12,8 @@
    Fill these in from: Supabase dashboard → Project Settings → Data API
 --------------------------------------------------------------------- */
 
-export const SUPABASE_URL      = "https://YOUR-PROJECT-REF.supabase.co";
-export const SUPABASE_ANON_KEY = "YOUR-PUBLISHABLE-ANON-KEY";
+export const SUPABASE_URL      = "https://yxizdoziihvuuzmhofcs.supabase.co";
+export const SUPABASE_ANON_KEY = "sb_publishable_3yEdmjD7lk8L0Tj6MaxfqQ_O8XZICrt";
 
 /* The single address allowed to sign in. The real enforcement is in
    Supabase (signups disabled + RLS), this just gives a clearer message
