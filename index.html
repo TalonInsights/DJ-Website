@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R&amp;J Detailing — Mobile Paint &amp; Interior Detailing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --void:#08090c;
+    --void-2:#0c0d12;
+    --panel:#121319;
+    --panel-2:#181a22;
+    --chrome:#eceef3;
+    --chrome-dim:#9195a3;
+    --chrome-faint:#5b5e6a;
+    --blue:#2f7dfb;
+    --blue-glow:#6fb2ff;
+    --blue-deep:#123a8c;
+    --line:rgba(255,255,255,0.08);
+    --line-strong:rgba(255,255,255,0.16);
+    --danger:#ff6b6b;
+    --font-display:'Big Shoulders Display', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--void);
+    color:var(--chrome);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer;}
+  ul{list-style:none;}
+
+  ::selection{background:var(--blue); color:#fff;}
+
+  :focus-visible{
+    outline:2px solid var(--blue-glow);
+    outline-offset:3px;
+  }
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--blue-glow);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:'';
+    width:22px;
+    height:1px;
+    background:var(--blue-glow);
+    display:inline-block;
+  }
+
+  .container{
+    width:100%;
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  /* ---------- NAV ---------- */
+
+  .nav{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 32px;
+    background:linear-gradient(to bottom, rgba(6,7,10,0.85), rgba(6,7,10,0));
+    backdrop-filter:blur(2px);
+  }
+
+  .nav__brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .nav__badge{
+    width:42px; height:42px;
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .nav__badge svg{width:100%; height:100%;}
+
+  .nav__wordmark{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:19px;
+    letter-spacing:0.03em;
+    line-height:1;
+  }
+  .nav__wordmark span{color:var(--blue-glow);}
+  .nav__sub{
+    font-family:var(--font-mono);
+    font-size:9px;
+    letter-spacing:0.18em;
+    color:var(--chrome-faint);
+    text-transform:uppercase;
+    margin-top:2px;
+  }
+
+  .nav__right{display:flex; align-items:center; gap:28px;}
+
+  .nav__links{display:flex; gap:28px;}
+  .nav__links a{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--chrome-dim);
+    padding:6px 2px;
+    position:relative;
+    transition:color 0.2s ease;
+  }
+  .nav__links a::after{
+    content:'';
+    position:absolute; left:0; bottom:0;
+    width:0; height:1px;
+    background:var(--blue-glow);
+    transition:width 0.25s ease;
+  }
+  .nav__links a:hover, .nav__links a.is-active{color:var(--chrome);}
+  .nav__links a:hover::after, .nav__links a.is-active::after{width:100%;}
+
+  .nav__phone{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.04em;
+    padding:9px 16px;
+    border:1px solid var(--line-strong);
+    border-radius:999px;
+    color:var(--chrome);
+    transition:border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .nav__phone:hover{border-color:var(--blue-glow); box-shadow:0 0 18px rgba(111,178,255,0.25);}
+  .nav__phone svg{width:14px; height:14px; flex-shrink:0;}
+
+  .nav__toggle{
+    display:none;
+    width:38px; height:38px;
+    border:1px solid var(--line-strong);
+    border-radius:8px;
+    background:transparent;
+    color:var(--chrome);
+    align-items:center;
+    justify-content:center;
+  }
+
+  .nav__mobile-links{
+    display:none;
+  }
+
+  /* ---------- ANIMATED BACKGROUND (signature) ---------- */
+
+  .bg-stage{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse 120% 90% at 50% 0%, #0f1320 0%, var(--void) 55%),
+      var(--void);
+  }
+
+  .bg-stage__grid{
+    position:absolute; inset:-2px;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 70% 60% at 50% 40%, black 0%, transparent 75%);
+  }
+
+  .bg-stage__glow{
+    position:absolute;
+    top:50%; left:50%;
+    width:900px; height:900px;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle, rgba(47,125,251,0.28) 0%, rgba(47,125,251,0.09) 40%, transparent 70%);
+    filter:blur(10px);
+    animation:pulseGlow 7s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow{
+    0%, 100%{opacity:0.7; transform:translate(-50%,-50%) scale(0.94);}
+    50%{opacity:1; transform:translate(-50%,-50%) scale(1.05);}
+  }
+
+  .bg-stage__mark{
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    font-family:var(--font-display);
+    font-weight:900;
+    font-size:min(42vw, 620px);
+    line-height:1;
+    letter-spacing:-0.02em;
+    background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    -webkit-text-stroke:1px rgba(255,255,255,0.05);
+    white-space:nowrap;
+    animation:breathe 9s ease-in-out infinite;
+    user-select:none;
+  }
+
+  @keyframes breathe{
+    0%,100%{opacity:0.55; transform:translate(-50%,-50%) scale(1);}
+    50%{opacity:0.85; transform:translate(-50%,-50%) scale(1.015);}
+  }
+
+  .bg-stage__arc{
+    position:absolute;
+    top:6%; left:50%;
+    transform:translateX(-50%);
+    width:min(140vw, 1700px);
+    opacity:0.55;
+  }
+  .bg-stage__arc path{
+    fill:none;
+    stroke:url(#arcGradient);
+    stroke-width:1.5;
+  }
+  .bg-stage__arc .arc-runner{
+    stroke:var(--blue-glow);
+    stroke-width:3;
+    stroke-linecap:round;
+    filter:drop-shadow(0 0 8px rgba(111,178,255,0.9));
+    stroke-dasharray:60 3000;
+    animation:runArc 5.5s linear infinite;
+  }
+  @keyframes runArc{
+    0%{stroke-dashoffset:0;}
+    100%{stroke-dashoffset:-3060;}
+  }
+
+  .bg-stage__car{
+    position:absolute;
+    bottom:6%;
+    opacity:0.22;
+    filter:drop-shadow(0 0 14px rgba(47,125,251,0.25));
+    animation:floatCar 6s ease-in-out infinite;
+  }
+  .bg-stage__car svg{display:block; width:100%; height:100%;}
+  .bg-stage__car--left{left:-4%; width:min(40vw, 560px); animation-delay:0s;}
+  .bg-stage__car--right{right:-6%; width:min(34vw, 480px); animation-delay:0.6s; opacity:0.16;}
+
+  @keyframes floatCar{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+  }
+
+  .bg-stage__sweep{
+    position:absolute;
+    top:-20%;
+    left:-30%;
+    width:38%;
+    height:140%;
+    background:linear-gradient(100deg, transparent 0%, rgba(255,255,255,0.05) 42%, rgba(111,178,255,0.22) 50%, rgba(255,255,255,0.05) 58%, transparent 100%);
+    transform:skewX(-18deg);
+    animation:sweep 6.5s ease-in-out infinite;
+  }
+  @keyframes sweep{
+    0%{left:-40%;}
+    45%{left:120%;}
+    100%{left:120%;}
+  }
+
+  .bg-stage__vignette{
+    position:absolute; inset:0;
+    background:radial-gradient(ellipse 80% 70% at 50% 45%, transparent 40%, rgba(4,5,8,0.75) 100%);
+  }
+
+  .bg-stage--muted .bg-stage__mark{opacity:0.28; animation:none;}
+  .bg-stage--muted .bg-stage__glow{opacity:0.45; animation:none;}
+  .bg-stage--muted .bg-stage__sweep{display:none;}
+  .bg-stage--muted .bg-stage__car{opacity:0.1;}
+  .bg-stage--muted::after{
+    content:'';
+    position:absolute; inset:0;
+    background:rgba(6,7,10,0.55);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .bg-stage__glow, .bg-stage__mark, .bg-stage__car, .bg-stage__sweep, .arc-runner{
+      animation:none !important;
+    }
+  }
+
+  /* ---------- PAGE / LAYOUT ---------- */
+
+  .page{position:relative; z-index:1; display:none;}
+  .page.is-active{display:block;}
+
+  /* ---------- HERO ---------- */
+
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:140px 32px 100px;
+  }
+
+  .hero__eyebrow{justify-content:center; margin-bottom:26px;}
+  .hero__eyebrow::before{display:none;}
+  .hero__eyebrow::after{
+    content:'';
+    width:22px;
+    height:1px;
+    background:var(--blue-glow);
+    display:inline-block;
+  }
+
+  .hero__title{
+    font-family:var(--font-display);
+    font-weight:900;
+    font-size:clamp(56px, 11vw, 148px);
+    line-height:0.92;
+    letter-spacing:-0.01em;
+    color:var(--chrome);
+    text-shadow:0 0 60px rgba(47,125,251,0.15);
+  }
+  .hero__title .amp{
+    color:var(--blue-glow);
+    text-shadow:0 0 30px rgba(111,178,255,0.7);
+  }
+
+  .hero__sub{
+    margin-top:26px;
+    max-width:560px;
+    font-size:17px;
+    line-height:1.65;
+    color:var(--chrome-dim);
+  }
+
+  .hero__ctas{
+    margin-top:44px;
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
+  .btn{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    padding:16px 30px;
+    border-radius:999px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    transition:transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    border:1px solid transparent;
+  }
+  .btn--primary{
+    background:linear-gradient(135deg, var(--blue), #1a5fe0);
+    color:#fff;
+    box-shadow:0 0 0 1px rgba(111,178,255,0.3), 0 12px 30px -10px rgba(47,125,251,0.6);
+  }
+  .btn--primary:hover{transform:translateY(-2px); box-shadow:0 0 0 1px rgba(111,178,255,0.5), 0 16px 36px -8px rgba(47,125,251,0.75);}
+  .btn--ghost{
+    background:rgba(255,255,255,0.02);
+    border-color:var(--line-strong);
+    color:var(--chrome);
+  }
+  .btn--ghost:hover{border-color:var(--blue-glow); background:rgba(111,178,255,0.06); transform:translateY(-2px);}
+
+  .hero__trust{
+    margin-top:56px;
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.06em;
+    color:var(--chrome-faint);
+  }
+  .hero__trust b{color:var(--chrome-dim); font-weight:500;}
+
+  .hero__scroll{
+    position:absolute;
+    bottom:40px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    color:var(--chrome-faint);
+  }
+  .hero__scroll span{
+    font-family:var(--font-mono);
+    font-size:10px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+  }
+  .hero__scroll svg{animation:bob 2s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);} 50%{transform:translateY(6px);}}
+
+  /* ---------- SECTION SHELL ---------- */
+
+  section.section{
+    position:relative;
+    padding:120px 32px;
+    border-top:1px solid var(--line);
+    background:linear-gradient(to bottom, rgba(8,9,12,0.4), rgba(8,9,12,0.75));
+  }
+
+  .section__head{
+    max-width:640px;
+    margin-bottom:64px;
+  }
+  .section__heading{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:clamp(34px, 5vw, 56px);
+    line-height:1.02;
+    margin-top:18px;
+  }
+  .section__heading span{color:var(--blue-glow);}
+
+  /* ---------- SERVICES ---------- */
+
+  .services__grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+
+  .service-card{
+    background:var(--panel);
+    padding:36px 30px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    transition:background 0.25s ease;
+  }
+  .service-card:hover{background:var(--panel-2);}
+
+  .service-card__icon{
+    width:44px; height:44px;
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid var(--line-strong);
+    border-radius:10px;
+    color:var(--blue-glow);
+    transition:border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .service-card:hover .service-card__icon{border-color:var(--blue-glow); box-shadow:0 0 20px rgba(111,178,255,0.2);}
+  .service-card__icon svg{width:22px; height:22px;}
+
+  .service-card__title{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:22px;
+  }
+  .service-card__desc{
+    font-size:14.5px;
+    line-height:1.6;
+    color:var(--chrome-dim);
+  }
+
+  /* ---------- PROCESS ---------- */
+
+  .process__list{
+    display:flex;
+    flex-direction:column;
+  }
+  .process__item{
+    display:grid;
+    grid-template-columns:110px 1fr;
+    gap:28px;
+    padding:34px 0;
+    border-top:1px solid var(--line);
+    align-items:start;
+  }
+  .process__item:last-child{border-bottom:1px solid var(--line);}
+
+  .process__num{
+    font-family:var(--font-mono);
+    font-size:15px;
+    color:var(--chrome-faint);
+    letter-spacing:0.05em;
+    padding-top:4px;
+  }
+  .process__num b{color:var(--blue-glow); font-weight:500;}
+
+  .process__body h3{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:26px;
+    margin-bottom:10px;
+  }
+  .process__body p{
+    max-width:560px;
+    font-size:15px;
+    line-height:1.65;
+    color:var(--chrome-dim);
+  }
+
+  /* ---------- CTA BAND ---------- */
+
+  .cta-band{
+    padding:110px 32px;
+    text-align:center;
+    border-top:1px solid var(--line);
+    position:relative;
+  }
+  .cta-band__heading{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:clamp(32px, 6vw, 64px);
+    line-height:1.05;
+    max-width:760px;
+    margin:0 auto 30px;
+  }
+  .cta-band__heading span{color:var(--blue-glow);}
+  .cta-band__actions{
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  /* ---------- FOOTER ---------- */
+
+  .footer{
+    border-top:1px solid var(--line);
+    padding:56px 32px 40px;
+    position:relative;
+  }
+  .footer__inner{
+    display:flex;
+    flex-wrap:wrap;
+    gap:40px;
+    justify-content:space-between;
+    align-items:flex-start;
+  }
+  .footer__brand{display:flex; align-items:center; gap:12px;}
+  .footer__badge{width:34px; height:34px;}
+  .footer__badge svg{width:100%; height:100%;}
+  .footer__wordmark{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:16px;
+  }
+  .footer__wordmark span{color:var(--blue-glow);}
+  .footer__tagline{
+    font-size:12.5px;
+    color:var(--chrome-faint);
+    margin-top:4px;
+    max-width:220px;
+  }
+
+  .footer__links{
+    display:flex;
+    gap:56px;
+    flex-wrap:wrap;
+  }
+  .footer__col h4{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--chrome-faint);
+    margin-bottom:14px;
+  }
+  .footer__col a, .footer__col p{
+    display:block;
+    font-size:13.5px;
+    color:var(--chrome-dim);
+    margin-bottom:8px;
+    transition:color 0.2s ease;
+  }
+  .footer__col a:hover{color:var(--blue-glow);}
+
+  .footer__bottom{
+    margin-top:56px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--chrome-faint);
+  }
+
+  /* ---------- CONTACT PAGE ---------- */
+
+  .contact-hero{
+    padding:150px 32px 60px;
+    text-align:center;
+  }
+  .contact-hero__heading{
+    font-family:var(--font-display);
+    font-weight:900;
+    font-size:clamp(42px, 8vw, 88px);
+    line-height:0.98;
+    margin-top:18px;
+  }
+  .contact-hero__heading span{color:var(--blue-glow);}
+  .contact-hero__sub{
+    max-width:520px;
+    margin:22px auto 0;
+    color:var(--chrome-dim);
+    font-size:16px;
+    line-height:1.6;
+  }
+  .contact-hero__eyebrow{justify-content:center;}
+  .contact-hero__eyebrow::after{
+    content:'';
+    width:22px; height:1px; background:var(--blue-glow); display:inline-block;
+  }
+
+  .contact-grid{
+    max-width:1080px;
+    margin:0 auto;
+    padding:20px 32px 140px;
+    display:grid;
+    grid-template-columns:1fr 1.35fr;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+
+  .contact-info{
+    background:var(--panel);
+    padding:44px 38px;
+    display:flex;
+    flex-direction:column;
+    gap:32px;
+  }
+
+  .info-block__label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--chrome-faint);
+    margin-bottom:10px;
+  }
+  .info-block__value{
+    font-size:16px;
+    color:var(--chrome);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .info-block__value svg{width:16px; height:16px; color:var(--blue-glow); flex-shrink:0;}
+  .info-block__value a:hover{color:var(--blue-glow);}
+  .info-block__value.is-static{color:var(--chrome-dim); font-size:14.5px; line-height:1.6; align-items:flex-start;}
+
+  .contact-info__divider{border-top:1px solid var(--line);}
+
+  .contact-info__note{
+    margin-top:auto;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    font-size:13px;
+    color:var(--chrome-faint);
+    line-height:1.6;
+  }
+
+  .contact-form{
+    background:var(--panel);
+    padding:44px 38px;
+  }
+
+  .form-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+  }
+
+  .field{
+    margin-bottom:22px;
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+  }
+  .field label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--chrome-faint);
+  }
+  .field input, .field select, .field textarea{
+    background:rgba(255,255,255,0.02);
+    border:1px solid var(--line-strong);
+    border-radius:8px;
+    padding:13px 14px;
+    color:var(--chrome);
+    font-family:var(--font-body);
+    font-size:14.5px;
+    transition:border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
+  .field textarea{resize:vertical; min-height:110px; font-family:var(--font-body);}
+  .field input::placeholder, .field textarea::placeholder{color:var(--chrome-faint);}
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:none;
+    border-color:var(--blue-glow);
+    box-shadow:0 0 0 3px rgba(111,178,255,0.15);
+    background:rgba(255,255,255,0.03);
+  }
+  .field select{appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239195a3' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center;}
+  .field select option{background:var(--panel-2); color:var(--chrome);}
+
+  .field__error{
+    font-size:12px;
+    color:var(--danger);
+    display:none;
+  }
+  .field.has-error input, .field.has-error select, .field.has-error textarea{border-color:var(--danger);}
+  .field.has-error .field__error{display:block;}
+
+  .form-submit{
+    width:100%;
+    justify-content:center;
+    margin-top:8px;
+  }
+
+  .form-success{
+    display:none;
+    text-align:center;
+    padding:40px 10px;
+  }
+  .form-success.is-visible{display:block;}
+  .contact-form.is-submitted .form-fields{display:none;}
+
+  .form-success__icon{
+    width:56px; height:56px;
+    margin:0 auto 20px;
+    border-radius:50%;
+    border:1px solid var(--blue-glow);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--blue-glow);
+    box-shadow:0 0 24px rgba(111,178,255,0.25);
+  }
+  .form-success h3{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:26px;
+    margin-bottom:10px;
+  }
+  .form-success p{color:var(--chrome-dim); font-size:14.5px; line-height:1.6; max-width:360px; margin:0 auto;}
+  .form-success a{color:var(--blue-glow);}
+
+  @media (max-width:820px){
+    .contact-grid{grid-template-columns:1fr;}
+    .form-row{grid-template-columns:1fr;}
+    .process__item{grid-template-columns:1fr; gap:8px;}
+  }
+
+  @media (max-width:720px){
+    .nav__links, .nav__phone{display:none;}
+    .nav__toggle{display:flex;}
+    .nav.is-open .nav__mobile-links{
+      display:flex;
+      position:absolute;
+      top:100%; left:0; right:0;
+      flex-direction:column;
+      background:rgba(8,9,12,0.97);
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      padding:18px 32px 24px;
+      gap:16px;
+    }
+    .nav__mobile-links a{
+      font-family:var(--font-mono);
+      font-size:13px;
+      letter-spacing:0.1em;
+      text-transform:uppercase;
+      color:var(--chrome-dim);
+      padding:6px 0;
+    }
+    .nav__mobile-links .nav__phone{display:flex; width:fit-content; margin-top:6px;}
+    .hero{padding-top:120px;}
+    section.section{padding:80px 24px;}
+    .cta-band{padding:80px 24px;}
+    .contact-info, .contact-form{padding:34px 26px;}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="arcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2f7dfb" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#6fb2ff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#2f7dfb" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- ============ ANIMATED BACKGROUND ============ -->
+<div class="bg-stage" id="bgStage">
+  <div class="bg-stage__grid"></div>
+  <div class="bg-stage__glow"></div>
+  <div class="bg-stage__mark">R&amp;J</div>
+
+  <svg class="bg-stage__arc" viewBox="0 0 1200 220" preserveAspectRatio="none">
+    <path d="M 20 200 C 300 20, 900 20, 1180 200" />
+    <path class="arc-runner" d="M 20 200 C 300 20, 900 20, 1180 200" />
+  </svg>
+
+  <div class="bg-stage__car bg-stage__car--left">
+    <svg viewBox="0 0 400 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 130 L35 130 C42 100 62 82 95 79 C122 62 158 44 198 42 C238 40 268 48 285 64 C312 66 344 76 366 92 C380 102 388 112 390 128 L392 132 L392 140 L15 140 Z" stroke="#6fb2ff" stroke-width="1.6"/>
+      <circle cx="98" cy="140" r="24" stroke="#6fb2ff" stroke-width="1.6"/>
+      <circle cx="98" cy="140" r="9" stroke="#6fb2ff" stroke-width="1.2"/>
+      <circle cx="322" cy="140" r="24" stroke="#6fb2ff" stroke-width="1.6"/>
+      <circle cx="322" cy="140" r="9" stroke="#6fb2ff" stroke-width="1.2"/>
+      <path d="M108 80 C130 66 160 50 196 48 C228 46 254 52 270 64" stroke="#6fb2ff" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="bg-stage__car bg-stage__car--right">
+    <svg viewBox="0 0 420 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 178 L34 178 C40 150 55 128 82 118 C96 92 122 62 158 50 C182 42 214 40 240 46 C270 40 306 46 330 62 C356 66 384 80 400 100 C410 114 414 130 414 150 L416 156 L416 168 L15 168 Z" stroke="#6fb2ff" stroke-width="1.6"/>
+      <circle cx="108" cy="178" r="27" stroke="#6fb2ff" stroke-width="1.6"/>
+      <circle cx="108" cy="178" r="10" stroke="#6fb2ff" stroke-width="1.2"/>
+      <circle cx="342" cy="178" r="27" stroke="#6fb2ff" stroke-width="1.6"/>
+      <circle cx="342" cy="178" r="10" stroke="#6fb2ff" stroke-width="1.2"/>
+      <path d="M96 118 C112 96 136 70 164 56 C190 44 218 42 244 48" stroke="#6fb2ff" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="bg-stage__sweep"></div>
+  <div class="bg-stage__vignette"></div>
+</div>
+
+<!-- ============ NAV ============ -->
+<nav class="nav" id="siteNav">
+  <a href="#home" class="nav__brand" aria-label="R&amp;J Detailing home">
+    <span class="nav__badge">
+      <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="22,2 40,12 40,32 22,42 4,32 4,12" stroke="#6fb2ff" stroke-width="1.3"/>
+        <text x="22" y="27" text-anchor="middle" font-family="Big Shoulders Display" font-weight="800" font-size="15" fill="#eceef3">R&amp;J</text>
+      </svg>
+    </span>
+    <span>
+      <span class="nav__wordmark">R<span>&amp;</span>J</span>
+      <div class="nav__sub">Detailing</div>
+    </span>
+  </a>
+
+  <div class="nav__right">
+    <div class="nav__links">
+      <a href="#home" data-route="home">Home</a>
+      <a href="#contact" data-route="contact">Contact</a>
+    </div>
+    <a class="nav__phone" href="tel:0733576933">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5c0-1 1-2 2-2h3l2 5-2 2c1 3 3 5 6 6l2-2 5 2v3c0 1-1 2-2 2C10 21 3 14 3 5z"/></svg>
+      07335 76933
+    </a>
+  </div>
+
+  <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+
+  <div class="nav__mobile-links">
+    <a href="#home" data-route="home">Home</a>
+    <a href="#contact" data-route="contact">Contact</a>
+    <a class="nav__phone" href="tel:0733576933">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5c0-1 1-2 2-2h3l2 5-2 2c1 3 3 5 6 6l2-2 5 2v3c0 1-1 2-2 2C10 21 3 14 3 5z"/></svg>
+      07335 76933
+    </a>
+  </div>
+</nav>
+
+<!-- ============ HOME PAGE ============ -->
+<main class="page" id="page-home">
+
+  <section class="hero">
+    <div class="hero__eyebrow eyebrow">Mobile paint &amp; interior detailing</div>
+    <h1 class="hero__title">R<span class="amp">&amp;</span>J DETAILING</h1>
+    <p class="hero__sub">Precision correction and a showroom finish, brought to your driveway. Every panel inspected, every detail intentional.</p>
+    <div class="hero__ctas">
+      <a href="#contact" class="btn btn--primary">
+        Book a detail
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="#process" class="btn btn--ghost">See our process</a>
+    </div>
+    <div class="hero__trust">Trusted on everything from <b>daily drivers</b> to <b>performance builds</b> — Telford &amp; surrounding areas</div>
+
+    <div class="hero__scroll">
+      <span>Scroll</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6fb2ff" stroke-width="1.8"><path d="M12 4v16M6 14l6 6 6-6"/></svg>
+    </div>
+  </section>
+
+  <section class="section" id="services">
+    <div class="container">
+      <div class="section__head">
+        <div class="eyebrow">Services</div>
+        <h2 class="section__heading">Built for cars<br>that <span>deserve it</span></h2>
+      </div>
+    </div>
+
+    <div class="services__grid">
+      <div class="service-card">
+        <div class="service-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12c2-5 5-8 9-8s7 3 9 8c-2 5-5 8-9 8s-7-3-9-8z"/><circle cx="12" cy="12" r="2.5"/></svg>
+        </div>
+        <div class="service-card__title">Exterior detail</div>
+        <div class="service-card__desc">Hand wash, decontamination and finishing polish that bring depth and clarity back to the paint.</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10l8-6 8 6v10"/><path d="M9 20v-6h6v6"/></svg>
+        </div>
+        <div class="service-card__title">Interior detail</div>
+        <div class="service-card__desc">Deep clean and condition every surface — carpets, leather, stitching — down to the last vent.</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v3M12 17.5v3M3.5 12h3M17.5 12h3"/></svg>
+        </div>
+        <div class="service-card__title">Paint correction</div>
+        <div class="service-card__desc">Multi-stage machine polishing that cuts swirls and scratches and restores true, honest gloss.</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6l7-3z"/></svg>
+        </div>
+        <div class="service-card__title">Ceramic coating</div>
+        <div class="service-card__desc">Long-term protection that locks in the finish and makes the next wash a lot easier.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="process">
+    <div class="container">
+      <div class="section__head">
+        <div class="eyebrow">The process</div>
+        <h2 class="section__heading">Four stages to a<br><span>mirror finish</span></h2>
+      </div>
+
+      <div class="process__list">
+        <div class="process__item">
+          <div class="process__num"><b>01</b> / 04</div>
+          <div class="process__body">
+            <h3>Assess &amp; wash</h3>
+            <p>Every vehicle is inspected and safely pre-washed before any polish or pad touches the paint.</p>
+          </div>
+        </div>
+        <div class="process__item">
+          <div class="process__num"><b>02</b> / 04</div>
+          <div class="process__body">
+            <h3>Decontaminate</h3>
+            <p>Clay and iron removers lift bonded contamination a wash alone can never shift.</p>
+          </div>
+        </div>
+        <div class="process__item">
+          <div class="process__num"><b>03</b> / 04</div>
+          <div class="process__body">
+            <h3>Correct &amp; polish</h3>
+            <p>Machine polishing levels the surface, removing swirls, light scratches and haze.</p>
+          </div>
+        </div>
+        <div class="process__item">
+          <div class="process__num"><b>04</b> / 04</div>
+          <div class="process__body">
+            <h3>Protect &amp; seal</h3>
+            <p>A ceramic or sealant layer locks in the finish and keeps future maintenance simple.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="bg-stage__glow" style="opacity:0.4; animation:none;"></div>
+    <h2 class="cta-band__heading" style="position:relative;">Ready for the finish<br>your car <span>deserves</span>?</h2>
+    <div class="cta-band__actions" style="position:relative;">
+      <a href="#contact" class="btn btn--primary">Get in touch</a>
+      <a href="tel:0733576933" class="btn btn--ghost">Call 07335 76933</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <span class="footer__badge">
+          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="22,2 40,12 40,32 22,42 4,32 4,12" stroke="#6fb2ff" stroke-width="1.3"/>
+            <text x="22" y="27" text-anchor="middle" font-family="Big Shoulders Display" font-weight="800" font-size="15" fill="#eceef3">R&amp;J</text>
+          </svg>
+        </span>
+        <div>
+          <div class="footer__wordmark">R<span>&amp;</span>J Detailing</div>
+          <div class="footer__tagline">Mobile paint &amp; interior detailing across Telford and the surrounding area.</div>
+        </div>
+      </div>
+
+      <div class="footer__links">
+        <div class="footer__col">
+          <h4>Navigate</h4>
+          <a href="#home" data-route="home">Home</a>
+          <a href="#contact" data-route="contact">Contact</a>
+        </div>
+        <div class="footer__col">
+          <h4>Get in touch</h4>
+          <a href="tel:0733576933">07335 76933</a>
+          <p>Mon–Sat, 8:00–18:00</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© 2026 R&amp;J Detailing</span>
+      <span>Mobile service — we come to you</span>
+    </div>
+  </footer>
+
+</main>
+
+<!-- ============ CONTACT PAGE ============ -->
+<main class="page" id="page-contact">
+
+  <section class="contact-hero">
+    <div class="eyebrow contact-hero__eyebrow">Get in touch</div>
+    <h1 class="contact-hero__heading">Let's talk<br>about your <span>car</span></h1>
+    <p class="contact-hero__sub">Tell us what you're driving and what it needs. We'll get back to you with availability and a price.</p>
+  </section>
+
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div>
+        <div class="info-block__label">Phone</div>
+        <div class="info-block__value">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5c0-1 1-2 2-2h3l2 5-2 2c1 3 3 5 6 6l2-2 5 2v3c0 1-1 2-2 2C10 21 3 14 3 5z"/></svg>
+          <a href="tel:0733576933">07335 76933</a>
+        </div>
+      </div>
+
+      <div class="contact-info__divider"></div>
+
+      <div>
+        <div class="info-block__label">Service area</div>
+        <div class="info-block__value is-static">Telford &amp; the surrounding area. Fully mobile — we bring the kit to your driveway.</div>
+      </div>
+
+      <div class="contact-info__divider"></div>
+
+      <div>
+        <div class="info-block__label">Hours</div>
+        <div class="info-block__value is-static">Monday – Saturday<br>8:00 – 18:00</div>
+      </div>
+
+      <div class="contact-info__note">Prefer to talk it through first? Call or text the number above and we'll sort a time that works.</div>
+    </div>
+
+    <div class="contact-form" id="contactForm">
+      <form class="form-fields" id="enquiryForm" novalidate>
+        <div class="form-row">
+          <div class="field" data-field="name">
+            <label for="f-name">Full name</label>
+            <input type="text" id="f-name" name="name" placeholder="Jordan Smith" autocomplete="name">
+            <span class="field__error">Enter your name.</span>
+          </div>
+          <div class="field" data-field="phone">
+            <label for="f-phone">Phone</label>
+            <input type="tel" id="f-phone" name="phone" placeholder="07xxx xxxxxx" autocomplete="tel">
+            <span class="field__error">Enter a contact number.</span>
+          </div>
+        </div>
+
+        <div class="field" data-field="email">
+          <label for="f-email">Email</label>
+          <input type="email" id="f-email" name="email" placeholder="you@example.com" autocomplete="email">
+          <span class="field__error">Enter a valid email address.</span>
+        </div>
+
+        <div class="form-row">
+          <div class="field" data-field="vehicle">
+            <label for="f-vehicle">Vehicle make &amp; model</label>
+            <input type="text" id="f-vehicle" name="vehicle" placeholder="e.g. BMW M4">
+          </div>
+          <div class="field" data-field="service">
+            <label for="f-service">Service</label>
+            <select id="f-service" name="service">
+              <option value="">Not sure yet</option>
+              <option>Exterior detail</option>
+              <option>Interior detail</option>
+              <option>Full detail</option>
+              <option>Paint correction</option>
+              <option>Ceramic coating</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field" data-field="message">
+          <label for="f-message">Message</label>
+          <textarea id="f-message" name="message" placeholder="Tell us a bit about the car and what it needs"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn--primary form-submit">
+          Send enquiry
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </form>
+
+      <div class="form-success" id="formSuccess">
+        <div class="form-success__icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <h3>Enquiry received</h3>
+        <p>Thanks — we've got your details and will be in touch shortly. Need it sooner? Call <a href="tel:0733576933">07335 76933</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <span class="footer__badge">
+          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="22,2 40,12 40,32 22,42 4,32 4,12" stroke="#6fb2ff" stroke-width="1.3"/>
+            <text x="22" y="27" text-anchor="middle" font-family="Big Shoulders Display" font-weight="800" font-size="15" fill="#eceef3">R&amp;J</text>
+          </svg>
+        </span>
+        <div>
+          <div class="footer__wordmark">R<span>&amp;</span>J Detailing</div>
+          <div class="footer__tagline">Mobile paint &amp; interior detailing across Telford and the surrounding area.</div>
+        </div>
+      </div>
+
+      <div class="footer__links">
+        <div class="footer__col">
+          <h4>Navigate</h4>
+          <a href="#home" data-route="home">Home</a>
+          <a href="#contact" data-route="contact">Contact</a>
+        </div>
+        <div class="footer__col">
+          <h4>Get in touch</h4>
+          <a href="tel:0733576933">07335 76933</a>
+          <p>Mon–Sat, 8:00–18:00</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© 2026 R&amp;J Detailing</span>
+      <span>Mobile service — we come to you</span>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  (function(){
+    var pages = {
+      home: document.getElementById('page-home'),
+      contact: document.getElementById('page-contact')
+    };
+    var navLinks = document.querySelectorAll('[data-route]');
+    var bgStage = document.getElementById('bgStage');
+    var nav = document.getElementById('siteNav');
+    var navToggle = document.getElementById('navToggle');
+
+    function route(){
+      var hash = window.location.hash.replace('#','') || 'home';
+      if(!pages[hash]) hash = 'home';
+
+      Object.keys(pages).forEach(function(key){
+        pages[key].classList.toggle('is-active', key === hash);
+      });
+
+      navLinks.forEach(function(link){
+        link.classList.toggle('is-active', link.getAttribute('data-route') === hash);
+      });
+
+      bgStage.classList.toggle('bg-stage--muted', hash === 'contact');
+
+      nav.classList.remove('is-open');
+      navToggle.setAttribute('aria-expanded', 'false');
+      window.scrollTo({top:0, behavior:'auto'});
+    }
+
+    window.addEventListener('hashchange', route);
+    route();
+
+    navToggle.addEventListener('click', function(){
+      var open = nav.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    var form = document.getElementById('enquiryForm');
+    var successPanel = document.getElementById('formSuccess');
+    var contactFormWrap = document.getElementById('contactForm');
+
+    var validators = {
+      name: function(v){ return v.trim().length > 1; },
+      phone: function(v){ return v.trim().length >= 7; },
+      email: function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
+    };
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var valid = true;
+
+      Object.keys(validators).forEach(function(name){
+        var fieldEl = form.querySelector('[data-field="' + name + '"]');
+        var input = fieldEl.querySelector('input');
+        var ok = validators[name](input.value);
+        fieldEl.classList.toggle('has-error', !ok);
+        if(!ok) valid = false;
+      });
+
+      if(!valid) return;
+
+      contactFormWrap.classList.add('is-submitted');
+      successPanel.classList.add('is-visible');
+    });
+
+    ['f-name','f-phone','f-email'].forEach(function(id){
+      var input = document.getElementById(id);
+      input.addEventListener('input', function(){
+        var fieldEl = input.closest('.field');
+        if(fieldEl.classList.contains('has-error')){
+          var name = fieldEl.getAttribute('data-field');
+          if(validators[name](input.value)){
+            fieldEl.classList.remove('has-error');
+          }
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
