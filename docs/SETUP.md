@@ -96,6 +96,27 @@ most common reason for "it says the link is invalid".
 
 ---
 
+## 6a. Put the code in the email — required
+
+Sign-in uses a **six-digit code**, not a link, so email and work don't have to
+happen on the same device. Supabase's default template only sends a link, so
+the template has to be changed or the email will arrive with no code in it.
+
+**Authentication → Emails → Magic Link**, and replace the body with:
+
+```html
+<h2>Your sign-in code</h2>
+<p>Enter this code on the production planning page:</p>
+<p style="font-size:32px;font-weight:700;letter-spacing:8px;font-family:monospace">{{ .Token }}</p>
+<p>It expires in one hour. If you didn't ask for it, ignore this email.</p>
+```
+
+`{{ .Token }}` is the six-digit code. Keeping `{{ .ConfirmationURL }}` as well
+is fine — the planner handles a clicked link too — but the code is the path
+that always works.
+
+---
+
 ## 7. Email delivery
 
 Supabase's built-in email sender is rate-limited (a handful per hour) and is

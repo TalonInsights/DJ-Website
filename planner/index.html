@@ -95,7 +95,14 @@ body[data-state="ready"]   #gate{display:none}
   padding:11px 13px;font-size:14px;width:100%;
 }
 .gate-field input:focus{border-color:var(--brass);outline:none}
+.gate-field input.code{
+  font-family:"IBM Plex Mono";font-size:26px;font-weight:600;
+  letter-spacing:.42em;text-align:center;padding:13px 0 13px .42em;
+  color:var(--brass);
+}
+.gate-field input.code::placeholder{color:var(--ink-3);opacity:.4}
 #gateBtn{width:100%;justify-content:center;padding:12px;font-size:14px}
+#gateBack{width:100%;justify-content:center;padding:9px;font-size:12.5px;margin-top:9px}
 .gate-msg{margin-top:16px;font-size:12.5px;line-height:1.55;display:none}
 .gate-msg.show{display:block}
 .gate-msg.err{color:#F08A78}
@@ -487,19 +494,27 @@ select.sel{
       </div>
     </div>
 
-    <h2>Staff sign in</h2>
-    <p class="intro">
+    <h2 id="gateHead">Staff sign in</h2>
+    <p class="intro" id="gateIntro">
       This board is private. Enter the workshop email address and we'll send
-      a one-time sign-in link — there is no password to remember or lose.
+      a six-digit code — there is no password to remember or lose.
     </p>
 
     <form id="gateForm" novalidate>
-      <div class="gate-field">
+      <div class="gate-field" id="stepEmail">
         <label for="gateEmail">Email address</label>
         <input id="gateEmail" type="email" autocomplete="username"
                inputmode="email" placeholder="you@davidjacksonandson.com" required>
       </div>
-      <button class="btn primary" id="gateBtn" type="submit">Email me a sign-in link</button>
+
+      <div class="gate-field" id="stepCode" hidden>
+        <label for="gateCode">Six-digit code</label>
+        <input id="gateCode" type="text" inputmode="numeric" autocomplete="one-time-code"
+               maxlength="6" pattern="[0-9]{6}" placeholder="000000" class="code">
+      </div>
+
+      <button class="btn primary" id="gateBtn" type="submit">Email me a code</button>
+      <button class="btn" id="gateBack" type="button" hidden>Use a different address</button>
     </form>
 
     <p class="gate-msg" id="gateMsg" role="status" aria-live="polite"></p>

@@ -81,8 +81,13 @@ let range = {start:TODAY, days:120};
 const $ = id => document.getElementById(id);
 
 /* ================= auth ================= */
-const gateForm = $("gateForm"), gateEmail = $("gateEmail"),
-      gateBtn = $("gateBtn"), gateMsg = $("gateMsg");
+const gateForm = $("gateForm"), gateEmail = $("gateEmail"), gateCode = $("gateCode"),
+      gateBtn = $("gateBtn"), gateBack = $("gateBack"), gateMsg = $("gateMsg"),
+      stepEmail = $("stepEmail"), stepCode = $("stepCode"),
+      gateHead = $("gateHead"), gateIntro = $("gateIntro");
+
+let stage = "email";     // "email" → "code"
+let otpEmail = null;     // the address the code was sent to
 
 function setGateMsg(text, kind){
   gateMsg.textContent = text;
@@ -90,10 +95,87 @@ function setGateMsg(text, kind){
 }
 function setState(s){ document.body.dataset.state = s; }
 
+function showEmailStep(){
+  stage = "email"; otpEmail = null;
+  stepEmail.hidden = false; stepCode.hidden = true; gateBack.hidden = true;
+  gateHead.textContent = "Staff sign in";
+  gateIntro.textContent = "This board is private. Enter the workshop email address and "+
+                          "we'll send a six-digit code — there is no password to remember or lose.";
+  gateBtn.textContent = "Email me a code";
+  gateCode.value = "";
+  gateEmail.focus();
+}
+
+function showCodeStep(email){
+  stage = "code"; otpEmail = email;
+  stepEmail.hidden = true; stepCode.hidden = false; gateBack.hidden = false;
+  gateHead.textContent = "Enter your code";
+  gateIntro.textContent = "We've emailed a six-digit code to "+email+
+                          ". It expires in an hour. Type it here — you don't need to leave this page.";
+  gateBtn.textContent = "Sign in";
+  gateCode.value = "";
+  gateCode.focus();
+}
+
+gateBack.addEventListener("click", ()=>{ showEmailStep(); setGateMsg("", ""); gateMsg.classList.remove("show"); });
+
+/* Typing the sixth digit submits — saves reaching for the mouse. */
+gateCode.addEventListener("input", ()=>{
+  gateCode.value = gateCode.value.replace(/\D/g,"").slice(0,6);
+  if(gateCode.value.length === 6) gateForm.requestSubmit();
+});
+
+async function sendCode(email){
+  gateBtn.disabled = true;
+  setGateMsg("Sending…", "");
+
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: { shouldCreateUser: false }     // no self-signup, ever
+  });
+
+  gateBtn.disabled = false;
+
+  if(error){
+    setGateMsg(
+      /not.*(allowed|found)|signups? not allowed/i.test(error.message)
+        ? "That address doesn't have access to this board."
+        : "Couldn't send the code: " + error.message,
+      "err"
+    );
+    return;
+  }
+  showCodeStep(email);
+  setGateMsg("Code sent. Check your inbox.", "ok");
+}
+
+async function verifyCode(code){
+  gateBtn.disabled = true;
+  setGateMsg("Checking…", "");
+
+  const { error } = await sb.auth.verifyOtp({ email: otpEmail, token: code, type: "email" });
+
+  gateBtn.disabled = false;
+
+  if(error){
+    setGateMsg(authError(error.code || "", error.message), "err");
+    gateCode.value = ""; gateCode.focus();
+    return;
+  }
+  // onAuthStateChange picks it up from here.
+}
+
 gateForm.addEventListener("submit", async e=>{
   e.preventDefault();
-  const email = gateEmail.value.trim().toLowerCase();
 
+  if(stage === "code"){
+    const code = gateCode.value.trim();
+    if(code.length !== 6){ setGateMsg("The code is six digits.", "err"); return; }
+    await verifyCode(code);
+    return;
+  }
+
+  const email = gateEmail.value.trim().toLowerCase();
   if(!email || !/^\S+@\S+\.\S+$/.test(email)){
     setGateMsg("That doesn't look like an email address.", "err");
     return;
@@ -103,37 +185,16 @@ gateForm.addEventListener("submit", async e=>{
     setGateMsg("That address doesn't have access to this board.", "err");
     return;
   }
-
-  gateBtn.disabled = true;
-  setGateMsg("Sending…", "");
-
-  const { error } = await sb.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: window.location.origin + "/planner/",
-      shouldCreateUser: false          // no self-signup, ever
-    }
-  });
-
-  gateBtn.disabled = false;
-
-  if(error){
-    setGateMsg(
-      /not.*(allowed|found)|signups? not allowed/i.test(error.message)
-        ? "That address doesn't have access to this board."
-        : "Couldn't send the link: " + error.message,
-      "err"
-    );
-    return;
-  }
-  setGateMsg("Check your inbox — the link is valid for one hour and can only be used once.", "ok");
+  await sendCode(email);
 });
 
 $("btnSignOut").addEventListener("click", async ()=>{
   if(savePending() && !confirm("Some changes are still saving. Sign out anyway?")) return;
   await sb.auth.signOut();
   projects = [];
+  started = false;
   setState("anon");
+  showEmailStep();
   setGateMsg("You've been signed out.", "ok");
 });
 
@@ -147,20 +208,24 @@ function authError(code, description){
   const d = (description||"").toLowerCase();
 
   // PKCE first — its message contains "invalid" and "code", so a looser
-  // rule below would swallow it and report the wrong cause.
+  // rule below would swallow it and report the wrong cause. Only reachable
+  // if someone clicks the link in the email rather than typing the code.
   if(/verifier/.test(d))
-    return "Open the link in the same browser you asked for it from. "+
-           "Requesting it on this computer but opening it on your phone is the usual cause — "+
-           "send a new link and open it here.";
+    return "Open that link in the same browser you asked for it from — or ignore it "+
+           "and type the six-digit code from the same email instead.";
 
   if(/expired/.test(code+d))
-    return "That link has expired. They're valid for one hour — request a new one below.";
+    return "That code has expired. Codes last an hour — go back and request a new one.";
+
+  if(/rate limit|too many/.test(d))
+    return "Too many attempts. Wait a minute, then try again.";
 
   if(/already|used|invalid/.test(code+d) && /token|otp|code/.test(code+d))
-    return "That link has already been used. Each one works once — request a new one below.";
+    return "That code isn't right. Check the latest email — an older code stops working "+
+           "once a new one is sent.";
 
   if(/access_denied/.test(code))
-    return "That link is no longer valid. Request a new one below.";
+    return "That code is no longer valid. Go back and request a new one.";
 
   return "Sign-in failed: " + (description || code || "unknown error");
 }
