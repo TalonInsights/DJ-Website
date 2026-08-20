@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Production Planning — David Jackson &amp; Son</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#131110;
+  --panel:#1A1715;
+  --panel-2:#211D19;
+  --panel-3:#282320;
+  --line:#332C27;
+  --line-soft:#242019;
+  --ink:#F1EBE1;
+  --ink-2:#A89C8D;
+  --ink-3:#6E655B;
+  --brass:#D9A93C;
+  --brass-dim:#8A6C25;
+  --red:#D6432F;
+  --red-deep:#8E2418;
+  --green-ok:#6FA04C;
+
+  --p1:#6FA04C; --p1r:111,160,76;   /* Timber Matching  */
+  --p2:#3F9B86; --p2r:63,155,134;   /* Assembly         */
+  --p3:#D2A73E; --p3r:210,167,62;   /* Sanding          */
+  --p4:#7C8CC4; --p4r:124,140,196;  /* Fitting Hardware */
+  --p5:#A57BC0; --p5r:165,123,192;  /* Final Prep       */
+  --p6:#E08A3C; --p6r:224,138,60;   /* Spray Finishing  */
+  --p7:#4E9BC9; --p7r:78,155,201;   /* Glazing          */
+  --p8:#C0784E; --p8r:192,120,78;   /* Dispatch         */
+
+  --leftw:348px;
+  --rowh:66px;
+  --headh:56px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:14px;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:none}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px;border-radius:4px}
+
+/* ---------- app hidden until authenticated ----------
+   `.app` is a transparent wrapper so the topbar/toolbar/grid stay direct
+   flex children of body. It must be hidden from the stylesheet, not an
+   inline style, or these rules can never win. */
+.app{display:contents}
+body[data-state="loading"] .app,
+body[data-state="anon"]    .app{display:none}
+body[data-state="ready"]   #gate{display:none}
+
+/* ---------- login gate ---------- */
+#gate{
+  position:fixed;inset:0;z-index:400;display:grid;place-items:center;
+  background:radial-gradient(1100px 620px at 50% -10%,#221D18,#131110 70%);
+  padding:24px;overflow:auto;
+}
+.gate-card{
+  width:100%;max-width:412px;background:var(--panel);
+  border:1px solid var(--line);border-radius:14px;padding:32px;
+  box-shadow:0 30px 80px rgba(0,0,0,.6);
+}
+.gate-brand{display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.mark{
+  width:38px;height:38px;border-radius:8px;flex:0 0 auto;
+  background:linear-gradient(145deg,var(--brass),#8A6C25);
+  display:grid;place-items:center;color:#1A1512;
+  font-family:"Space Grotesk";font-weight:700;font-size:16px;
+}
+.gate-brand h1{margin:0;font-family:"Space Grotesk";font-size:16px;font-weight:600}
+.gate-brand .sub{
+  font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);margin-top:3px;
+}
+#gate h2{font-family:"Space Grotesk";font-size:19px;font-weight:600;margin:0 0 8px}
+#gate .intro{color:var(--ink-3);font-size:13px;margin:0 0 22px;line-height:1.55}
+.gate-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.gate-field label{
+  font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.gate-field input{
+  background:var(--panel-2);border:1px solid var(--line);border-radius:8px;
+  padding:11px 13px;font-size:14px;width:100%;
+}
+.gate-field input:focus{border-color:var(--brass);outline:none}
+#gateBtn{width:100%;justify-content:center;padding:12px;font-size:14px}
+.gate-msg{margin-top:16px;font-size:12.5px;line-height:1.55;display:none}
+.gate-msg.show{display:block}
+.gate-msg.err{color:#F08A78}
+.gate-msg.ok{color:var(--green-ok)}
+.gate-foot{
+  margin-top:26px;padding-top:18px;border-top:1px solid var(--line-soft);
+  font-size:11px;color:var(--ink-3);line-height:1.6;
+}
+.gate-foot a{color:var(--ink-2)}
+
+/* ---------- top bar ---------- */
+.topbar{
+  display:flex;align-items:center;gap:18px;padding:14px 20px;
+  background:linear-gradient(180deg,#1D1916,#171412);
+  border-bottom:1px solid var(--line);flex:0 0 auto;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto}
+.brand .mark{width:34px;height:34px;border-radius:7px;font-size:15px}
+.brand h1{
+  margin:0;font-family:"Space Grotesk";font-size:16px;font-weight:600;letter-spacing:.2px;
+}
+.brand h1 .div{color:var(--brass-dim);font-weight:400;margin:0 2px}
+.brand h1 .mod{color:var(--ink-2);font-weight:500}
+.brand .sub{
+  font-family:"IBM Plex Mono";font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);margin-top:2px;
+}
+.stats{display:flex;gap:20px;align-items:center;padding-right:4px}
+.stat{text-align:right;line-height:1.15}
+.stat b{font-family:"Space Grotesk";font-size:17px;font-weight:600;display:block}
+.stat span{font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.stat.risk b{color:var(--red)}
+
+/* ---------- save status ---------- */
+.sync{
+  display:inline-flex;align-items:center;gap:7px;padding:5px 11px;
+  border:1px solid var(--line);border-radius:999px;background:var(--panel-2);
+  font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);white-space:nowrap;
+}
+.sync .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-3);flex:0 0 auto}
+.sync[data-sync="saved"]  .dot{background:var(--green-ok)}
+.sync[data-sync="saving"] .dot{background:var(--brass);animation:blink 1s ease-in-out infinite}
+.sync[data-sync="error"]  .dot{background:var(--red)}
+.sync[data-sync="error"]{color:#F08A78;border-color:rgba(214,67,47,.5)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+.btn{
+  padding:8px 13px;border-radius:7px;border:1px solid var(--line);
+  background:var(--panel-2);color:var(--ink-2);font-size:13px;font-weight:500;
+  display:inline-flex;align-items:center;gap:7px;transition:.14s;white-space:nowrap;
+}
+.btn:hover{background:var(--panel-3);color:var(--ink);border-color:#443A33}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{
+  background:linear-gradient(180deg,#E4B44A,#C1902C);color:#1A1512;
+  border-color:#E4B44A;font-weight:600;
+}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.icon{padding:8px 10px}
+
+/* ---------- toolbar ---------- */
+.toolbar{
+  display:flex;align-items:center;gap:14px;padding:10px 20px;flex-wrap:wrap;
+  background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto;
+}
+.tgroup{display:flex;align-items:center;gap:8px}
+.tlabel{
+  font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+select.sel{
+  background:var(--panel-2);border:1px solid var(--line);border-radius:6px;
+  padding:6px 9px;font-size:12.5px;color:var(--ink-2);
+}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{padding:6px 11px;font-size:12px;color:var(--ink-3);font-family:"IBM Plex Mono"}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--panel-3);color:var(--brass)}
+
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 8px;
+  border-radius:999px;border:1px solid var(--line);background:var(--panel-2);
+  font-size:11.5px;color:var(--ink-2);transition:.14s;
+}
+.chip .dot{width:8px;height:8px;border-radius:2px;background:var(--c);flex:0 0 auto}
+.chip[aria-pressed="false"]{opacity:.34}
+.chip:hover{border-color:#443A33}
+
+/* ---------- grid ---------- */
+.grid{flex:1 1 auto;overflow:auto;position:relative;background:var(--bg)}
+.grid::-webkit-scrollbar{width:12px;height:12px}
+.grid::-webkit-scrollbar-track{background:#100E0D}
+.grid::-webkit-scrollbar-thumb{background:#332C27;border-radius:8px;border:3px solid #100E0D}
+.grid::-webkit-scrollbar-thumb:hover{background:#473D35}
+
+.head{display:flex;position:sticky;top:0;z-index:30;height:var(--headh)}
+.head-left{
+  position:sticky;left:0;z-index:40;width:var(--leftw);flex:0 0 var(--leftw);
+  background:var(--panel-2);border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);display:flex;align-items:flex-end;
+  padding:0 14px 8px;gap:0;
+}
+.head-left .hcol{
+  font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.hc-ref{width:62px;flex:0 0 62px}
+.hc-name{flex:1 1 auto;min-width:0}
+.hc-due{width:60px;flex:0 0 60px;text-align:right}
+.hc-acts{width:68px;flex:0 0 68px}
+
+.head-time{position:relative;background:var(--panel-2);border-bottom:1px solid var(--line);flex:0 0 auto}
+.months{display:flex;height:24px;align-items:stretch}
+.month{
+  border-right:1px solid var(--line);display:flex;align-items:center;padding-left:9px;
+  font-family:"Space Grotesk";font-size:11px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-2);overflow:hidden;white-space:nowrap;
+}
+.days{display:flex;height:32px;border-top:1px solid var(--line-soft)}
+.day{
+  flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-right:1px solid var(--line-soft);font-family:"IBM Plex Mono";gap:1px;
+}
+.day .dn{font-size:11px;color:var(--ink-2);font-weight:500;line-height:1}
+.day .dw{font-size:8px;color:var(--ink-3);letter-spacing:.04em;line-height:1}
+.day.we{background:rgba(255,255,255,.022)}
+.day.we .dn{color:var(--ink-3)}
+.day.today{background:rgba(217,169,60,.14)}
+.day.today .dn{color:var(--brass);font-weight:600}
+.day.today .dw{color:var(--brass-dim)}
+
+.body{position:relative}
+.row{display:flex;height:var(--rowh);position:relative}
+.row:hover .rcell{background:var(--panel-3)}
+.row:hover .track{background-color:rgba(255,255,255,.012)}
+
+.rcell{
+  position:sticky;left:0;z-index:20;width:var(--leftw);flex:0 0 var(--leftw);
+  background:var(--panel);border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line-soft);
+  display:flex;align-items:center;padding:0 14px;gap:0;transition:background .12s;
+}
+.c-ref{
+  width:62px;flex:0 0 62px;font-family:"IBM Plex Mono";font-size:11px;color:var(--ink-3);
+}
+.c-name{
+  flex:1 1 auto;min-width:0;padding-right:12px;
+  display:flex;flex-direction:column;justify-content:center;gap:2px;
+}
+.c-name .nm{
+  display:block;max-width:100%;
+  font-family:"Space Grotesk";font-size:13.5px;font-weight:500;line-height:1.25;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.c-name .cl{
+  display:flex;align-items:center;gap:6px;max-width:100%;
+  font-size:11px;color:var(--ink-3);line-height:1.25;
+}
+.c-name .cl .txt{
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
+}
+.flag{
+  font-family:"IBM Plex Mono";font-size:8.5px;letter-spacing:.1em;padding:1px 4px;
+  border-radius:3px;background:rgba(214,67,47,.16);color:#F08A78;
+  border:1px solid rgba(214,67,47,.4);flex:0 0 auto;
+}
+.c-due{
+  width:60px;flex:0 0 60px;text-align:right;font-family:"IBM Plex Mono";
+  font-size:11.5px;color:var(--ink-2);white-space:nowrap;
+}
+.c-acts{display:flex;gap:2px;width:62px;flex:0 0 62px;justify-content:flex-end;margin-left:6px}
+.c-acts button{
+  width:24px;height:24px;border-radius:5px;display:grid;place-items:center;
+  color:var(--ink-3);transition:.12s;
+}
+.c-acts button:hover{background:var(--panel-3);color:var(--brass)}
+.c-acts button.del:hover{color:var(--red)}
+
+.track{
+  position:relative;flex:0 0 auto;border-bottom:1px solid var(--line-soft);
+  background-repeat:repeat;transition:background-color .12s;
+}
+
+.today-line{
+  position:absolute;top:0;bottom:0;width:1px;z-index:6;pointer-events:none;
+  background:linear-gradient(180deg,rgba(217,169,60,.75),rgba(217,169,60,.18));
+}
+
+/* ---------- bars ---------- */
+.bar{
+  position:absolute;top:9px;height:48px;border-radius:6px;z-index:8;
+  border:1px solid rgba(var(--cr),.55);border-left:3px solid var(--c);
+  background:linear-gradient(180deg,rgba(var(--cr),.26),rgba(var(--cr),.11));
+  padding:6px 9px;overflow:hidden;cursor:grab;
+  transition:box-shadow .13s, opacity .13s;
+  display:flex;flex-direction:column;justify-content:center;gap:3px;
+  user-select:none;touch-action:none;
+}
+.bar:hover{box-shadow:0 0 0 1px rgba(var(--cr),.75),0 6px 16px rgba(0,0,0,.45)}
+.bar.dragging{cursor:grabbing;z-index:15;box-shadow:0 10px 26px rgba(0,0,0,.6);opacity:.94}
+.bar.muted{opacity:.13;pointer-events:none}
+.bar .bt{
+  font-family:"Space Grotesk";font-size:11.5px;font-weight:600;color:var(--c);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.01em;line-height:1.2;
+}
+.bar .bm{
+  font-family:"IBM Plex Mono";font-size:9.5px;color:var(--ink-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;
+}
+.bar .bm em{font-style:normal;color:var(--ink-2)}
+.grip{
+  position:absolute;top:0;bottom:0;width:8px;cursor:ew-resize;z-index:2;
+}
+.grip.l{left:-1px}.grip.r{right:-1px}
+.grip::after{
+  content:"";position:absolute;top:50%;transform:translateY(-50%);
+  left:2px;width:2px;height:16px;border-radius:2px;background:rgba(var(--cr),.5);
+  opacity:0;transition:opacity .13s;
+}
+.bar:hover .grip::after{opacity:1}
+
+/* ---------- deadline tab ---------- */
+.dl{
+  position:absolute;top:9px;height:48px;z-index:12;border-radius:5px;
+  background:linear-gradient(180deg,#E04A34,#9C2A1B);
+  border:1px solid #F06A55;cursor:grab;display:grid;place-items:center;
+  box-shadow:0 3px 12px rgba(214,67,47,.32);
+  clip-path:polygon(0 0,100% 0,100% 62%,50% 100%,0 62%);
+  user-select:none;touch-action:none;transition:filter .13s;
+}
+.dl:hover{filter:brightness(1.12)}
+.dl.dragging{cursor:grabbing;filter:brightness(1.15)}
+.dl span{
+  font-family:"IBM Plex Mono";font-size:10px;font-weight:600;color:#FFF1EC;
+  letter-spacing:.08em;margin-bottom:8px;
+}
+.dl.breached{animation:pulse 1.9s ease-in-out infinite}
+@keyframes pulse{
+  0%,100%{box-shadow:0 3px 12px rgba(214,67,47,.32)}
+  50%{box-shadow:0 3px 20px rgba(240,106,85,.75)}
+}
+
+/* ---------- drag readout ---------- */
+.readout{
+  position:fixed;z-index:200;pointer-events:none;padding:6px 10px;border-radius:6px;
+  background:#0C0A09;border:1px solid var(--line);color:var(--ink);
+  font-family:"IBM Plex Mono";font-size:11.5px;box-shadow:0 8px 24px rgba(0,0,0,.6);
+  display:none;white-space:nowrap;
+}
+.readout b{color:var(--brass);font-weight:500}
+
+/* ---------- empty ---------- */
+.empty{
+  position:absolute;inset:0;display:grid;place-items:center;text-align:center;
+  padding:60px 20px;pointer-events:none;
+}
+.empty div{pointer-events:auto}
+.empty h2{font-family:"Space Grotesk";font-size:17px;font-weight:600;margin:0 0 6px}
+.empty p{color:var(--ink-3);margin:0 0 18px;font-size:13px}
+
+/* ---------- credit footer ---------- */
+.credit{
+  flex:0 0 auto;display:flex;align-items:center;gap:14px;
+  padding:8px 20px;background:#100E0D;border-top:1px solid var(--line);
+}
+.c-left{
+  font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-3);margin-right:auto;
+}
+.c-right{
+  display:flex;align-items:center;gap:8px;
+  font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.ti{
+  display:inline-flex;align-items:center;gap:6px;padding:3px 9px 3px 4px;
+  border:1px solid var(--line);border-radius:999px;background:var(--panel-2);
+  color:var(--ink-2);letter-spacing:.1em;
+}
+.ti-mark{
+  width:15px;height:15px;border-radius:4px;display:grid;place-items:center;
+  background:linear-gradient(145deg,var(--brass),#8A6C25);
+  color:#15110E;font-family:"Space Grotesk";font-weight:700;font-size:10px;
+  letter-spacing:0;
+}
+@media (max-width:700px){ .c-left{display:none} .c-right{margin-left:auto} }
+
+/* ---------- modal ---------- */
+.scrim{
+  position:fixed;inset:0;background:rgba(8,7,6,.72);backdrop-filter:blur(3px);
+  z-index:100;display:none;align-items:flex-start;justify-content:center;
+  padding:40px 20px;overflow:auto;
+}
+.scrim.open{display:flex}
+.modal{
+  width:100%;max-width:880px;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;box-shadow:0 30px 70px rgba(0,0,0,.65);overflow:hidden;
+}
+.mhead{
+  display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line);
+  background:var(--panel-2);gap:12px;
+}
+.mhead h2{font-family:"Space Grotesk";font-size:15px;font-weight:600;margin:0;flex:1}
+.mbody{padding:20px;display:flex;flex-direction:column;gap:20px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr 150px;gap:12px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label{
+  font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.field input{
+  background:var(--panel-2);border:1px solid var(--line);border-radius:7px;
+  padding:9px 11px;font-size:13px;width:100%;
+}
+.field input:focus{border-color:var(--brass);outline:none}
+.field input[type=date]{font-family:"IBM Plex Mono";font-size:12.5px}
+::-webkit-calendar-picker-indicator{filter:invert(.62) sepia(.5) saturate(3) hue-rotate(3deg);cursor:pointer}
+
+.phead{
+  display:flex;align-items:center;gap:12px;padding-bottom:2px;
+}
+.phead h3{
+  font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin:0;flex:1;font-weight:400;
+}
+.plist{display:flex;flex-direction:column;gap:6px}
+.prow{
+  display:grid;grid-template-columns:26px 1fr 138px 138px 1fr;gap:10px;align-items:center;
+  padding:8px 11px;border-radius:8px;background:var(--panel-2);
+  border:1px solid transparent;border-left:3px solid rgba(var(--cr),.28);transition:.14s;
+}
+.prow.on{background:rgba(var(--cr),.075);border-left-color:var(--c)}
+.prow.err{border-color:rgba(214,67,47,.65)}
+.prow .pname{
+  font-family:"Space Grotesk";font-size:12.5px;font-weight:500;color:var(--ink-3);
+  display:flex;align-items:center;gap:8px;
+}
+.prow.on .pname{color:var(--c)}
+.prow .pname i{
+  font-family:"IBM Plex Mono";font-style:normal;font-size:10px;color:var(--ink-3);
+  width:14px;flex:0 0 14px;
+}
+.prow input[type=checkbox]{
+  width:17px;height:17px;accent-color:var(--c);cursor:pointer;
+}
+.prow input[type=date],.prow input[type=text]{
+  background:#171412;border:1px solid var(--line);border-radius:6px;padding:7px 9px;
+  font-size:12px;width:100%;
+}
+.prow input:disabled{opacity:.32;cursor:not-allowed}
+.prow input[type=date]{font-family:"IBM Plex Mono"}
+
+.mfoot{
+  display:flex;align-items:center;gap:10px;padding:14px 20px;
+  border-top:1px solid var(--line);background:var(--panel-2);
+}
+.mfoot .err{color:#F08A78;font-size:12.5px;flex:1}
+.mfoot .spacer{flex:1}
+.modal-credit{
+  font-family:"IBM Plex Mono";font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);opacity:.6;margin-right:6px;
+}
+
+.hint{font-size:12px;color:var(--ink-3);display:flex;align-items:center;gap:7px}
+
+@media (max-width:900px){
+  .fgrid{grid-template-columns:1fr}
+  .prow{grid-template-columns:24px 1fr;row-gap:8px}
+  .prow .pdates{display:contents}
+  .stats{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body data-state="loading">
+
+<!-- ============ LOGIN GATE ============ -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-brand">
+      <div class="mark">DJ</div>
+      <div>
+        <h1>David Jackson &amp; Son</h1>
+        <div class="sub">Production Planning</div>
+      </div>
+    </div>
+
+    <h2>Staff sign in</h2>
+    <p class="intro">
+      This board is private. Enter the workshop email address and we'll send
+      a one-time sign-in link — there is no password to remember or lose.
+    </p>
+
+    <form id="gateForm" novalidate>
+      <div class="gate-field">
+        <label for="gateEmail">Email address</label>
+        <input id="gateEmail" type="email" autocomplete="username"
+               inputmode="email" placeholder="you@davidjacksonandson.com" required>
+      </div>
+      <button class="btn primary" id="gateBtn" type="submit">Email me a sign-in link</button>
+    </form>
+
+    <p class="gate-msg" id="gateMsg" role="status" aria-live="polite"></p>
+
+    <p class="gate-foot">
+      Access is limited to the account holder. The schedule holds customer and
+      staff names, so it is kept behind sign-in and stored on UK servers.
+      <a href="/">Back to the website</a>
+    </p>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div class="app">
+
+<header class="topbar">
+  <div class="brand">
+    <div class="mark">DJ</div>
+    <div>
+      <h1>David Jackson &amp; Son <span class="div">/</span> <span class="mod">Production Planning</span></h1>
+      <div class="sub">Carpentry &amp; Joinery — Workshop Schedule</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="stProjects">0</b><span>Jobs</span></div>
+    <div class="stat"><b id="stPhases">0</b><span>Stages</span></div>
+    <div class="stat risk"><b id="stRisk">0</b><span>Past deadline</span></div>
+  </div>
+
+  <span class="sync" id="sync" data-sync="saved" title="Changes save to the workshop database automatically">
+    <span class="dot"></span><span id="syncTxt">Saved</span>
+  </span>
+
+  <button class="btn" id="btnToday">Today</button>
+  <button class="btn icon" id="btnExport" title="Download a backup of the schedule">↓ Backup</button>
+  <button class="btn icon" id="btnImport" title="Restore a schedule from a backup file">↑ Restore</button>
+  <input type="file" id="fileImport" accept="application/json" hidden>
+  <button class="btn primary" id="btnAdd">+ Add job</button>
+  <button class="btn" id="btnSignOut" title="Sign out of the planner">Sign out</button>
+</header>
+
+<div class="toolbar">
+  <div class="tgroup">
+    <span class="tlabel">Sort</span>
+    <select class="sel" id="sortSel">
+      <option value="deadline">Deadline</option>
+      <option value="start">Start date</option>
+      <option value="ref">Job number</option>
+      <option value="name">Name</option>
+    </select>
+  </div>
+  <div class="tgroup">
+    <span class="tlabel">Zoom</span>
+    <div class="seg" id="zoomSeg">
+      <button data-w="20">S</button>
+      <button data-w="32" aria-pressed="true">M</button>
+      <button data-w="46">L</button>
+    </div>
+  </div>
+  <div class="chips" id="chips"></div>
+</div>
+
+<div class="grid" id="grid">
+  <div class="head">
+    <div class="head-left">
+      <span class="hcol hc-ref">No.</span>
+      <span class="hcol hc-name">Job</span>
+      <span class="hcol hc-due">Due</span>
+      <span class="hcol hc-acts"></span>
+    </div>
+    <div class="head-time" id="headTime">
+      <div class="months" id="months"></div>
+      <div class="days" id="days"></div>
+    </div>
+  </div>
+  <div class="body" id="bodyEl">
+    <div class="rows" id="rows"></div>
+    <div class="today-line" id="todayLine"></div>
+  </div>
+</div>
+
+<footer class="credit">
+  <span class="c-left">David Jackson &amp; Son — Carpentry &amp; Joinery</span>
+  <span class="c-right">
+    Built by
+    <span class="ti"><span class="ti-mark">T</span>Talon Insights</span>
+  </span>
+</footer>
+
+</div><!-- /.app -->
+
+<div class="readout" id="readout"></div>
+
+<!-- ============ MODAL ============ -->
+<div class="scrim" id="scrim">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <div class="mhead">
+      <h2 id="mTitle">Add job</h2>
+      <button class="btn icon" id="mClose" aria-label="Close">✕</button>
+    </div>
+    <div class="mbody">
+      <div class="fgrid">
+        <div class="field">
+          <label for="fName">Job name</label>
+          <input id="fName" type="text" placeholder="Casement windows — Lidl">
+        </div>
+        <div class="field">
+          <label for="fClient">Client</label>
+          <input id="fClient" type="text" placeholder="Client or site">
+        </div>
+        <div class="field">
+          <label for="fRef">Job number</label>
+          <input id="fRef" type="text" placeholder="017/2026">
+        </div>
+      </div>
+
+      <div class="fgrid">
+        <div class="field">
+          <label for="fStart">Start work on</label>
+          <input id="fStart" type="date">
+        </div>
+        <div class="field">
+          <label for="fDeadline">Deadline</label>
+          <input id="fDeadline" type="date">
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <button class="btn" id="btnAuto" title="Lay the selected stages out back to back from the start date, skipping weekends">⟳ Auto-schedule</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="phead">
+          <h3>Stages — tick the ones this job needs, then set the dates</h3>
+          <span class="hint">Drag on the board later to adjust</span>
+        </div>
+        <div class="plist" id="plist"></div>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn" id="mDelete" style="display:none">Delete job</button>
+      <span class="err" id="mErr"></span>
+      <span class="spacer"></span>
+      <span class="modal-credit">Talon Insights</span>
+      <button class="btn" id="mCancel">Cancel</button>
+      <button class="btn primary" id="mSave">Save job</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./planner.js"></script>
+</body>
+</html>

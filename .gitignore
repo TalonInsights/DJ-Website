@@ -1,0 +1,17 @@
+# Secrets — the service_role key must never reach this repo.
+# planner/config.js is deliberately NOT ignored: it holds only the public
+# project URL and anon key, which are safe to commit (row-level security is
+# what protects the data). See docs/GDPR.md §5.
+.env
+.env.*
+*.key
+*.pem
+
+# Schedule backups — these are exports of live personal data.
+production-schedule-*.json
+
+# Tooling
+node_modules/
+.vercel/
+.DS_Store
+Thumbs.db
