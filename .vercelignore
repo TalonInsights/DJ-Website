@@ -1,0 +1,6 @@
+# Repository documentation and database tooling — these belong in git,
+# not on the public web. Without this, /supabase/schema.sql and
+# /docs/SETUP.md are fetchable by anyone who guesses the path.
+docs/
+supabase/
+.claude/
