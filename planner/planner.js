@@ -225,7 +225,7 @@ function authError(code, description){
   // if someone clicks the link in the email rather than typing the code.
   if(/verifier/.test(d))
     return "Open that link in the same browser you asked for it from — or ignore it "+
-           "and type the six-digit code from the same email instead.";
+           "and type the code from the same email instead.";
 
   if(/expired/.test(code+d))
     return "That code has expired. Codes last an hour — go back and request a new one.";

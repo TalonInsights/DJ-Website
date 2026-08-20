@@ -476,7 +476,7 @@ select.sel:hover{border-color:var(--green)}
     <h2 id="gateHead">Staff sign in</h2>
     <p class="intro" id="gateIntro">
       This board is private. Enter the workshop email address and we'll send
-      a six-digit code — there is no password to remember or lose.
+      a one-time code — there is no password to remember or lose.
     </p>
 
     <form id="gateForm" novalidate>
@@ -487,9 +487,12 @@ select.sel:hover{border-color:var(--green)}
       </div>
 
       <div class="gate-field" id="stepCode" hidden>
-        <label for="gateCode">Six-digit code</label>
+        <!-- Length attributes and the label are set from OTP_LENGTH as soon
+             as planner.js runs; these are neutral so nothing shows a wrong
+             digit count in the meantime. -->
+        <label for="gateCode">One-time code</label>
         <input id="gateCode" type="text" inputmode="numeric" autocomplete="one-time-code"
-               maxlength="6" pattern="[0-9]{6}" placeholder="000000" class="code">
+               maxlength="10" pattern="[0-9]*" placeholder="" class="code">
       </div>
 
       <button class="btn primary" id="gateBtn" type="submit">Email me a code</button>
