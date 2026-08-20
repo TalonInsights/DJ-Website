@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 Disallow: /planner/
 Disallow: /docs/
+
+Sitemap: https://dj-website-roan.vercel.app/sitemap.xml
