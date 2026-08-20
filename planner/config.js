@@ -25,6 +25,10 @@ export const SUPABASE_ANON_KEY = "sb_publishable_3yEdmjD7lk8L0Tj6MaxfqQ_O8XZICrt
    An address listed here still cannot sign in until a matching user
    exists under Authentication → Users. */
 export const ALLOWED_EMAILS = [
-  "taloninsights@gmail.com",       // Talon Insights — testing
+  "talon.insights@gmail.com",      // Talon Insights — testing. Dotted form
+                                   // is deliberate: Gmail ignores dots but
+                                   // Resend matches literally, and its test
+                                   // sender only delivers to the exact
+                                   // address that owns the account.
   "info@davidjacksonandson.com"    // workshop owner — create the user before this works
 ];
