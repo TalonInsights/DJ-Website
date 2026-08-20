@@ -83,13 +83,17 @@ The sign-in link has to know where to send you back to.
 
 **Authentication → URL Configuration:**
 
-- **Site URL:** `https://your-domain.co.uk`
-- **Redirect URLs** — add each on its own line:
+Currently configured:
+
+- **Site URL:** `https://dj-website-roan.vercel.app/planner/`
+- **Redirect URLs:**
   ```
-  https://your-domain.co.uk/planner/
-  https://your-vercel-preview-domain.vercel.app/planner/
+  https://dj-website-roan.vercel.app/planner/
   http://localhost:3000/planner/
   ```
+
+Add the custom domain here too once one is pointed at the project, or
+sign-in will break the moment the site moves off the vercel.app address.
 
 A sign-in link that isn't on this list will be rejected. This is the single
 most common reason for "it says the link is invalid".
@@ -131,12 +135,14 @@ Brevo all have free tiers that comfortably cover this.
 
 ## 8. Deploy
 
-Push to `main` and, if the Vercel project is connected to the repo, it will
-deploy automatically. The planner will be at:
+Deployed as the Vercel project **talon-insights/dj-website**, connected to
+`TalonInsights/DJ-Website`. Pushing to `main` redeploys automatically.
 
-```
-https://your-domain.co.uk/planner/
-```
+- Site: <https://dj-website-roan.vercel.app>
+- Planner: <https://dj-website-roan.vercel.app/planner/>
+
+`.vercelignore` keeps `docs/`, `supabase/` and `.claude/` out of the
+deployment — without it, `/supabase/schema.sql` would be fetchable by anyone.
 
 ---
 
