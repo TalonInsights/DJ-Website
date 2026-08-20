@@ -22,7 +22,10 @@ const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true,
+    // Handled by hand in boot() so failures surface instead of being
+    // swallowed — a silent redirect back to the login box is impossible
+    // to diagnose from the outside.
+    detectSessionInUrl: false,
     flowType: "pkce"
   }
 });
@@ -134,19 +137,33 @@ $("btnSignOut").addEventListener("click", async ()=>{
   setGateMsg("You've been signed out.", "ok");
 });
 
-/* Fires on load with the restored session, and again after the magic
-   link comes back with tokens in the URL. */
-sb.auth.onAuthStateChange(async (event, session)=>{
-  if(session){
-    // Strip the auth tokens out of the address bar.
-    if(window.location.hash || window.location.search.includes("code=")){
-      history.replaceState(null, "", window.location.pathname);
-    }
-    await start();
-  } else if(event === "SIGNED_OUT"){
-    setState("anon");
-  }
+sb.auth.onAuthStateChange((event, session)=>{
+  if(session) start();
+  else if(event === "SIGNED_OUT") setState("anon");
 });
+
+/* Turn Supabase's auth errors into something a joiner can act on. */
+function authError(code, description){
+  const d = (description||"").toLowerCase();
+
+  // PKCE first — its message contains "invalid" and "code", so a looser
+  // rule below would swallow it and report the wrong cause.
+  if(/verifier/.test(d))
+    return "Open the link in the same browser you asked for it from. "+
+           "Requesting it on this computer but opening it on your phone is the usual cause — "+
+           "send a new link and open it here.";
+
+  if(/expired/.test(code+d))
+    return "That link has expired. They're valid for one hour — request a new one below.";
+
+  if(/already|used|invalid/.test(code+d) && /token|otp|code/.test(code+d))
+    return "That link has already been used. Each one works once — request a new one below.";
+
+  if(/access_denied/.test(code))
+    return "That link is no longer valid. Request a new one below.";
+
+  return "Sign-in failed: " + (description || code || "unknown error");
+}
 
 /* ================= persistence ================= */
 const timers = new Map();        // job id → debounce timer
@@ -743,8 +760,56 @@ async function start(){
   scrollToToday(false);
 }
 
-(async ()=>{
+async function boot(){
+  const url   = new URL(window.location.href);
+  const hash  = new URLSearchParams(url.hash.replace(/^#/, ""));
+  const clean = () => history.replaceState(null, "", url.pathname);
+  const pick  = k => url.searchParams.get(k) || hash.get(k);
+
+  // 1. Did Supabase send us back an error?
+  const errCode = pick("error_code") || pick("error");
+  if(errCode){
+    clean();
+    setState("anon");
+    setGateMsg(authError(errCode, pick("error_description")), "err");
+    return;
+  }
+
+  // 2. PKCE code from the magic link — exchange it for a session.
+  const code = pick("code");
+  if(code){
+    const { error } = await sb.auth.exchangeCodeForSession(code);
+    clean();
+    if(error){
+      setState("anon");
+      setGateMsg(authError(error.code || "", error.message), "err");
+      console.error("[planner] code exchange failed:", error);
+      return;
+    }
+    await start();
+    return;
+  }
+
+  // 3. Implicit flow — tokens arrive in the hash instead of a code.
+  if(hash.get("access_token")){
+    const { error } = await sb.auth.setSession({
+      access_token:  hash.get("access_token"),
+      refresh_token: hash.get("refresh_token")
+    });
+    clean();
+    if(error){
+      setState("anon");
+      setGateMsg(authError("", error.message), "err");
+      return;
+    }
+    await start();
+    return;
+  }
+
+  // 4. Nothing in the URL — restore any existing session.
   const { data:{ session } } = await sb.auth.getSession();
   if(session) await start();
   else setState("anon");
-})();
+}
+
+boot();
