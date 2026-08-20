@@ -24,6 +24,14 @@ export const SUPABASE_ANON_KEY = "sb_publishable_3yEdmjD7lk8L0Tj6MaxfqQ_O8XZICrt
 
    An address listed here still cannot sign in until a matching user
    exists under Authentication → Users. */
+/* How many digits the sign-in code has.
+
+   Supabase lets this be 6 to 10 (Authentication → Sign In / Providers →
+   Email → OTP length). This MUST match that setting: the field caps
+   input at this many digits and submits automatically on the last one,
+   so a mismatch silently sends a truncated code that can never verify. */
+export const OTP_LENGTH = 8;
+
 export const ALLOWED_EMAILS = [
   "talon.insights@gmail.com",      // Talon Insights — testing. Dotted form
                                    // is deliberate: Gmail ignores dots but

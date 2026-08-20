@@ -13,7 +13,10 @@
    ===================================================================== */
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ALLOWED_EMAILS } from "./config.js";
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ALLOWED_EMAILS, OTP_LENGTH } from "./config.js";
+
+/* Guard against a config that can't work rather than failing silently. */
+const CODE_LEN = (Number(OTP_LENGTH) >= 6 && Number(OTP_LENGTH) <= 10) ? Number(OTP_LENGTH) : 6;
 
 "use strict";
 
@@ -95,12 +98,20 @@ function setGateMsg(text, kind){
 }
 function setState(s){ document.body.dataset.state = s; }
 
+/* Everything user-facing about the code length comes from CODE_LEN, so
+   the label, the field cap and the validation can never disagree. */
+gateCode.setAttribute("maxlength", String(CODE_LEN));
+gateCode.setAttribute("pattern", "[0-9]{" + CODE_LEN + "}");
+gateCode.setAttribute("placeholder", "0".repeat(CODE_LEN));
+const codeLabel = document.querySelector('label[for="gateCode"]');
+if(codeLabel) codeLabel.textContent = CODE_LEN + "-digit code";
+
 function showEmailStep(){
   stage = "email"; otpEmail = null;
   stepEmail.hidden = false; stepCode.hidden = true; gateBack.hidden = true;
   gateHead.textContent = "Staff sign in";
-  gateIntro.textContent = "This board is private. Enter the workshop email address and "+
-                          "we'll send a six-digit code — there is no password to remember or lose.";
+  gateIntro.textContent = "This board is private. Enter the workshop email address and we'll send "+
+                          "a "+CODE_LEN+"-digit code — there is no password to remember or lose.";
   gateBtn.textContent = "Email me a code";
   gateCode.value = "";
   gateEmail.focus();
@@ -110,7 +121,7 @@ function showCodeStep(email){
   stage = "code"; otpEmail = email;
   stepEmail.hidden = true; stepCode.hidden = false; gateBack.hidden = false;
   gateHead.textContent = "Enter your code";
-  gateIntro.textContent = "We've emailed a six-digit code to "+email+
+  gateIntro.textContent = "We've emailed a "+CODE_LEN+"-digit code to "+email+
                           ". It expires in an hour. Type it here — you don't need to leave this page.";
   gateBtn.textContent = "Sign in";
   gateCode.value = "";
@@ -119,10 +130,10 @@ function showCodeStep(email){
 
 gateBack.addEventListener("click", ()=>{ showEmailStep(); setGateMsg("", ""); gateMsg.classList.remove("show"); });
 
-/* Typing the sixth digit submits — saves reaching for the mouse. */
+/* Typing the last digit submits — saves reaching for the mouse. */
 gateCode.addEventListener("input", ()=>{
-  gateCode.value = gateCode.value.replace(/\D/g,"").slice(0,6);
-  if(gateCode.value.length === 6) gateForm.requestSubmit();
+  gateCode.value = gateCode.value.replace(/\D/g,"").slice(0,CODE_LEN);
+  if(gateCode.value.length === CODE_LEN) gateForm.requestSubmit();
 });
 
 async function sendCode(email){
@@ -170,7 +181,9 @@ gateForm.addEventListener("submit", async e=>{
 
   if(stage === "code"){
     const code = gateCode.value.trim();
-    if(code.length !== 6){ setGateMsg("The code is six digits.", "err"); return; }
+    if(code.length !== CODE_LEN){
+      setGateMsg("The code is "+CODE_LEN+" digits.", "err"); return;
+    }
     await verifyCode(code);
     return;
   }
