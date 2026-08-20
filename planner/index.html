@@ -645,6 +645,9 @@ select.sel:hover{border-color:var(--green)}
   </div>
 </div>
 
-<script type="module" src="./planner.js"></script>
+<!-- Root-absolute, not "./planner.js". Vercel serves this page at
+     /planner with no trailing slash, so a relative path resolves to
+     /planner.js at the site root and 404s. -->
+<script type="module" src="/planner/planner.js"></script>
 </body>
 </html>
