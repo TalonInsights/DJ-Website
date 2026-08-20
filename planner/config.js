@@ -15,7 +15,16 @@
 export const SUPABASE_URL      = "https://yxizdoziihvuuzmhofcs.supabase.co";
 export const SUPABASE_ANON_KEY = "sb_publishable_3yEdmjD7lk8L0Tj6MaxfqQ_O8XZICrt";
 
-/* The single address allowed to sign in. The real enforcement is in
-   Supabase (signups disabled + RLS), this just gives a clearer message
-   at the login box before a pointless email is sent. */
-export const ALLOWED_EMAIL = "info@davidjacksonandson.com";
+/* Addresses allowed to reach the sign-in step.
+
+   This is a courtesy check only — it stops a typo turning into a
+   pointless email. The real enforcement is in Supabase: sign-ups are
+   disabled, so an address only works if the account already exists,
+   and RLS scopes every row to its owner regardless.
+
+   An address listed here still cannot sign in until a matching user
+   exists under Authentication → Users. */
+export const ALLOWED_EMAILS = [
+  "cogtalon@gmail.com",            // Talon Insights — testing
+  "info@davidjacksonandson.com"    // workshop owner — create the user before this works
+];

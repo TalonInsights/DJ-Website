@@ -13,7 +13,7 @@
    ===================================================================== */
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ALLOWED_EMAIL } from "./config.js";
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ALLOWED_EMAILS } from "./config.js";
 
 "use strict";
 
@@ -95,7 +95,8 @@ gateForm.addEventListener("submit", async e=>{
     setGateMsg("That doesn't look like an email address.", "err");
     return;
   }
-  if(ALLOWED_EMAIL && email !== ALLOWED_EMAIL.toLowerCase()){
+  const allowed = (ALLOWED_EMAILS || []).map(a => a.trim().toLowerCase());
+  if(allowed.length && !allowed.includes(email)){
     setGateMsg("That address doesn't have access to this board.", "err");
     return;
   }
