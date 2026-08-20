@@ -2,7 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "trailingSlash": false,
 
-  "// rewrites": "Each marketing route serves index.html so the client router can render it. They are listed explicitly rather than caught by a wildcard, so /planner/ and every static asset keep resolving normally.",
   "rewrites": [
     { "source": "/about",              "destination": "/index.html" },
     { "source": "/windows",            "destination": "/index.html" },
