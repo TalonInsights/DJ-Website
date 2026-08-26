@@ -38,5 +38,5 @@ export const ALLOWED_EMAILS = [
                                    // Resend matches literally, and its test
                                    // sender only delivers to the exact
                                    // address that owns the account.
-  "info@davidjacksonandson.com"    // workshop owner — create the user before this works
+  "harry@davidjacksonandson.com"   // workshop — production access
 ];
