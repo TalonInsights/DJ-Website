@@ -38,5 +38,7 @@ export const ALLOWED_EMAILS = [
                                    // Resend matches literally, and its test
                                    // sender only delivers to the exact
                                    // address that owns the account.
-  "harry@davidjacksonandson.com"   // workshop — production access
+  "harryjackson776@gmail.com"      // workshop — interim address. Swap to
+                                   // harry@davidjacksonandson.com once we
+                                   // have DNS access for that domain.
 ];
