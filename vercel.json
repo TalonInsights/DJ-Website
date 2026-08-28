@@ -7,6 +7,7 @@
     { "source": "/windows",            "destination": "/index.html" },
     { "source": "/doors",              "destination": "/index.html" },
     { "source": "/materials",          "destination": "/index.html" },
+    { "source": "/fitting-on-site",    "destination": "/index.html" },
     { "source": "/guidance",           "destination": "/index.html" },
     { "source": "/guide-repair",       "destination": "/index.html" },
     { "source": "/guide-conservation", "destination": "/index.html" },

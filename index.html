@@ -212,6 +212,24 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
 @media (max-width:880px){.stats .wrap{grid-template-columns:1fr 1fr}.stats div:nth-child(3){border-left:0}.stats div:nth-child(n+3){border-top:1px solid var(--rule)}}
 
 /* ---------- cards ---------- */
+/* ---------- image slots (Fitting on site) ----------
+   Each placeholder is a <div class="slot">. To use a real photograph,
+   replace that whole div with:
+   <img loading="lazy" decoding="async" src="URL" alt="describe the photo"> */
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:clamp(.8rem,2vw,1.5rem)}
+.shot{margin:0}
+.shot .slot{
+  display:grid;place-content:center;justify-items:center;text-align:center;gap:.45rem;
+  aspect-ratio:4/3;border:1.5px dashed var(--rule-dk);border-radius:5px;
+  background:var(--green-sf);padding:1.4rem;
+}
+.shot .slot b{font-size:.78rem;font-weight:600;color:var(--slate)}
+.shot .slot span{font-size:.72rem;line-height:1.55;color:var(--mute);max-width:30ch}
+.shot img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:5px;display:block}
+.shot figcaption{font-size:.8rem;color:var(--mute);margin-top:.65rem;line-height:1.5}
+.shot.wide{grid-column:1/-1}
+.shot.wide .slot,.shot.wide img{aspect-ratio:16/7}
+@media (max-width:560px){.shot.wide .slot,.shot.wide img{aspect-ratio:4/3}}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.9rem,2vw,1.7rem)}
 .g2{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(1rem,2.5vw,2rem)}
 @media (max-width:900px){.g3,.g2{grid-template-columns:1fr}}
@@ -596,6 +614,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
         <div class="dmenu" id="moreMenu" role="menu">
           <div class="dinner">
             <a href="/about" role="menuitem">About us</a>
+            <a href="/fitting-on-site" role="menuitem">Fitting on site</a>
             <a href="/guidance" role="menuitem">Guidance</a>
             <a href="/accreditation" role="menuitem">Accreditation</a>
             <a href="/projects" role="menuitem">Projects</a>
@@ -1293,6 +1312,83 @@ footer.site .fb a:hover{color:var(--brass-lt)}
   </div></section>
 </div>
 
+<!-- ============================ FITTING ON SITE ============================ -->
+<div class="page" data-page="/fitting-on-site">
+  <section class="bg-sage tight"><div class="wrap">
+    <p class="label rv">Fitting on site</p>
+    <h1 class="ptitle rv">We fit what we make.</h1>
+    <p class="lede rv" style="margin-top:1.2rem">The joinery leaves our workshop and the same people install it. Nothing is handed to a subcontractor at the point where the detail matters most &mdash; getting a new frame into an old opening without damaging the building around it.</p>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="head-2 rv">
+      <div><p class="label">The day itself</p><h2 class="sect">Out carefully, in squarely, made good properly.</h2></div>
+      <p class="lede">Period openings are rarely square and rarely consistent. Frames are packed and scribed to the opening rather than forced into it, and the surrounding plaster, render and brickwork is protected before anything comes out.</p>
+    </div>
+
+    <div class="shots rv" style="margin-top:2.2rem">
+      <!-- IMAGE SLOT — replace this whole <div class="slot">…</div> with an <img> -->
+      <figure class="shot wide">
+        <div class="slot"><b>Wide shot &mdash; before</b><span>The elevation with the original windows still in, ideally on a clear day</span></div>
+        <figcaption>Before: the opening as we found it.</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <div class="slot"><b>Removal in progress</b><span>Old frame coming out, dust sheets and protection visible</span></div>
+        <figcaption>The old frame out without disturbing the reveal.</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <div class="slot"><b>New frame going in</b><span>Frame being packed and levelled in the opening</span></div>
+        <figcaption>Packed and scribed to the opening, not forced into it.</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <div class="slot"><b>Detail shot</b><span>Close on the sealed joint, ironmongery or glazing bead</span></div>
+        <figcaption>The junction that decides whether it lasts.</figcaption>
+      </figure>
+    </div>
+  </div></section>
+
+  <section class="bg-sage"><div class="wrap">
+    <div class="head-2 rv">
+      <div><p class="label">Making good</p><h2 class="sect">The part most people are worried about.</h2></div>
+      <p class="lede">Replacing a window is straightforward. Leaving the wall, the sill and the decoration as though nothing happened is the difficult part, and it is the reason we do not subcontract fitting.</p>
+    </div>
+    <div class="g3 rv" style="margin-top:2.2rem">
+      <div><h3 style="margin-bottom:.4rem">Protected first</h3><p>Floors, sills and surrounding surfaces covered before the first frame moves.</p></div>
+      <div><h3 style="margin-bottom:.4rem">Sealed correctly</h3><p>Packed, insulated and sealed on every face, so the detail performs as designed.</p></div>
+      <div><h3 style="margin-bottom:.4rem">Cleared daily</h3><p>The site is swept and the waste taken away with us, not left for someone else.</p></div>
+    </div>
+
+    <div class="shots rv" style="margin-top:2.4rem">
+      <figure class="shot">
+        <div class="slot"><b>Making good</b><span>Reveal or plaster line finished around the new frame</span></div>
+        <figcaption>Made good back to the original line.</figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="slot"><b>Wide shot &mdash; after</b><span>The same elevation as the &ldquo;before&rdquo; image, same angle</span></div>
+        <figcaption>After: the same elevation, finished.</figcaption>
+      </figure>
+    </div>
+  </div></section>
+
+  <section><div class="wrap narrow">
+    <div class="rv">
+      <p class="label">Listed and conservation work</p>
+      <h2 class="sect">Where fitting matters most.</h2>
+      <p style="margin-top:1.1rem">On a listed building the installation is part of what was consented. Sightlines, reveal depths and how the frame sits back from the face are all things an officer can come back on. We fit to the detail that was approved, and we can supply photographs of the work in progress if your consent requires them.</p>
+      <p style="margin-top:1.6rem"><a class="btn btn-primary" href="/heritage">Listed &amp; conservation work <span class="ar">&#8594;</span></a></p>
+    </div>
+  </div></section>
+
+  <section class="bg-green tight on-dark"><div class="wrap narrow" style="text-align:center">
+    <h2 class="sect" style="margin:0 auto">Making and fitting, by the same people</h2>
+    <p class="lede" style="color:#BDCABE;margin:1rem auto 1.8rem">Tell us what you have and we will come and measure it. The quote covers the joinery, the fitting and the making good, with no separate installer to arrange.</p>
+    <a class="btn btn-brass" href="/contact">Get a quote <span class="ar">&#8594;</span></a>
+  </div></section>
+</div>
+
 <!-- ============================ CONTACT ============================ -->
 <div class="page" data-page="/contact">
   <section class="bg-green">
@@ -1462,6 +1558,7 @@ var TITLES={
  '/windows':'Timber Windows Shropshire — Sash & Casement | David Jackson & Son',
  '/doors':'Timber Doors Shropshire — Entrance, French & Bi-fold | David Jackson & Son',
  '/about':'About David Jackson & Son — Father & Son Joiners, Telford | 50 Years',
+ '/fitting-on-site':'Fitting Timber Windows & Doors on Site | David Jackson & Son',
  '/materials':'Timbers, Glass & Ironmongery | David Jackson & Son Joinery',
  '/accreditation':'Accoya Approved Manufacturer | David Jackson & Son Joinery',
  '/projects':'Heritage Joinery Projects in Shropshire | David Jackson & Son',
@@ -1489,6 +1586,7 @@ var DESCS={
  '/guide-conservation':"What conservation area status means for replacing windows: what needs consent, what officers look for, and which details get approved.",
  '/windows':"Bespoke sliding sash and casement windows made by hand in Telford. Box sash with weights and cords, flush and stormproof casements, in Accoya, oak, sapele and idigbo.",
  '/doors':"Bespoke timber entrance doors, French and patio doors and bi-folds, made to your opening in hardwood or Accoya with heritage ironmongery.",
+ '/fitting-on-site':"We fit what we make. Careful removal of the old frames, correct packing and sealing, and the making good done properly \u2014 on listed and period property across Shropshire.",
  '/materials':"Six timbers, the full Pilkington texture and etched privacy glass ranges with privacy levels, and heritage ironmongery in eight metal finishes.",
  '/accreditation':"An Accoya approved manufacturer. What the approval means, and why the 50-year above-ground guarantee depends on it.",
  '/projects':"Sash window, casement and door projects in listed and period properties across Shropshire \u2014 Ironbridge, Shrewsbury, Much Wenlock and Telford.",
@@ -1499,7 +1597,7 @@ function route(){
   var h=pathNow();
   pages.forEach(function(p){ p.classList.toggle('on', p.dataset.page===h); });
   navLinks.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href')===h); });
-  var inMore=['/about','/guidance','/guide-repair','/guide-conservation','/accreditation','/projects','/heritage'].indexOf(h)>=0;
+  var inMore=['/about','/fitting-on-site','/guidance','/guide-repair','/guide-conservation','/accreditation','/projects','/heritage'].indexOf(h)>=0;
   document.getElementById('moreBtn').classList.toggle('active', inMore);
   document.title=TITLES[h];
   var url=location.origin+(h==='/'?'/':h);
