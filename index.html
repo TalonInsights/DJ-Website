@@ -252,29 +252,53 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
    replace that whole div with:
    <img loading="lazy" decoding="async" src="URL" alt="describe the photo"> */
 /* ---------- milestone timeline ----------
-   Entries still needing a date or wording use <div class="tl-slot">.
-   Replace that div with the real text once confirmed. */
+   Entries still needing a date or wording use <div class="tl-slot">;
+   replace the div with <h3> + <p> once confirmed, and swap the dashed
+   "Year" chip for the real year. On wide screens the milestones alternate
+   above and below a single axis and reveal left to right. */
 .tline{list-style:none;margin:2.4rem 0 0;padding:0;position:relative}
-.tline::before{content:"";position:absolute;left:0;top:.4rem;bottom:.4rem;width:1px;background:var(--rule-dk)}
-.tline li{position:relative;padding:0 0 1.9rem 1.9rem}
+.tline::before{content:"";position:absolute;left:5px;top:.6rem;bottom:.6rem;width:1px;
+  background:linear-gradient(180deg,transparent,var(--rule-dk) 6%,var(--rule-dk) 94%,transparent)}
+.tline li{position:relative;padding:0 0 2.1rem 2.1rem}
 .tline li:last-child{padding-bottom:0}
-.tline li::before{content:"";position:absolute;left:-4px;top:.45rem;width:9px;height:9px;border-radius:50%;
-  background:var(--paper);border:1.5px solid var(--brass)}
-.tline .yr{display:block;font-family:var(--body);font-size:.68rem;font-weight:600;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--brass);margin-bottom:.3rem}
-.tline h3{font-size:1.12rem;margin:0 0 .3rem}
+.tline li::before{content:"";position:absolute;left:0;top:.5rem;width:11px;height:11px;border-radius:50%;
+  background:#fff;border:1.5px solid var(--brass);box-shadow:0 0 0 4px var(--sage)}
+.tline li.now::before{background:var(--brass);box-shadow:0 0 0 4px var(--sage),0 0 0 5px var(--brass-lt)}
+.tline .yr{display:block;font-family:var(--display);font-weight:200;font-size:2.5rem;line-height:1;
+  letter-spacing:-.02em;color:var(--brass);margin-bottom:.55rem}
+.tline .yr.tbc{display:inline-block;font-family:var(--body);font-size:.64rem;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--brass);border:1px dashed var(--brass-lt);border-radius:100px;
+  padding:.34rem .75rem;margin:.35rem 0 .9rem;line-height:1}
+.tline h3{font-size:1.15rem;margin:0 0 .3rem}
 .tline p{margin:0;color:var(--slate);font-size:.94rem}
-.tl-slot{border:1.5px dashed var(--rule-dk);border-radius:5px;background:var(--green-sf);padding:.9rem 1.1rem}
+.tl-slot{border:1.5px dashed var(--rule-dk);border-radius:5px;background:#fff;padding:.9rem 1.1rem}
 .tl-slot b{display:block;font-size:.8rem;color:var(--slate)}
 .tl-slot span{display:block;font-size:.75rem;color:var(--mute);line-height:1.55;margin-top:.15rem}
-/* Wide screens read the milestones left to right along a single axis.
-   Below this the list stacks, which is the only sensible shape on a phone. */
+/* Entries stagger in once the list itself has revealed. */
+.tline li{opacity:0;transform:translateY(14px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.tline.in li{opacity:1;transform:none}
+.tline li:nth-child(2){transition-delay:.12s}.tline li:nth-child(3){transition-delay:.24s}
+.tline li:nth-child(4){transition-delay:.36s}.tline li:nth-child(5){transition-delay:.48s}
+@media (prefers-reduced-motion:reduce){.tline li{opacity:1;transform:none;transition:none}}
 @media (min-width:920px){
-  .tline{display:grid;grid-template-columns:repeat(5,1fr);gap:0 clamp(1rem,2vw,1.6rem);margin-top:3.2rem}
-  .tline::before{left:0;right:0;top:5px;bottom:auto;width:auto;height:1px}
-  .tline li{padding:2.3rem 0 0}
-  .tline li:last-child{padding-bottom:0}
-  .tline li::before{left:0;top:0}
+  .tline{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:auto 1px auto;
+    gap:0 clamp(1rem,2vw,1.6rem);margin-top:3.4rem}
+  .tline::before{position:static;grid-column:1/-1;grid-row:2;width:auto;height:1px;
+    background:linear-gradient(90deg,transparent,var(--rule-dk) 5%,var(--rule-dk))}
+  .tline::after{content:"";grid-column:5;grid-row:2;justify-self:end;align-self:center;width:7px;height:7px;margin-right:-1px;
+    border-top:1px solid var(--brass);border-right:1px solid var(--brass);transform:rotate(45deg)}
+  .tline li{padding:0}
+  .tline li:nth-child(odd){grid-row:1;align-self:end;padding-bottom:2.4rem}
+  .tline li:nth-child(even){grid-row:3;align-self:start;padding-top:2.4rem}
+  .tline li:nth-child(1){grid-column:1}.tline li:nth-child(2){grid-column:2}.tline li:nth-child(3){grid-column:3}
+  .tline li:nth-child(4){grid-column:4}.tline li:nth-child(5){grid-column:5}
+  .tline li::before{left:0;top:auto;bottom:-6px}
+  .tline li:nth-child(even)::before{top:-6px;bottom:auto}
+  .tline li::after{content:"";position:absolute;left:5px;width:1px;background:var(--rule-dk)}
+  .tline li:nth-child(odd)::after{bottom:0;height:2.4rem}
+  .tline li:nth-child(even)::after{top:0;height:2.4rem}
+  .tline .yr{font-size:2.2rem}
+  .tline .yr.tbc{font-size:.62rem}
   .tline h3{font-size:1rem}
   .tline p{font-size:.86rem}
   .tl-slot{padding:.8rem .9rem}
@@ -826,7 +850,7 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
   <section>
     <div class="wrap">
       <div class="head-2 rv"><div><p class="label">What customers say</p><h2 class="sect">Ten five-star reviews on Google.</h2></div>
-      <p class="lede">A good deal of our work comes through recommendation, and customers tend to tell us the same things: that we turned up when we said we would, and left the house as we found it. Three of those reviews are below, including a customer we saw through a World Heritage Site planning application.</p></div>
+      <p class="lede">Customers tend to tell us the same things: that we turned up when we said we would, and left the house as we found it. Three of those reviews are below, including a customer we saw through a World Heritage Site planning application.</p></div>
       <div class="g3">
         <div class="rev rv"><div class="stars" aria-label="Five out of five">★★★★★</div><blockquote>We've had new windows fitted in our 19th century cottage by David and Harry and I couldn't recommend them enough. They were patient during our World Heritage Site planning application and swiftly provided all the information and documents needed — and the windows themselves are just stunning. Excellent craftsmanship. I rarely encounter contractors who tick all the boxes, but these guys definitely do.</blockquote><cite>Julia Oldham · Google review</cite></div>
         <div class="rev rv"><div class="stars" aria-label="Five out of five">★★★★★</div><blockquote>Delighted with my bespoke windows and door for my 1790s cottage rear façade. They have made a massive improvement to the warmth in the cottage, and the works were carried out on time and with a great deal of personal and professional attention to detail. The customer really does come first.</blockquote><cite>Julia Kernaghan · Google review</cite></div>
@@ -1023,7 +1047,7 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
 
           <h2 id="r6">What to do next</h2>
           <p>Photograph the window from far enough back to see the whole opening and the brickwork around it, then take close-ups of the bottom rail, the cill and any joint that looks open. Do the screwdriver test in four places and note where it goes in. That is enough for us to give you a sensible view before anyone comes out.</p>
-          <p>We will tell you honestly if repair is the better option — including on jobs where replacement would earn us more. A window we repair well is a window someone recommends us for.</p>
+          <p>We will tell you honestly if repair is the better option — including on jobs where replacement would earn us more.</p>
         </div>
 
         <aside class="art-side rv">
@@ -1246,7 +1270,7 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
       <div class="rv">
         <p class="label">Prestige Awards &middot; 2026</p>
         <h2>Carpentry Company of the Year.</h2>
-        <p class="lede">Most of our work arrives by recommendation, and that is still the verdict we take most seriously. Recognition from outside is welcome all the same, and this is a piece of it we are pleased to have.</p>
+        <p class="lede">Recognition from outside the workshop is welcome, and this is a piece of it we are pleased to have. The work itself still makes the better argument, and it is all on the projects page.</p>
         <a class="btn btn-lt" href="/projects">See the work <span class="ar">&#8594;</span></a>
       </div>
     </div>
@@ -1313,7 +1337,7 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
       <div class="rv">
         <p class="label">Prestige Awards &middot; 2026</p>
         <h2>Carpentry Company of the Year.</h2>
-        <p class="lede">Most of our work arrives by recommendation, and that is still the verdict we take most seriously. Recognition from outside is welcome all the same, and this is a piece of it we are pleased to have.</p>
+        <p class="lede">Recognition from outside the workshop is welcome, and this is a piece of it we are pleased to have. The work itself still makes the better argument, and most of it is above.</p>
         <div class="award-also">
           <img src="/assets/accoya-approved-manufacturer.jpg" width="966" height="508" loading="lazy" decoding="async" alt="Accoya approved manufacturer">
           <p>Also an approved Accoya manufacturer, which is what carries the 50-year guarantee on our external joinery. <a class="tlink" href="/accreditation">About our accreditation</a></p>
@@ -1390,29 +1414,29 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
     <p class="rv" style="margin-top:1.6rem"><a class="btn btn-line" href="/accreditation">What approval means <span class="ar">&#8594;</span></a></p>
   </div></section>
 
-  <section class="bg-white"><div class="wrap">
+  <section class="bg-sage"><div class="wrap">
     <div class="head-2 rv">
       <div><p class="label">History</p><h2 class="sect">How the workshop got here.</h2></div>
       <p class="lede">Dates and details to be confirmed. Each dashed box below is a placeholder &mdash; replace it with the real milestone.</p>
     </div>
     <ol class="tline rv">
       <li>
-        <span class="yr">Year</span>
+        <span class="yr tbc">Year</span>
         <div class="tl-slot"><b>David starts the business</b><span>What year, and what was he doing at the outset &mdash; carpentry on site, or joinery from a workshop?</span></div>
       </li>
       <li>
-        <span class="yr">Year</span>
+        <span class="yr tbc">Year</span>
         <div class="tl-slot"><b>The Telford workshop</b><span>When did the business move into Unit 11, Tweedale Court, and where was it before?</span></div>
       </li>
       <li>
-        <span class="yr">Year</span>
+        <span class="yr tbc">Year</span>
         <div class="tl-slot"><b>Harry joins</b><span>When did Harry come into the business, and was there a trade apprenticeship or training worth naming?</span></div>
       </li>
       <li>
-        <span class="yr">Year</span>
+        <span class="yr tbc">Year</span>
         <div class="tl-slot"><b>Accoya approval</b><span>When was approved-manufacturer status granted? The certificate will carry the date.</span></div>
       </li>
-      <li>
+      <li class="now">
         <span class="yr">2026</span>
         <h3>Carpentry Company of the Year</h3>
         <p>Recognised at the Prestige Awards.</p>
