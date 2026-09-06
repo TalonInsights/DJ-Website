@@ -232,6 +232,18 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
 .tl-slot{border:1.5px dashed var(--rule-dk);border-radius:5px;background:var(--green-sf);padding:.9rem 1.1rem}
 .tl-slot b{display:block;font-size:.8rem;color:var(--slate)}
 .tl-slot span{display:block;font-size:.75rem;color:var(--mute);line-height:1.55;margin-top:.15rem}
+/* Wide screens read the milestones left to right along a single axis.
+   Below this the list stacks, which is the only sensible shape on a phone. */
+@media (min-width:920px){
+  .tline{display:grid;grid-template-columns:repeat(5,1fr);gap:0 clamp(1rem,2vw,1.6rem);margin-top:3.2rem}
+  .tline::before{left:0;right:0;top:5px;bottom:auto;width:auto;height:1px}
+  .tline li{padding:2.3rem 0 0}
+  .tline li:last-child{padding-bottom:0}
+  .tline li::before{left:0;top:0}
+  .tline h3{font-size:1rem}
+  .tline p{font-size:.86rem}
+  .tl-slot{padding:.8rem .9rem}
+}
 .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:clamp(.8rem,2vw,1.5rem)}
 .shot{margin:0}
 .shot .slot{
@@ -647,6 +659,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
           <div class="dinner">
             <a href="/about" role="menuitem">About us</a>
             <a href="/fitting-on-site" role="menuitem">Fitting on site</a>
+            <a href="/sustainability" role="menuitem">Sustainability</a>
             <a href="/guidance" role="menuitem">Guidance</a>
             <a href="/accreditation" role="menuitem">Accreditation</a>
             <a href="/projects" role="menuitem">Projects</a>
@@ -1447,6 +1460,55 @@ footer.site .fb a:hover{color:var(--brass-lt)}
   </div></section>
 </div>
 
+<!-- ============================ SUSTAINABILITY ============================ -->
+<div class="page" data-page="/sustainability">
+  <section class="bg-sage tight"><div class="wrap">
+    <p class="label rv">Sustainability</p>
+    <h1 class="ptitle rv">Where it all ends up.</h1>
+    <p class="lede rv" style="margin-top:1.2rem">A joinery workshop produces a lot of waste: offcuts, sawdust, old frames taken out of buildings, broken glass and scrap metal. What happens to that is worth being specific about, so here is what actually goes where.</p>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="head-2 rv">
+      <div><p class="label">Waste streams</p><h2 class="sect">Four streams, separated at the workshop.</h2></div>
+      <p class="lede">Waste is sorted as it is produced rather than picked over later, which is what makes the rest of it possible.</p>
+    </div>
+    <div class="g2 rv" style="margin-top:2.4rem">
+      <div><h3 style="margin-bottom:.4rem">Sawdust and offcuts</h3><p>Collected from the extraction system and sent for biomass recovery, where it is burned to generate heat rather than tipped.</p></div>
+      <div><h3 style="margin-bottom:.4rem">Old timber frames</h3><p>Frames taken out of buildings go the same way. Painted and treated joinery cannot be re-milled, so biomass is the useful end for it.</p></div>
+      <div><h3 style="margin-bottom:.4rem">Glass</h3><p>Broken and removed glazing is separated and sent to be crushed and recycled into new glass.</p></div>
+      <div><h3 style="margin-bottom:.4rem">Metal</h3><p>Old ironmongery, weights, lead and offcut metal are collected for melting down and re-use.</p></div>
+    </div>
+    <p class="rv" style="margin-top:2rem"><span class="flag">Verify</span> <span class="small">Waste is handled through Cartwrights. Confirm the exact company name and whether they can supply diversion figures before this page claims a percentage.</span></p>
+  </div></section>
+
+  <section class="bg-sage"><div class="wrap">
+    <div class="head-2 rv">
+      <div><p class="label">Timber</p><h2 class="sect">Where the timber comes from.</h2></div>
+      <p class="lede">The most significant environmental decision a joinery workshop makes is what it buys, not what it throws away.</p>
+    </div>
+    <div class="g2 rv" style="margin-top:2.2rem">
+      <div><h3 style="margin-bottom:.4rem">Certified supply</h3><p><span class="flag">Verify</span> We hold FSC and PEFC chain of custody, and documentation can be provided on request. Confirm both certificate numbers and expiry dates before this goes live.</p></div>
+      <div><h3 style="margin-bottom:.4rem">Accoya</h3><p>Accoya is made from fast-growing certified softwood, and its durability means a window lasts decades longer before it needs replacing at all.</p></div>
+    </div>
+  </div></section>
+
+  <section><div class="wrap narrow">
+    <div class="rv">
+      <p class="label">Being straight about it</p>
+      <h2 class="sect">What we will and will not claim.</h2>
+      <p style="margin-top:1.1rem">We are a small workshop, not a sustainability programme. What we can say is that our waste is separated, that it goes to biomass recovery and recycling rather than to landfill, and that our timber is bought through certified supply chains we can evidence.</p>
+      <p><span class="flag">Verify</span> Anything stronger than that &mdash; a zero-to-landfill or hundred-per-cent-recycled claim &mdash; needs figures from the waste contractor behind it. Environmental claims are regulated, and an unevidenced one is worse than none.</p>
+    </div>
+  </div></section>
+
+  <section class="bg-green tight on-dark"><div class="wrap narrow" style="text-align:center">
+    <h2 class="sect" style="margin:0 auto">Ask us about the specification</h2>
+    <p class="lede" style="color:#BDCABE;margin:1rem auto 1.8rem">If certified timber or the end-of-life of the joinery matters to your project, say so at the quote stage and we will put the detail in writing.</p>
+    <a class="btn btn-brass" href="/contact">Get a quote <span class="ar">&#8594;</span></a>
+  </div></section>
+</div>
+
 <!-- ============================ CONTACT ============================ -->
 <div class="page" data-page="/contact">
   <section class="bg-green">
@@ -1613,6 +1675,7 @@ var TITLES={
  '/doors':'Timber Doors Shropshire — Entrance, French & Bi-fold | David Jackson & Son',
  '/about':'About David Jackson & Son — Father & Son Joiners, Telford | 50 Years',
  '/fitting-on-site':'Fitting Timber Windows & Doors on Site | David Jackson & Son',
+ '/sustainability':'Sustainability & Waste — FSC Timber, Biomass Recovery | David Jackson & Son',
  '/materials':'Timbers, Glass & Ironmongery | David Jackson & Son Joinery',
  '/accreditation':'Accoya Approved Manufacturer | David Jackson & Son Joinery',
  '/projects':'Heritage Joinery Projects in Shropshire | David Jackson & Son',
@@ -1641,6 +1704,7 @@ var DESCS={
  '/windows':"Bespoke sliding sash and casement windows made by hand in Telford. Box sash with weights and cords, flush and stormproof casements, in Accoya, oak, sapele and idigbo.",
  '/doors':"Bespoke timber entrance doors, French and patio doors and bi-folds, made to your opening in hardwood or Accoya with heritage ironmongery.",
  '/fitting-on-site':"We fit the great majority of our own work. Careful removal of the old frames, correct packing and sealing, and the plaster and reveals put back properly \u2014 on listed and period property across Shropshire.",
+ '/sustainability':"Where our offcuts, old frames, glass and metal actually go, who handles them, and what we can evidence about the timber we buy.",
  '/materials':"Six timbers, the full Pilkington texture and etched privacy glass ranges with privacy levels, and heritage ironmongery in eight metal finishes.",
  '/accreditation':"An Accoya approved manufacturer. What the approval means, and why the 50-year above-ground guarantee depends on it.",
  '/projects':"Sash window, casement and door projects in listed and period properties across Shropshire \u2014 Ironbridge, Shrewsbury, Much Wenlock and Telford.",
@@ -1651,7 +1715,7 @@ function route(){
   var h=pathNow();
   pages.forEach(function(p){ p.classList.toggle('on', p.dataset.page===h); });
   navLinks.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href')===h); });
-  var inMore=['/about','/fitting-on-site','/guidance','/guide-repair','/guide-conservation','/accreditation','/projects','/heritage'].indexOf(h)>=0;
+  var inMore=['/about','/fitting-on-site','/sustainability','/guidance','/guide-repair','/guide-conservation','/accreditation','/projects','/heritage'].indexOf(h)>=0;
   document.getElementById('moreBtn').classList.toggle('active', inMore);
   document.title=TITLES[h];
   var url=location.origin+(h==='/'?'/':h);
