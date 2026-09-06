@@ -277,6 +277,18 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
 /* ---------- accreditation ---------- */
 .acc-hero{display:grid;grid-template-columns:1fr .82fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center}
 @media (max-width:860px){.acc-hero{grid-template-columns:1fr}}
+/* Official marks. Both supplied artwork has its own background — Accoya's
+   is white on green, Prestige is on white — so neither is tinted or
+   recoloured; they sit on their own card as the brand guidelines require. */
+.badge .mark-official{width:min(240px,86%);height:auto;display:block;margin:0 auto 1.1rem;border-radius:4px}
+.creds{display:flex;flex-wrap:wrap;gap:clamp(1rem,3vw,2.4rem);align-items:center;justify-content:center}
+.cred{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:clamp(1.1rem,2.5vw,1.6rem);
+  box-shadow:var(--shadow-s);display:flex;flex-direction:column;align-items:center;gap:.7rem;text-align:center;
+  flex:0 1 260px}
+.cred img{display:block;height:auto;border-radius:3px}
+.cred .accoya{width:190px}
+.cred .prestige{width:112px}
+.cred span{font-size:.74rem;color:var(--mute);line-height:1.5}
 .badge{border:1px solid var(--rule);background:#fff;border-radius:8px;padding:clamp(1.6rem,4vw,2.6rem);text-align:center;box-shadow:var(--shadow-s)}
 .badge .ring{width:120px;height:120px;border:1px solid var(--brass);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1.3rem;position:relative}
 .badge .ring::before{content:"";position:absolute;inset:6px;border:1px solid rgba(169,128,59,.28);border-radius:50%}
@@ -703,7 +715,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
         </div>
         <div class="badge rv">
           <div class="ring"><b>50</b><span>Year guarantee</span></div>
-          <h3 style="margin-bottom:.4rem">Accoya® approved manufacturer</h3>
+          <img class="mark-official" src="/assets/accoya-approved-manufacturer.jpg" width="966" height="508" loading="lazy" decoding="async" alt="Accoya approved manufacturer">
           <p class="small" style="margin-bottom:0">50 years above ground · 25 years in ground, against rot and fungal decay</p>
         </div>
       </div>
@@ -1151,7 +1163,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
       </div>
       <div class="badge rv">
         <div class="ring"><b>50</b><span>Year guarantee</span></div>
-        <h3 style="margin-bottom:.4rem">Accoya® approved manufacturer</h3>
+        <img class="mark-official" src="/assets/accoya-approved-manufacturer.jpg" width="966" height="508" loading="lazy" decoding="async" alt="Accoya approved manufacturer">
         <p class="small" style="margin-bottom:0">50 years above ground · 25 years in ground, against rot and fungal decay</p>
       </div>
     </div>
@@ -1222,6 +1234,25 @@ footer.site .fb a:hover{color:var(--brass-lt)}
     </div>
     <div class="gallery rv" id="gallery"></div>
     <div class="gmore"><button class="btn btn-line" type="button" id="galMore">Show more work <span class="ar">↓</span></button></div>
+  </div></section>
+
+  <section class="bg-sage tight"><div class="wrap">
+    <div class="head-2 rv" style="margin-bottom:1.8rem">
+      <div><p class="label">Recognition</p><h2 class="sect">Accredited, and independently recognised.</h2></div>
+      <p class="lede">Two things worth knowing about who you are dealing with.</p>
+    </div>
+    <div class="creds rv">
+      <div class="cred">
+        <img class="accoya" src="/assets/accoya-approved-manufacturer.jpg" width="966" height="508"
+             loading="lazy" decoding="async" alt="Accoya approved manufacturer">
+        <span>Assessed against Accoya's manufacturing standard, which is what carries the 50-year guarantee.</span>
+      </div>
+      <div class="cred">
+        <img class="prestige" src="/assets/prestige-awards.jpg" width="1000" height="1061"
+             loading="lazy" decoding="async" alt="Prestige Awards">
+        <span>Carpentry Company of the Year.</span>
+      </div>
+    </div>
   </div></section>
 </div>
 

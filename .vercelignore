@@ -4,3 +4,7 @@
 docs/
 supabase/
 .claude/
+
+# Brand collateral and the certificate live in the repo for reference,
+# but must not be served from the public site.
+assets/*.pdf
