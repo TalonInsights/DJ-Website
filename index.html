@@ -255,15 +255,25 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
    Entries still needing a date or wording use <div class="tl-slot">;
    replace the div with <h3> + <p> once confirmed, and swap the dashed
    "Year" chip for the real year. On wide screens the milestones alternate
-   above and below a single axis and reveal left to right. */
-.tline{list-style:none;margin:2.4rem 0 0;padding:0;position:relative}
+   above and below a single axis.
+   Reveal: the brass line draws to the current milestone, each marker pops
+   as the line reaches it, then the entry rises. Afterwards (.ready) a hover
+   or tap spotlights one milestone and pulls the line back to it. The JS
+   near the foot of the page sets --fx/--fy to the marker positions. */
+.tline{list-style:none;margin:2.4rem 0 0;padding:0;position:relative;--fx:0px;--fy:0px}
 .tline::before{content:"";position:absolute;left:5px;top:.6rem;bottom:.6rem;width:1px;
   background:linear-gradient(180deg,transparent,var(--rule-dk) 6%,var(--rule-dk) 94%,transparent)}
-.tline li{position:relative;padding:0 0 2.1rem 2.1rem}
+.tline::after{content:"";position:absolute;left:5px;top:.6rem;width:1px;height:0;background:var(--brass);z-index:0;
+  transition:height 1.5s cubic-bezier(.3,.2,.3,1),width 1.5s cubic-bezier(.3,.2,.3,1)}
+.tline.in::after{height:var(--fy)}
+.tline.ready::after{transition:height .5s var(--ease),width .5s var(--ease)}
+.tline li{position:relative;z-index:1;padding:0 0 2.1rem 2.1rem;transition:opacity .35s var(--ease)}
 .tline li:last-child{padding-bottom:0}
 .tline li::before{content:"";position:absolute;left:0;top:.5rem;width:11px;height:11px;border-radius:50%;
-  background:#fff;border:1.5px solid var(--brass);box-shadow:0 0 0 4px var(--sage)}
+  background:#fff;border:1.5px solid var(--brass);box-shadow:0 0 0 4px var(--sage);
+  transition:transform .35s var(--ease),background .35s}
 .tline li.now::before{background:var(--brass);box-shadow:0 0 0 4px var(--sage),0 0 0 5px var(--brass-lt)}
+.tl-body{transition:transform .4s var(--ease)}
 .tline .yr{display:block;font-family:var(--display);font-weight:200;font-size:2.5rem;line-height:1;
   letter-spacing:-.02em;color:var(--brass);margin-bottom:.55rem}
 .tline .yr.tbc{display:inline-block;font-family:var(--body);font-size:.64rem;font-weight:600;letter-spacing:.18em;
@@ -271,22 +281,48 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
   padding:.34rem .75rem;margin:.35rem 0 .9rem;line-height:1}
 .tline h3{font-size:1.15rem;margin:0 0 .3rem}
 .tline p{margin:0;color:var(--slate);font-size:.94rem}
-.tl-slot{border:1.5px dashed var(--rule-dk);border-radius:5px;background:#fff;padding:.9rem 1.1rem}
+.tl-slot{border:1.5px dashed var(--rule-dk);border-radius:5px;background:#fff;padding:.9rem 1.1rem;
+  transition:box-shadow .4s var(--ease),border-color .4s}
 .tl-slot b{display:block;font-size:.8rem;color:var(--slate)}
 .tl-slot span{display:block;font-size:.75rem;color:var(--mute);line-height:1.55;margin-top:.15rem}
-/* Entries stagger in once the list itself has revealed. */
-.tline li{opacity:0;transform:translateY(14px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
-.tline.in li{opacity:1;transform:none}
-.tline li:nth-child(2){transition-delay:.12s}.tline li:nth-child(3){transition-delay:.24s}
-.tline li:nth-child(4){transition-delay:.36s}.tline li:nth-child(5){transition-delay:.48s}
-@media (prefers-reduced-motion:reduce){.tline li{opacity:1;transform:none;transition:none}}
+/* reveal sequence */
+.tline li:nth-child(1){--d:0s}.tline li:nth-child(2){--d:.28s}.tline li:nth-child(3){--d:.56s}
+.tline li:nth-child(4){--d:.84s}.tline li:nth-child(5){--d:1.12s}
+.tline:not(.in) li::before{transform:scale(0)}
+.tline:not(.in) .tl-body{opacity:0;transform:translateY(12px)}
+.tline.in li::before{animation:tl-pop .5s var(--ease) backwards;animation-delay:calc(var(--d) + .1s)}
+.tline.in .tl-body{animation:tl-up .7s var(--ease) backwards;animation-delay:calc(var(--d) + .25s)}
+.tline.in li.now::before{animation:tl-pop .5s var(--ease) backwards,tl-pulse 2.8s ease-out infinite;
+  animation-delay:calc(var(--d) + .1s),calc(var(--d) + 1.3s)}
+@keyframes tl-pop{from{transform:scale(0)}60%{transform:scale(1.4)}to{transform:scale(1)}}
+@keyframes tl-up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes tl-pulse{0%{box-shadow:0 0 0 4px var(--sage),0 0 0 5px var(--brass-lt)}
+  70%,100%{box-shadow:0 0 0 4px var(--sage),0 0 0 13px rgba(199,155,76,0)}}
+/* spotlight: hover on pointer devices, .active from a tap anywhere */
+@media (hover:hover){
+  .tline.ready li:hover .tl-body{transform:translateY(-4px)}
+  .tline.ready li:hover::before{transform:scale(1.4);background:var(--brass)}
+  .tline.ready li:hover::after{background:var(--brass)}
+  .tline.ready li:hover .tl-slot{box-shadow:var(--shadow-m);border-color:var(--brass-lt)}
+  .tline.ready:has(li:hover) li:not(:hover){opacity:.45}
+}
+.tline.ready li.active .tl-body{transform:translateY(-4px)}
+.tline.ready li.active::before{transform:scale(1.4);background:var(--brass)}
+.tline.ready li.active::after{background:var(--brass)}
+.tline.ready li.active .tl-slot{box-shadow:var(--shadow-m);border-color:var(--brass-lt)}
+.tline.ready.has-active li:not(.active){opacity:.45}
+@media (prefers-reduced-motion:reduce){
+  .tline::after,.tline li,.tline li::before,.tline li::after,.tl-body,.tl-slot{transition:none;animation:none!important}
+  .tline:not(.in) li::before{transform:none}
+  .tline:not(.in) .tl-body{opacity:1;transform:none}
+}
 @media (min-width:920px){
   .tline{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:auto 1px auto;
     gap:0 clamp(1rem,2vw,1.6rem);margin-top:3.4rem}
   .tline::before{position:static;grid-column:1/-1;grid-row:2;width:auto;height:1px;
-    background:linear-gradient(90deg,transparent,var(--rule-dk) 5%,var(--rule-dk))}
-  .tline::after{content:"";grid-column:5;grid-row:2;justify-self:end;align-self:center;width:7px;height:7px;margin-right:-1px;
-    border-top:1px solid var(--brass);border-right:1px solid var(--brass);transform:rotate(45deg)}
+    background:linear-gradient(90deg,transparent,var(--rule-dk) 5%,var(--rule-dk) 95%,transparent)}
+  .tline::after{position:static;grid-column:1/-1;grid-row:2;justify-self:start;align-self:start;width:0;height:1px}
+  .tline.in::after{width:var(--fx);height:1px}
   .tline li{padding:0}
   .tline li:nth-child(odd){grid-row:1;align-self:end;padding-bottom:2.4rem}
   .tline li:nth-child(even){grid-row:3;align-self:start;padding-top:2.4rem}
@@ -294,9 +330,12 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
   .tline li:nth-child(4){grid-column:4}.tline li:nth-child(5){grid-column:5}
   .tline li::before{left:0;top:auto;bottom:-6px}
   .tline li:nth-child(even)::before{top:-6px;bottom:auto}
-  .tline li::after{content:"";position:absolute;left:5px;width:1px;background:var(--rule-dk)}
-  .tline li:nth-child(odd)::after{bottom:0;height:2.4rem}
-  .tline li:nth-child(even)::after{top:0;height:2.4rem}
+  .tline li::after{content:"";position:absolute;left:5px;width:1px;background:var(--rule-dk);transition:background .35s}
+  .tline li:nth-child(odd)::after{bottom:0;height:2.4rem;transform-origin:bottom}
+  .tline li:nth-child(even)::after{top:0;height:2.4rem;transform-origin:top}
+  .tline:not(.in) li::after{transform:scaleY(0)}
+  .tline.in li::after{animation:tl-stem .4s var(--ease) backwards;animation-delay:calc(var(--d) + .15s)}
+  @keyframes tl-stem{from{transform:scaleY(0)}to{transform:scaleY(1)}}
   .tline .yr{font-size:2.2rem}
   .tline .yr.tbc{font-size:.62rem}
   .tline h3{font-size:1rem}
@@ -1421,25 +1460,35 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
     </div>
     <ol class="tline rv">
       <li>
-        <span class="yr tbc">Year</span>
-        <div class="tl-slot"><b>David starts the business</b><span>What year, and what was he doing at the outset &mdash; carpentry on site, or joinery from a workshop?</span></div>
+        <div class="tl-body">
+          <span class="yr tbc">Year</span>
+          <div class="tl-slot"><b>David starts the business</b><span>What year, and what was he doing at the outset &mdash; carpentry on site, or joinery from a workshop?</span></div>
+        </div>
       </li>
       <li>
-        <span class="yr tbc">Year</span>
-        <div class="tl-slot"><b>The Telford workshop</b><span>When did the business move into Unit 11, Tweedale Court, and where was it before?</span></div>
+        <div class="tl-body">
+          <span class="yr tbc">Year</span>
+          <div class="tl-slot"><b>The Telford workshop</b><span>When did the business move into Unit 11, Tweedale Court, and where was it before?</span></div>
+        </div>
       </li>
       <li>
-        <span class="yr tbc">Year</span>
-        <div class="tl-slot"><b>Harry joins</b><span>When did Harry come into the business, and was there a trade apprenticeship or training worth naming?</span></div>
+        <div class="tl-body">
+          <span class="yr tbc">Year</span>
+          <div class="tl-slot"><b>Harry joins</b><span>When did Harry come into the business, and was there a trade apprenticeship or training worth naming?</span></div>
+        </div>
       </li>
       <li>
-        <span class="yr tbc">Year</span>
-        <div class="tl-slot"><b>Accoya approval</b><span>When was approved-manufacturer status granted? The certificate will carry the date.</span></div>
+        <div class="tl-body">
+          <span class="yr tbc">Year</span>
+          <div class="tl-slot"><b>Accoya approval</b><span>When was approved-manufacturer status granted? The certificate will carry the date.</span></div>
+        </div>
       </li>
       <li class="now">
-        <span class="yr">2026</span>
-        <h3>Carpentry Company of the Year</h3>
-        <p>Recognised at the Prestige Awards.</p>
+        <div class="tl-body">
+          <span class="yr">2026</span>
+          <h3>Carpentry Company of the Year</h3>
+          <p>Recognised at the Prestige Awards.</p>
+        </div>
       </li>
     </ol>
   </div></section>
@@ -2375,6 +2424,54 @@ document.addEventListener('keydown',function(e){
   else if(e.key==='ArrowRight') lbShow(lbIdx+1);
 });
 
+
+/* ---- About: milestone timeline ----
+   Sets --fx/--fy on the list to the marker position of the current (or the
+   hovered / tapped) milestone; the CSS draws the brass line to that point.
+   A ResizeObserver covers the page becoming visible and any reflow. */
+(function(){
+  var ol=document.querySelector('.tline'); if(!ol) return;
+  var items=[].slice.call(ol.children), now=ol.querySelector('li.now')||items[items.length-1], rt, readyT;
+  function fill(li){
+    ol.style.setProperty('--fx',(li.offsetLeft+5.5)+'px');
+    ol.style.setProperty('--fy',(li.offsetTop+13.5)+'px');
+  }
+  function current(){ return ol.querySelector('li.active')||now; }
+  function armReady(){
+    if(readyT||ol.classList.contains('ready')) return;
+    readyT=setTimeout(function(){ ol.classList.add('ready'); },1700);
+  }
+  if(ol.classList.contains('in')) armReady();
+  new MutationObserver(function(){ if(ol.classList.contains('in')) armReady(); })
+    .observe(ol,{attributes:true,attributeFilter:['class']});
+  if('ResizeObserver' in window){ new ResizeObserver(function(){ fill(current()); }).observe(ol); }
+  else { fill(current()); window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(function(){ fill(current()); },120); }); }
+  var lt;  /* leaving one item and entering the next must not bounce the line via 'now' */
+  items.forEach(function(li){
+    li.addEventListener('pointerenter',function(e){
+      if(e.pointerType!=='mouse' || ol.classList.contains('has-active')) return;
+      clearTimeout(lt); fill(li);
+    });
+    li.addEventListener('pointerleave',function(e){
+      if(e.pointerType!=='mouse') return;
+      clearTimeout(lt); lt=setTimeout(function(){ fill(current()); },90);
+    });
+    li.addEventListener('click',function(){
+      var on=li.classList.contains('active');
+      items.forEach(function(o){ o.classList.remove('active'); });
+      ol.classList.toggle('has-active',!on);
+      if(!on) li.classList.add('active');
+      fill(current());
+    });
+  });
+  ol.addEventListener('pointerleave',function(){ fill(current()); });
+  /* a tap anywhere outside the timeline clears a tapped spotlight */
+  document.addEventListener('click',function(e){
+    if(!ol.classList.contains('has-active') || ol.contains(e.target)) return;
+    items.forEach(function(o){ o.classList.remove('active'); });
+    ol.classList.remove('has-active'); fill(current());
+  });
+})();
 
 /* ---- contact form: file drop zone + newsletter stub ---- */
 (function(){
