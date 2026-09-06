@@ -254,25 +254,27 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
 /* ---------- milestone timeline ----------
    Entries still needing a date or wording use <div class="tl-slot">;
    replace the div with <h3> + <p> once confirmed, and swap the dashed
-   "Year" chip for the real year. On wide screens the milestones alternate
-   above and below a single axis.
-   Reveal: the brass line draws to the current milestone, each marker pops
-   as the line reaches it, then the entry rises. Afterwards (.ready) a hover
-   or tap spotlights one milestone and pulls the line back to it. The JS
-   near the foot of the page sets --fx/--fy to the marker positions. */
-.tline{list-style:none;margin:2.4rem 0 0;padding:0;position:relative;--fx:0px;--fy:0px}
+   "Year" chip for the real year.
+   Phone: a single column down a left-hand axis. Above 680px the axis is
+   centred and entries alternate left and right of it, left-hand entries
+   right-aligned so both sides hug the line.
+   Reveal: the brass line draws down to the current milestone, each marker
+   pops as the line reaches it, its stem extends and the entry rises. Once
+   settled (.ready) a hover or tap spotlights one milestone and pulls the
+   line back to it. The JS near the foot of the page sets --fy. */
+.tline{list-style:none;margin:2.4rem 0 0;padding:0;position:relative;--fy:0px;--tg:clamp(1.6rem,4vw,2.6rem)}
 .tline::before{content:"";position:absolute;left:5px;top:.6rem;bottom:.6rem;width:1px;
   background:linear-gradient(180deg,transparent,var(--rule-dk) 6%,var(--rule-dk) 94%,transparent)}
 .tline::after{content:"";position:absolute;left:5px;top:.6rem;width:1px;height:0;background:var(--brass);z-index:0;
-  transition:height 1.5s cubic-bezier(.3,.2,.3,1),width 1.5s cubic-bezier(.3,.2,.3,1)}
+  transition:height 1.5s cubic-bezier(.3,.2,.3,1)}
 .tline.in::after{height:var(--fy)}
-.tline.ready::after{transition:height .5s var(--ease),width .5s var(--ease)}
+.tline.ready::after{transition:height .5s var(--ease)}
 .tline li{position:relative;z-index:1;padding:0 0 2.1rem 2.1rem;transition:opacity .35s var(--ease)}
 .tline li:last-child{padding-bottom:0}
 .tline li::before{content:"";position:absolute;left:0;top:.5rem;width:11px;height:11px;border-radius:50%;
   background:#fff;border:1.5px solid var(--brass);box-shadow:0 0 0 4px var(--sage);
   transition:transform .35s var(--ease),background .35s}
-.tline li.now::before{background:var(--brass);box-shadow:0 0 0 4px var(--sage),0 0 0 5px var(--brass-lt)}
+.tline li.now::before{top:calc(1.25rem - 5.5px);background:var(--brass);box-shadow:0 0 0 4px var(--sage),0 0 0 5px var(--brass-lt)}
 .tl-body{transition:transform .4s var(--ease)}
 .tline .yr{display:block;font-family:var(--display);font-weight:200;font-size:2.5rem;line-height:1;
   letter-spacing:-.02em;color:var(--brass);margin-bottom:.55rem}
@@ -281,6 +283,9 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
   padding:.34rem .75rem;margin:.35rem 0 .9rem;line-height:1}
 .tline h3{font-size:1.15rem;margin:0 0 .3rem}
 .tline p{margin:0;color:var(--slate);font-size:.94rem}
+.tl-award{display:flex;align-items:center;gap:1rem}
+.tl-award img{width:64px;height:auto;flex:0 0 auto;background:#fff;border:1px solid var(--rule);border-radius:6px;padding:3px}
+.tl-award h3{margin-bottom:.15rem}
 .tl-slot{border:1.5px dashed var(--rule-dk);border-radius:5px;background:#fff;padding:.9rem 1.1rem;
   transition:box-shadow .4s var(--ease),border-color .4s}
 .tl-slot b{display:block;font-size:.8rem;color:var(--slate)}
@@ -314,33 +319,29 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
 @media (prefers-reduced-motion:reduce){
   .tline::after,.tline li,.tline li::before,.tline li::after,.tl-body,.tl-slot{transition:none;animation:none!important}
   .tline:not(.in) li::before{transform:none}
+  .tline:not(.in) li::after{transform:none}
   .tline:not(.in) .tl-body{opacity:1;transform:none}
 }
-@media (min-width:920px){
-  .tline{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:auto 1px auto;
-    gap:0 clamp(1rem,2vw,1.6rem);margin-top:3.4rem}
-  .tline::before{position:static;grid-column:1/-1;grid-row:2;width:auto;height:1px;
-    background:linear-gradient(90deg,transparent,var(--rule-dk) 5%,var(--rule-dk) 95%,transparent)}
-  .tline::after{position:static;grid-column:1/-1;grid-row:2;justify-self:start;align-self:start;width:0;height:1px}
-  .tline.in::after{width:var(--fx);height:1px}
-  .tline li{padding:0}
-  .tline li:nth-child(odd){grid-row:1;align-self:end;padding-bottom:2.4rem}
-  .tline li:nth-child(even){grid-row:3;align-self:start;padding-top:2.4rem}
-  .tline li:nth-child(1){grid-column:1}.tline li:nth-child(2){grid-column:2}.tline li:nth-child(3){grid-column:3}
-  .tline li:nth-child(4){grid-column:4}.tline li:nth-child(5){grid-column:5}
-  .tline li::before{left:0;top:auto;bottom:-6px}
-  .tline li:nth-child(even)::before{top:-6px;bottom:auto}
-  .tline li::after{content:"";position:absolute;left:5px;width:1px;background:var(--rule-dk);transition:background .35s}
-  .tline li:nth-child(odd)::after{bottom:0;height:2.4rem;transform-origin:bottom}
-  .tline li:nth-child(even)::after{top:0;height:2.4rem;transform-origin:top}
-  .tline:not(.in) li::after{transform:scaleY(0)}
+@media (min-width:680px){
+  .tline{display:grid;grid-template-columns:1fr 1fr;column-gap:calc(var(--tg)*2);row-gap:1.6rem;margin-top:3rem}
+  .tline::before,.tline::after{left:50%;margin-left:-.5px}
+  .tline li{padding:0;width:100%;max-width:440px}   /* entries hug the axis on wide screens */
+  .tline li:nth-child(odd){grid-column:1;justify-self:end;text-align:right}
+  .tline li:nth-child(even){grid-column:2;justify-self:start}
+  .tline li:nth-child(1){grid-row:1}.tline li:nth-child(2){grid-row:2}.tline li:nth-child(3){grid-row:3}
+  .tline li:nth-child(4){grid-row:4}.tline li:nth-child(5){grid-row:5}
+  .tline li::before{left:auto;right:calc(-1*var(--tg) - 5.5px)}
+  .tline li:nth-child(even)::before{right:auto;left:calc(-1*var(--tg) - 5.5px)}
+  /* stem from the entry to its marker */
+  .tline li::after{content:"";position:absolute;top:calc(.5rem + 5px);width:var(--tg);height:1px;background:var(--rule-dk);
+    transition:background .35s}
+  .tline li:nth-child(odd)::after{right:calc(-1*var(--tg));transform-origin:right}
+  .tline li:nth-child(even)::after{left:calc(-1*var(--tg));transform-origin:left}
+  .tline li.now::after{top:1.25rem}
+  .tline:not(.in) li::after{transform:scaleX(0)}
   .tline.in li::after{animation:tl-stem .4s var(--ease) backwards;animation-delay:calc(var(--d) + .15s)}
-  @keyframes tl-stem{from{transform:scaleY(0)}to{transform:scaleY(1)}}
-  .tline .yr{font-size:2.2rem}
-  .tline .yr.tbc{font-size:.62rem}
-  .tline h3{font-size:1rem}
-  .tline p{font-size:.86rem}
-  .tl-slot{padding:.8rem .9rem}
+  @keyframes tl-stem{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  .tline li:nth-child(odd) .tl-award{flex-direction:row-reverse}
 }
 .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:clamp(.8rem,2vw,1.5rem)}
 .shot{margin:0}
@@ -1486,8 +1487,10 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
       <li class="now">
         <div class="tl-body">
           <span class="yr">2026</span>
-          <h3>Carpentry Company of the Year</h3>
-          <p>Recognised at the Prestige Awards.</p>
+          <div class="tl-award">
+            <img src="/assets/prestige-awards.jpg" width="1000" height="1061" loading="lazy" decoding="async" alt="Prestige Awards">
+            <div><h3>Carpentry Company of the Year</h3><p>Recognised at the Prestige Awards.</p></div>
+          </div>
         </div>
       </li>
     </ol>
@@ -2426,15 +2429,15 @@ document.addEventListener('keydown',function(e){
 
 
 /* ---- About: milestone timeline ----
-   Sets --fx/--fy on the list to the marker position of the current (or the
+   Sets --fy on the list to the marker position of the current (or the
    hovered / tapped) milestone; the CSS draws the brass line to that point.
    A ResizeObserver covers the page becoming visible and any reflow. */
 (function(){
   var ol=document.querySelector('.tline'); if(!ol) return;
   var items=[].slice.call(ol.children), now=ol.querySelector('li.now')||items[items.length-1], rt, readyT;
   function fill(li){
-    ol.style.setProperty('--fx',(li.offsetLeft+5.5)+'px');
-    ol.style.setProperty('--fy',(li.offsetTop+13.5)+'px');
+    var top=parseFloat(getComputedStyle(li,'::before').top)||8;   /* marker offset within the entry */
+    ol.style.setProperty('--fy',(li.offsetTop+top+5.5)+'px');
   }
   function current(){ return ol.querySelector('li.active')||now; }
   function armReady(){
