@@ -644,6 +644,9 @@ footer.site .fb a{color:#7B857D}
 .fb .staff{opacity:0;transition:opacity .35s var(--ease)}
 .fb:hover .staff,.fb .staff:focus-visible{opacity:1}
 footer.site .fb a:hover{color:var(--brass-lt)}
+/* Accoya's own artwork carries its green ground, so it sits on the dark
+   footer without a card behind it. */
+footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-radius:3px}
 .staff{display:inline-flex;align-items:center;gap:.4rem}
 .staff::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--brass);opacity:.55}
 .callbar{display:none}
@@ -1228,7 +1231,13 @@ footer.site .fb a:hover{color:var(--brass-lt)}
       <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Building control</h3><p>Where the work needs signing off, an LABC approved building inspector can be arranged through us rather than left for you to organise.</p></div>
       <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Insurance &amp; public liability</h3><p>£5 million public liability cover, which is the figure architects and main contractors usually want before adding a joiner to a tender list.</p></div>
       <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Timber sourcing</h3><p>FSC and PEFC chain of custody, with documentation available on request. Increasingly asked for on heritage trust and public sector work.</p></div>
-      <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Carpentry Company of the Year</h3><p>Awarded at the Prestige Awards, 2026.</p></div>
+    </div>
+    <div class="creds rv" style="margin-top:2.4rem;justify-content:flex-start">
+      <div class="cred">
+        <img class="prestige" src="/assets/prestige-awards.jpg" width="1000" height="1061"
+             loading="lazy" decoding="async" alt="Prestige Awards">
+        <span><b style="color:var(--ink)">Carpentry Company of the Year</b><br>Prestige Awards, 2026.</span>
+      </div>
     </div>
   </div></section>
 </div>
@@ -1697,7 +1706,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
 
 <footer class="site"><div class="wrap">
   <div class="fg">
-    <div><h4>David Jackson &amp; Son</h4><p>Joinery. Bespoke timber windows, doors and joinery for listed, period and heritage properties across Shropshire.</p><p class="small" style="color:#7B857D;margin:0">Accoya® approved manufacturer</p></div>
+    <div><h4>David Jackson &amp; Son</h4><p>Joinery. Bespoke timber windows, doors and joinery for listed, period and heritage properties across Shropshire.</p><img class="fmark" src="/assets/accoya-approved-manufacturer.jpg" width="966" height="508" loading="lazy" decoding="async" alt="Accoya approved manufacturer"></div>
     <div><h4>Contact</h4><ul><li>Unit 11, Tweedale Court<br>Telford, Shropshire<br>TF7 4JZ</li><li style="padding-top:.7rem"><a href="tel:01952585709">01952 585709</a></li><li><a href="mailto:info@davidjacksonandson.com">info@davidjacksonandson.com</a></li></ul></div>
     <div><h4>Pages</h4><ul><li><a href="/windows">Timber windows</a></li><li><a href="/doors">Timber doors</a></li><li><a href="/about">About us</a></li><li><a href="/contact">Get a quote</a></li></ul></div>
     <div><h4>More</h4><ul><li><a href="/guidance">Guidance</a></li><li><a href="/accreditation">Accreditation</a></li><li><a href="/materials">Materials</a></li><li><a href="/projects">Projects</a></li><li><a href="/heritage">Listed &amp; heritage</a></li></ul></div>
