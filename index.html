@@ -340,18 +340,31 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
 /* ---------- accreditation ---------- */
 .acc-hero{display:grid;grid-template-columns:1fr .82fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center}
 @media (max-width:860px){.acc-hero{grid-template-columns:1fr}}
-/* Official marks. Both supplied artwork has its own background — Accoya's
-   is white on green, Prestige is on white — so neither is tinted or
-   recoloured; they sit on their own card as the brand guidelines require. */
+/* The Accoya mark is supplied white-on-green and is never recoloured. */
 .badge .mark-official{width:min(240px,86%);height:auto;display:block;margin:0 auto 1.1rem;border-radius:4px}
-.creds{display:flex;flex-wrap:wrap;gap:clamp(1rem,3vw,2.4rem);align-items:center;justify-content:center}
-.cred{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:clamp(1.1rem,2.5vw,1.6rem);
-  box-shadow:var(--shadow-s);display:flex;flex-direction:column;align-items:center;gap:.7rem;text-align:center;
-  flex:0 1 260px}
-.cred img{display:block;height:auto;border-radius:3px}
-.cred .accoya{width:190px}
-.cred .prestige{width:112px}
-.cred span{font-size:.74rem;color:var(--mute);line-height:1.5}
+
+/* ---------- award ----------
+   The Prestige mark is supplied on white, so it sits in a white panel with
+   a hairline brass frame, like a certificate on a wall, opposite the wording.
+   Used on Accreditation and again at the foot of Projects. */
+.award{display:grid;gap:2.6rem;align-items:center}
+@media (min-width:880px){.award{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(2.6rem,7vw,6.5rem)}}
+.award-seal{position:relative;width:100%;max-width:440px;margin:0 auto;background:#fff;border:1px solid var(--rule);
+  border-radius:8px;padding:clamp(2rem,4.5vw,3.2rem);box-shadow:var(--shadow-m)}
+.bg-green .award-seal{border-color:transparent;box-shadow:0 2px 6px rgba(0,0,0,.2),0 26px 60px rgba(0,0,0,.3)}
+.award-seal::before{content:"";position:absolute;inset:12px;border:1px solid var(--brass);opacity:.55;border-radius:4px;pointer-events:none}
+.award-seal img{display:block;width:100%;max-width:280px;height:auto;margin:0 auto}
+.award-seal .award-cap{margin:1.5rem auto 0;padding-top:1.1rem;border-top:1px solid var(--rule);max-width:280px;
+  text-align:center;font-size:.64rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;line-height:1.7;color:var(--slate)}
+.award h2{font-family:var(--display);font-weight:300;font-size:clamp(2.2rem,4.8vw,3.6rem);line-height:1.08;
+  letter-spacing:-.02em;margin:0 0 1.2rem;max-width:14ch}
+.award .lede{max-width:46ch}
+.award .btn{margin-top:1.8rem}
+.award-also{display:flex;align-items:center;gap:1.3rem;margin-top:2.4rem;padding-top:1.8rem;border-top:1px solid var(--rule-dk)}
+.bg-green .award-also{border-top-color:rgba(255,255,255,.14)}
+.award-also img{width:132px;height:auto;flex:0 0 auto;border-radius:3px}
+.award-also p{margin:0;font-size:.9rem;max-width:44ch}
+@media (max-width:560px){.award-also{flex-direction:column;align-items:flex-start}}
 .badge{border:1px solid var(--rule);background:#fff;border-radius:8px;padding:clamp(1.6rem,4vw,2.6rem);text-align:center;box-shadow:var(--shadow-s)}
 .badge .guarantee{width:clamp(112px,26%,148px);height:auto;display:block;margin:0 auto 1.15rem}
 
@@ -1224,20 +1237,27 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
       </div>
     </div>
   </div></section>
-  <section class="bg-green"><div class="wrap">
-    <div class="head-2 rv"><div><p class="label">Also worth knowing</p><h2 class="sect">Other credentials and where they sit.</h2></div>
-    <p class="lede" style="color:#BDCABE">Documentation for any of these can be provided on request, which is usually what an architect or main contractor is asking for.</p></div>
-    <div class="g3">
-      <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Building control</h3><p>Where the work needs signing off, an LABC approved building inspector can be arranged through us rather than left for you to organise.</p></div>
-      <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Insurance &amp; public liability</h3><p>£5 million public liability cover, which is the figure architects and main contractors usually want before adding a joiner to a tender list.</p></div>
-      <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Timber sourcing</h3><p>FSC and PEFC chain of custody, with documentation available on request. Increasingly asked for on heritage trust and public sector work.</p></div>
-    </div>
-    <div class="creds rv" style="margin-top:2.4rem;justify-content:flex-start">
-      <div class="cred">
-        <img class="prestige" src="/assets/prestige-awards.jpg" width="1000" height="1061"
-             loading="lazy" decoding="async" alt="Prestige Awards">
-        <span><b style="color:var(--ink)">Carpentry Company of the Year</b><br>Prestige Awards, 2026.</span>
+  <section class="bg-green on-dark"><div class="wrap">
+    <div class="award">
+      <div class="award-seal rv">
+        <img src="/assets/prestige-awards.jpg" width="1000" height="1061" loading="lazy" decoding="async" alt="Prestige Awards">
+        <p class="award-cap">Carpentry Company<br>of the Year &middot; 2026</p>
       </div>
+      <div class="rv">
+        <p class="label">Prestige Awards &middot; 2026</p>
+        <h2>Carpentry Company of the Year.</h2>
+        <p class="lede">Most of our work arrives by recommendation, and that is still the verdict we take most seriously. Recognition from outside is welcome all the same, and this is a piece of it we are pleased to have.</p>
+        <a class="btn btn-lt" href="/projects">See the work <span class="ar">&#8594;</span></a>
+      </div>
+    </div>
+  </div></section>
+  <section class="bg-sage"><div class="wrap">
+    <div class="head-2 rv"><div><p class="label">Also worth knowing</p><h2 class="sect">Other credentials and where they sit.</h2></div>
+    <p class="lede">Documentation for any of these can be provided on request, which is usually what an architect or main contractor is asking for.</p></div>
+    <div class="g3">
+      <div class="rv"><h3 style="margin-bottom:.4rem">Building control</h3><p>Where the work needs signing off, an LABC approved building inspector can be arranged through us rather than left for you to organise.</p></div>
+      <div class="rv"><h3 style="margin-bottom:.4rem">Insurance &amp; public liability</h3><p>£5 million public liability cover, which is the figure architects and main contractors usually want before adding a joiner to a tender list.</p></div>
+      <div class="rv"><h3 style="margin-bottom:.4rem">Timber sourcing</h3><p>FSC and PEFC chain of custody, with documentation available on request. Increasingly asked for on heritage trust and public sector work.</p></div>
     </div>
   </div></section>
 </div>
@@ -1284,21 +1304,20 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
     <div class="gmore"><button class="btn btn-line" type="button" id="galMore">Show more work <span class="ar">↓</span></button></div>
   </div></section>
 
-  <section class="bg-sage tight"><div class="wrap">
-    <div class="head-2 rv" style="margin-bottom:1.8rem">
-      <div><p class="label">Recognition</p><h2 class="sect">Accredited, and independently recognised.</h2></div>
-      <p class="lede">Two things worth knowing about who you are dealing with.</p>
-    </div>
-    <div class="creds rv">
-      <div class="cred">
-        <img class="accoya" src="/assets/accoya-approved-manufacturer.jpg" width="966" height="508"
-             loading="lazy" decoding="async" alt="Accoya approved manufacturer">
-        <span>Assessed against Accoya's manufacturing standard, which is what carries the 50-year guarantee.</span>
+  <section><div class="wrap">
+    <div class="award">
+      <div class="award-seal rv">
+        <img src="/assets/prestige-awards.jpg" width="1000" height="1061" loading="lazy" decoding="async" alt="Prestige Awards">
+        <p class="award-cap">Carpentry Company<br>of the Year &middot; 2026</p>
       </div>
-      <div class="cred">
-        <img class="prestige" src="/assets/prestige-awards.jpg" width="1000" height="1061"
-             loading="lazy" decoding="async" alt="Prestige Awards">
-        <span>Carpentry Company of the Year, 2026.</span>
+      <div class="rv">
+        <p class="label">Prestige Awards &middot; 2026</p>
+        <h2>Carpentry Company of the Year.</h2>
+        <p class="lede">Most of our work arrives by recommendation, and that is still the verdict we take most seriously. Recognition from outside is welcome all the same, and this is a piece of it we are pleased to have.</p>
+        <div class="award-also">
+          <img src="/assets/accoya-approved-manufacturer.jpg" width="966" height="508" loading="lazy" decoding="async" alt="Accoya approved manufacturer">
+          <p>Also an approved Accoya manufacturer, which is what carries the 50-year guarantee on our external joinery. <a class="tlink" href="/accreditation">About our accreditation</a></p>
+        </div>
       </div>
     </div>
   </div></section>
