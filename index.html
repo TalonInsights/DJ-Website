@@ -574,6 +574,10 @@ footer.site a:hover{color:var(--brass-lt)}
 footer.site ul{list-style:none;margin:0;padding:0}footer.site li{padding:.22rem 0}
 .fb{border-top:1px solid rgba(255,255,255,.14);margin-top:2.4rem;padding-top:1.2rem;display:flex;flex-wrap:wrap;gap:.8rem;justify-content:space-between;font-size:.77rem;color:#7B857D}
 footer.site .fb a{color:#7B857D}
+/* Staff-only link: present for anyone who needs it, invisible to customers
+   browsing the footer. Focus reveals it so keyboard users can still reach it. */
+.fb .staff{opacity:0;transition:opacity .35s var(--ease)}
+.fb:hover .staff,.fb .staff:focus-visible{opacity:1}
 footer.site .fb a:hover{color:var(--brass-lt)}
 .staff{display:inline-flex;align-items:center;gap:.4rem}
 .staff::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--brass);opacity:.55}
@@ -652,7 +656,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
     <div><b>Accoya®</b><span>Approved manufacturer — 50-year timber guarantee</span></div>
     <div><b>50 years</b><span>Combined experience, father and son</span></div>
     <div><b>Grade II</b><span>Listed and World Heritage Site work undertaken</span></div>
-    <div><b>Made here</b><span>Machined and assembled in Telford, not imported</span></div>
+    <div><b>Made in our workshop in Telford</b><span>Cut and assembled by us, never bought in</span></div>
   </div></div>
 
   <section>
@@ -667,7 +671,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
         <article class="card rv"><div class="cimg"><img loading="lazy" decoding="async" src="https://img1.wsimg.com/isteam/ip/e9b2f055-9f75-45f0-af87-5650a1143928/IMG_3061.jpeg/:/cr=t:12.5%25,l:0%25,w:100%25,h:75%25/rs=w:760,cg:true" alt="A timber casement window under manufacture showing the moulded frame section."></div>
           <div class="cb"><h3>Casement windows</h3><p>Flush and stormproof casements in traditional profiles, including cottage lights and arched heads.</p><a class="tlink" href="/windows">Timber windows <span class="ar">→</span></a></div></article>
         <article class="card rv"><div class="cimg"><img loading="lazy" decoding="async" src="https://img1.wsimg.com/isteam/ip/e9b2f055-9f75-45f0-af87-5650a1143928/patio%20doors-0001.jpg/:/rs=w:760,cg:true,m" alt="Handmade timber patio doors with glazed panels fitted in a domestic opening."></div>
-          <div class="cb"><h3>Timber doors</h3><p>Entrance doors, French doors, bi-folds and patio sets, built from the same stock and finished to match your windows.</p><a class="tlink" href="/doors">Timber doors <span class="ar">→</span></a></div></article>
+          <div class="cb"><h3>Timber doors</h3><p>Entrance doors, French doors, bi-folds and patio sets, finished to match your windows.</p><a class="tlink" href="/doors">Timber doors <span class="ar">→</span></a></div></article>
       </div>
     </div>
   </section>
@@ -681,7 +685,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
       <div class="g3">
         <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Six timbers</h3><p>Accoya, Sapele, Idigbo, Oak, Redwood Pine and Tulipwood — chosen for where the joinery is going and how it is being finished.</p></div>
         <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Thirty glass patterns</h3><p>The full Pilkington texture and etched privacy ranges, with privacy levels shown from 1 to 5.</p></div>
-        <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Heritage ironmongery</h3><p>Monkey tail, shepherds crook, bulb and reeded patterns, in eight metal finishes.</p></div>
+        <div class="rv"><h3 style="color:#fff;margin-bottom:.4rem">Ironmongery</h3><p>An array of ironmongery to suit every property, in a wide choice of metal finishes.</p></div>
       </div>
       <p style="margin-top:2.2rem"><a class="btn btn-brass" href="/materials">See the materials <span class="ar">&#8594;</span></a></p>
     </div>
@@ -749,23 +753,6 @@ footer.site .fb a:hover{color:var(--brass-lt)}
     </div>
   </section>
 
-  <section class="tight">
-    <div class="wrap">
-      <div class="nl rv">
-        <div>
-          <h3>Occasional guidance. No unnecessary noise.</h3>
-          <p>New heritage guides, workshop advice and the occasional project worth showing. A handful of useful emails a year, and you can stop at any time.</p>
-        </div>
-        <div>
-          <form id="homeNews">
-            <input type="email" id="homeNewsE" placeholder="Enter your email address" aria-label="Email address" required>
-            <button class="btn btn-brass" type="submit">Join the list</button>
-          </form>
-          <p class="note" id="homeNewsStatus" role="status">We have never sent more than four emails in a year.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <section class="tight bg-white">
     <div class="wrap">
@@ -810,7 +797,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
 <!-- ============================ DOORS ============================ -->
 <div class="page" data-page="/doors">
   <section class="bg-sage tight"><div class="wrap">
-    <p class="label rv">Timber doors · Shropshire</p><h1 class="ptitle rv">Doors built from the same stock as your windows.</h1>
+    <p class="label rv">Timber doors · Shropshire</p><h1 class="ptitle rv">Doors made to the same standard as your windows.</h1>
     <p class="lede rv" style="margin-top:1.2rem">Entrance doors, French doors, bi-folds and patio sets — machined, assembled and finished in the workshop so the timber, the paint and the ironmongery all match.</p>
   </div></section>
   <section><div class="wrap">
