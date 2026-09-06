@@ -262,7 +262,7 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
    pops as the line reaches it, its stem extends and the entry rises. Once
    settled (.ready) a hover or tap spotlights one milestone and pulls the
    line back to it. The JS near the foot of the page sets --fy. */
-.tline{list-style:none;margin:2.4rem 0 0;padding:0;position:relative;--fy:0px;--tg:clamp(1.6rem,4vw,2.6rem)}
+.tline{list-style:none;margin:2.4rem 0 0;padding:0;position:relative;--fy:0px;--tl-bg:var(--paper);--tg:clamp(1.6rem,4vw,2.6rem)}
 .tline::before{content:"";position:absolute;left:5px;top:.6rem;bottom:.6rem;width:1px;
   background:linear-gradient(180deg,transparent,var(--rule-dk) 6%,var(--rule-dk) 94%,transparent)}
 .tline::after{content:"";position:absolute;left:5px;top:.6rem;width:1px;height:0;background:var(--brass);z-index:0;
@@ -272,9 +272,9 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
 .tline li{position:relative;z-index:1;padding:0 0 2.1rem 2.1rem;transition:opacity .35s var(--ease)}
 .tline li:last-child{padding-bottom:0}
 .tline li::before{content:"";position:absolute;left:0;top:.5rem;width:11px;height:11px;border-radius:50%;
-  background:#fff;border:1.5px solid var(--brass);box-shadow:0 0 0 4px var(--sage);
+  background:#fff;border:1.5px solid var(--brass);box-shadow:0 0 0 4px var(--tl-bg);
   transition:transform .35s var(--ease),background .35s}
-.tline li.now::before{top:calc(1.25rem - 5.5px);background:var(--brass);box-shadow:0 0 0 4px var(--sage),0 0 0 5px var(--brass-lt)}
+.tline li.now::before{top:calc(1.25rem - 5.5px);background:var(--brass);box-shadow:0 0 0 4px var(--tl-bg),0 0 0 5px var(--brass-lt)}
 .tl-body{transition:transform .4s var(--ease)}
 .tline .yr{display:block;font-family:var(--display);font-weight:200;font-size:2.5rem;line-height:1;
   letter-spacing:-.02em;color:var(--brass);margin-bottom:.55rem}
@@ -286,7 +286,7 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
 .tl-award{display:flex;align-items:center;gap:1rem}
 .tl-award img{width:64px;height:auto;flex:0 0 auto;background:#fff;border:1px solid var(--rule);border-radius:6px;padding:3px}
 .tl-award h3{margin-bottom:.15rem}
-.tl-slot{border:1.5px dashed var(--rule-dk);border-radius:5px;background:#fff;padding:.9rem 1.1rem;
+.tl-slot{border:1.5px dashed var(--rule-dk);border-radius:5px;background:#fff;padding:.9rem 1.1rem;box-shadow:var(--shadow-s);
   transition:box-shadow .4s var(--ease),border-color .4s}
 .tl-slot b{display:block;font-size:.8rem;color:var(--slate)}
 .tl-slot span{display:block;font-size:.75rem;color:var(--mute);line-height:1.55;margin-top:.15rem}
@@ -301,8 +301,8 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
   animation-delay:calc(var(--d) + .1s),calc(var(--d) + 1.3s)}
 @keyframes tl-pop{from{transform:scale(0)}60%{transform:scale(1.4)}to{transform:scale(1)}}
 @keyframes tl-up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@keyframes tl-pulse{0%{box-shadow:0 0 0 4px var(--sage),0 0 0 5px var(--brass-lt)}
-  70%,100%{box-shadow:0 0 0 4px var(--sage),0 0 0 13px rgba(199,155,76,0)}}
+@keyframes tl-pulse{0%{box-shadow:0 0 0 4px var(--tl-bg),0 0 0 5px var(--brass-lt)}
+  70%,100%{box-shadow:0 0 0 4px var(--tl-bg),0 0 0 13px rgba(199,155,76,0)}}
 /* spotlight: hover on pointer devices, .active from a tap anywhere */
 @media (hover:hover){
   .tline.ready li:hover .tl-body{transform:translateY(-4px)}
@@ -1428,34 +1428,6 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
 
   <section><div class="wrap">
     <div class="head-2 rv">
-      <div><p class="label">How we work</p><h2 class="sect">Measured, made and fitted under one roof.</h2></div>
-      <p class="lede">There is no sales team and no subcontracted manufacturing. The person who measures your windows is the person who makes them, and the person who fits them. That is deliberate &mdash; on heritage work, detail gets lost every time a job changes hands.</p>
-    </div>
-    <div class="g3" style="margin-top:2.4rem">
-      <div class="rv"><h3 style="margin-bottom:.4rem">We survey it ourselves</h3><p>Every opening measured on site. Period houses are rarely square, and a window ordered off a standard size will show it.</p></div>
-      <div class="rv"><h3 style="margin-bottom:.4rem">We machine it in Telford</h3><p>Cut, moulded and assembled at Unit 11, Tweedale Court. Nothing is bought in and rebadged.</p></div>
-      <div class="rv"><h3 style="margin-bottom:.4rem">We fit it</h3><p>Delivered and installed by us or by fitters we trust, and the plaster and reveals put back properly rather than left for someone else.</p></div>
-    </div>
-  </div></section>
-
-  <section class="bg-sage"><div class="wrap">
-    <div class="head-2 rv">
-      <div><p class="label">Heritage work</p><h2 class="sect">Joinery that has to satisfy a conservation officer.</h2></div>
-      <p class="lede">Conservation officers ask for specific things: correct sightlines, putty-glazed single glazing or slim-profile units, run-through horns, the right moulding profile. We have made those details often enough to know what gets approved and what gets refused.</p>
-    </div>
-    <p class="rv" style="margin-top:1.6rem"><a class="btn btn-primary" href="/heritage">Listed &amp; conservation work <span class="ar">&#8594;</span></a></p>
-  </div></section>
-
-  <section><div class="wrap">
-    <div class="head-2 rv">
-      <div><p class="label">Accreditation</p><h2 class="sect">An Accoya approved manufacturer.</h2></div>
-      <p class="lede">Accoya is modified softwood with very high durability and very little movement, and it carries a 50-year above-ground guarantee. Only approved manufacturers can supply it with that guarantee intact &mdash; we are one of them.</p>
-    </div>
-    <p class="rv" style="margin-top:1.6rem"><a class="btn btn-line" href="/accreditation">What approval means <span class="ar">&#8594;</span></a></p>
-  </div></section>
-
-  <section class="bg-sage"><div class="wrap">
-    <div class="head-2 rv">
       <div><p class="label">History</p><h2 class="sect">How the workshop got here.</h2></div>
       <p class="lede">Dates and details to be confirmed. Each dashed box below is a placeholder &mdash; replace it with the real milestone.</p>
     </div>
@@ -1494,6 +1466,34 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
         </div>
       </li>
     </ol>
+  </div></section>
+
+  <section class="bg-sage"><div class="wrap">
+    <div class="head-2 rv">
+      <div><p class="label">How we work</p><h2 class="sect">Measured, made and fitted under one roof.</h2></div>
+      <p class="lede">There is no sales team and no subcontracted manufacturing. The person who measures your windows is the person who makes them, and the person who fits them. That is deliberate &mdash; on heritage work, detail gets lost every time a job changes hands.</p>
+    </div>
+    <div class="g3" style="margin-top:2.4rem">
+      <div class="rv"><h3 style="margin-bottom:.4rem">We survey it ourselves</h3><p>Every opening measured on site. Period houses are rarely square, and a window ordered off a standard size will show it.</p></div>
+      <div class="rv"><h3 style="margin-bottom:.4rem">We machine it in Telford</h3><p>Cut, moulded and assembled at Unit 11, Tweedale Court. Nothing is bought in and rebadged.</p></div>
+      <div class="rv"><h3 style="margin-bottom:.4rem">We fit it</h3><p>Delivered and installed by us or by fitters we trust, and the plaster and reveals put back properly rather than left for someone else.</p></div>
+    </div>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="head-2 rv">
+      <div><p class="label">Heritage work</p><h2 class="sect">Joinery that has to satisfy a conservation officer.</h2></div>
+      <p class="lede">Conservation officers ask for specific things: correct sightlines, putty-glazed single glazing or slim-profile units, run-through horns, the right moulding profile. We have made those details often enough to know what gets approved and what gets refused.</p>
+    </div>
+    <p class="rv" style="margin-top:1.6rem"><a class="btn btn-primary" href="/heritage">Listed &amp; conservation work <span class="ar">&#8594;</span></a></p>
+  </div></section>
+
+  <section class="bg-sage"><div class="wrap">
+    <div class="head-2 rv">
+      <div><p class="label">Accreditation</p><h2 class="sect">An Accoya approved manufacturer.</h2></div>
+      <p class="lede">Accoya is modified softwood with very high durability and very little movement, and it carries a 50-year above-ground guarantee. Only approved manufacturers can supply it with that guarantee intact &mdash; we are one of them.</p>
+    </div>
+    <p class="rv" style="margin-top:1.6rem"><a class="btn btn-line" href="/accreditation">What approval means <span class="ar">&#8594;</span></a></p>
   </div></section>
 </div>
 
