@@ -212,6 +212,41 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
 @media (max-width:880px){.stats .wrap{grid-template-columns:1fr 1fr}.stats div:nth-child(3){border-left:0}.stats div:nth-child(n+3){border-top:1px solid var(--rule)}}
 
 /* ---------- cards ---------- */
+/* ---------- sustainability ----------
+   Lifecycle strip, icon cards and a display pull-quote. Same tokens as
+   the rest of the site; the flair is in composition, not decoration. */
+.cycle{list-style:none;margin:2.6rem 0 0;padding:0;display:grid;gap:1.1rem;position:relative}
+.cycle li{position:relative;background:#fff;border:1px solid var(--rule);border-radius:8px;
+  padding:1.6rem 1.4rem 1.5rem;box-shadow:var(--shadow-s)}
+.cycle .num{font-family:var(--display);font-weight:200;font-size:2.7rem;line-height:1;color:var(--brass);
+  letter-spacing:-.02em;display:block;margin-bottom:.65rem}
+.cycle h3{font-size:1.15rem;margin:0 0 .35rem}
+.cycle p{margin:0;font-size:.9rem;color:var(--slate)}
+@media (min-width:900px){
+  .cycle{grid-template-columns:repeat(4,1fr);gap:0 1.2rem;padding-top:1.8rem;margin-top:3.2rem}
+  .cycle::before{content:"";position:absolute;left:12%;right:12%;top:0;height:1px;background:var(--rule-dk)}
+  .cycle li::before{content:"";position:absolute;left:50%;top:calc(-1.8rem - 5px);width:10px;height:10px;
+    margin-left:-5px;border-radius:50%;background:var(--paper);border:1.5px solid var(--brass)}
+  .cycle li::after{content:"";position:absolute;left:50%;top:calc(-1.8rem + 5px);width:1px;height:calc(1.8rem - 5px);background:var(--rule-dk)}
+}
+.streams{display:grid;gap:1rem;margin-top:2.4rem}
+@media (min-width:680px){.streams{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1040px){.streams{grid-template-columns:repeat(4,1fr)}}
+.stream{background:#fff;border:1px solid var(--rule);border-top:3px solid var(--brass);border-radius:6px;
+  padding:1.5rem 1.35rem;transition:box-shadow .4s var(--ease),transform .4s var(--ease)}
+.stream:hover{box-shadow:var(--shadow-m);transform:translateY(-3px)}
+.stream svg{width:34px;height:34px;stroke:var(--green);fill:none;stroke-width:1.5;stroke-linecap:round;
+  stroke-linejoin:round;margin-bottom:1rem;display:block}
+.stream .to{display:inline-block;font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.18em;
+  color:var(--brass);margin-bottom:.5rem}
+.stream h3{font-size:1.08rem;margin:0 0 .4rem}
+.stream p{margin:0;font-size:.89rem;color:var(--slate)}
+/* .bg-green p sets its own colour at higher specificity, so the quote
+   is scoped under it rather than relying on order. */
+.bg-green .pull{font-family:var(--display);font-weight:200;font-size:clamp(1.65rem,3.4vw,2.55rem);line-height:1.25;
+  letter-spacing:-.015em;color:#fff;max-width:26ch;margin:0 auto}
+.bg-green .pull em{font-style:italic;color:var(--brass-lt)}
+.aside{border-left:3px solid var(--brass);padding:.25rem 0 .25rem 1.5rem}
 /* ---------- image slots (Fitting on site) ----------
    Each placeholder is a <div class="slot">. To use a real photograph,
    replace that whole div with:
@@ -1445,31 +1480,78 @@ footer.site .fb a:hover{color:var(--brass-lt)}
 
   <section><div class="wrap">
     <div class="head-2 rv">
+      <div><p class="label">The life of a window</p><h2 class="sect">From a certified forest to the biomass boiler.</h2></div>
+      <p class="lede">The environmental case for good joinery is mostly about time. Buy the timber properly, make something that lasts for decades, and make sure that what eventually comes out is still worth something.</p>
+    </div>
+    <ol class="cycle rv">
+      <li><span class="num">01</span><h3>Certified forest</h3><p>Timber bought through FSC and PEFC chains of custody, with the paperwork to show for it.</p></li>
+      <li><span class="num">02</span><h3>Telford workshop</h3><p>Cut, assembled and finished here. The sawdust and offcuts go straight to biomass.</p></li>
+      <li><span class="num">03</span><h3>Your house</h3><p>A well-made timber window should serve for decades. Accoya carries a fifty-year guarantee.</p></li>
+      <li><span class="num">04</span><h3>Recovery</h3><p>When it finally comes out, the timber goes to biomass and the glass and metal are recycled.</p></li>
+    </ol>
+  </div></section>
+
+  <section class="bg-sage"><div class="wrap">
+    <div class="head-2 rv">
       <div><p class="label">Waste streams</p><h2 class="sect">Four streams, separated at the workshop.</h2></div>
       <p class="lede">Waste is sorted as it is produced rather than picked over later, which is what makes the rest of it possible.</p>
     </div>
-    <div class="g2 rv" style="margin-top:2.4rem">
-      <div><h3 style="margin-bottom:.4rem">Sawdust and offcuts</h3><p>Collected from the extraction system and sent for biomass recovery, where it is burned to generate heat rather than tipped.</p></div>
-      <div><h3 style="margin-bottom:.4rem">Old timber frames</h3><p>Frames taken out of buildings go the same way. Painted and treated joinery cannot be re-milled, so biomass is the useful end for it.</p></div>
-      <div><h3 style="margin-bottom:.4rem">Glass</h3><p>Broken and removed glazing is separated and sent to be crushed and recycled into new glass.</p></div>
-      <div><h3 style="margin-bottom:.4rem">Metal</h3><p>Old ironmongery, weights, lead and offcut metal are collected for melting down and re-use.</p></div>
+    <div class="streams rv">
+      <div class="stream">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3.6 2.1-4.6.3 1.5 1 2.4 2 2.9-.4-2.5.1-5.2.9-7.3z"/></svg>
+        <span class="to">To biomass</span>
+        <h3>Sawdust and offcuts</h3>
+        <p>Collected from the extraction system and sent for biomass recovery, where it is burned to generate heat rather than tipped.</p>
+      </div>
+      <div class="stream">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M12 3v18M4 12h16"/></svg>
+        <span class="to">To biomass</span>
+        <h3>Old timber frames</h3>
+        <p>Frames taken out of buildings go the same way. Painted and treated joinery cannot be re-milled, so biomass is the useful end for it.</p>
+      </div>
+      <div class="stream">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M8 16l8-8M13 17l3-3"/></svg>
+        <span class="to">Recycled</span>
+        <h3>Glass</h3>
+        <p>Broken and removed glazing is separated and sent to be crushed and recycled into new glass.</p>
+      </div>
+      <div class="stream">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l8 4.6v9.8l-8 4.6-8-4.6V7.1z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span class="to">Recycled</span>
+        <h3>Metal</h3>
+        <p>Old ironmongery, sash weights, lead and offcut metal are collected for melting down and re-use.</p>
+      </div>
     </div>
     <p class="rv" style="margin-top:2rem"><span class="flag">Verify</span> <span class="small">Waste is handled through Cartwrights. Confirm the exact company name and whether they can supply diversion figures before this page claims a percentage.</span></p>
   </div></section>
 
-  <section class="bg-sage"><div class="wrap">
+  <section class="bg-green on-dark"><div class="wrap" style="text-align:center">
+    <p class="pull rv">Buy it right, make it to last, and make sure what is left at the end is still <em>worth something.</em></p>
+  </div></section>
+
+  <section><div class="wrap">
     <div class="head-2 rv">
       <div><p class="label">Timber</p><h2 class="sect">Where the timber comes from.</h2></div>
       <p class="lede">The most significant environmental decision a joinery workshop makes is what it buys, not what it throws away.</p>
     </div>
     <div class="g2 rv" style="margin-top:2.2rem">
-      <div><h3 style="margin-bottom:.4rem">Certified supply</h3><p><span class="flag">Verify</span> We hold FSC and PEFC chain of custody, and documentation can be provided on request. Confirm both certificate numbers and expiry dates before this goes live.</p></div>
-      <div><h3 style="margin-bottom:.4rem">Accoya</h3><p>Accoya is made from fast-growing certified softwood, and its durability means a window lasts decades longer before it needs replacing at all.</p></div>
+      <div class="stream"><span class="to">Chain of custody</span><h3>Certified supply</h3><p><span class="flag">Verify</span> We hold FSC and PEFC chain of custody, and documentation can be provided on request. Confirm both certificate numbers and expiry dates before this goes live.</p></div>
+      <div class="stream"><span class="to">Fifty-year guarantee</span><h3>Accoya</h3><p>Accoya is made from fast-growing certified softwood, and its durability means a window lasts decades longer before it needs replacing at all.</p></div>
+    </div>
+    <div class="shots rv" style="margin-top:2.4rem">
+      <figure class="shot">
+        <div class="slot"><b>Extraction and sawdust</b><span>The extraction system, or a full sawdust bin ready for collection</span></div>
+        <figcaption>Sawdust collected for biomass.</figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="slot"><b>Racked timber</b><span>Timber in the rack with a supplier certification stamp visible</span></div>
+        <figcaption>Certified timber, as delivered.</figcaption>
+      </figure>
     </div>
   </div></section>
 
-  <section><div class="wrap narrow">
-    <div class="rv">
+  <section class="bg-sage"><div class="wrap narrow">
+    <div class="aside rv">
       <p class="label">Being straight about it</p>
       <h2 class="sect">What we will and will not claim.</h2>
       <p style="margin-top:1.1rem">We are a small workshop, not a sustainability programme. What we can say is that our waste is separated, that it goes to biomass recovery and recycling rather than to landfill, and that our timber is bought through certified supply chains we can evidence.</p>
