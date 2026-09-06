@@ -216,6 +216,22 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
    Each placeholder is a <div class="slot">. To use a real photograph,
    replace that whole div with:
    <img loading="lazy" decoding="async" src="URL" alt="describe the photo"> */
+/* ---------- milestone timeline ----------
+   Entries still needing a date or wording use <div class="tl-slot">.
+   Replace that div with the real text once confirmed. */
+.tline{list-style:none;margin:2.4rem 0 0;padding:0;position:relative}
+.tline::before{content:"";position:absolute;left:0;top:.4rem;bottom:.4rem;width:1px;background:var(--rule-dk)}
+.tline li{position:relative;padding:0 0 1.9rem 1.9rem}
+.tline li:last-child{padding-bottom:0}
+.tline li::before{content:"";position:absolute;left:-4px;top:.45rem;width:9px;height:9px;border-radius:50%;
+  background:var(--paper);border:1.5px solid var(--brass)}
+.tline .yr{display:block;font-family:var(--body);font-size:.68rem;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--brass);margin-bottom:.3rem}
+.tline h3{font-size:1.12rem;margin:0 0 .3rem}
+.tline p{margin:0;color:var(--slate);font-size:.94rem}
+.tl-slot{border:1.5px dashed var(--rule-dk);border-radius:5px;background:var(--green-sf);padding:.9rem 1.1rem}
+.tl-slot b{display:block;font-size:.8rem;color:var(--slate)}
+.tl-slot span{display:block;font-size:.75rem;color:var(--mute);line-height:1.55;margin-top:.15rem}
 .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:clamp(.8rem,2vw,1.5rem)}
 .shot{margin:0}
 .shot .slot{
@@ -1290,8 +1306,8 @@ footer.site .fb a:hover{color:var(--brass-lt)}
 <!-- ============================ ABOUT ============================ -->
 <div class="page" data-page="/about">
   <section class="bg-sage tight"><div class="wrap">
-    <p class="label rv">About us</p>
-    <h1 class="ptitle rv">A father and son, and fifty years between them.</h1>
+    <p class="label rv"><span class="flag">Verify</span> About us</p>
+    <h1 class="ptitle rv">A father and son, with fifty years of experience between them.</h1>
     <p class="lede rv" style="margin-top:1.2rem">David Jackson &amp; Son is a two-generation joinery workshop in Telford. We make bespoke timber windows, doors and joinery for listed buildings, period homes and conservation areas across Shropshire &mdash; by hand, to the detail of the house they are going into.</p>
   </div></section>
 
@@ -1309,7 +1325,7 @@ footer.site .fb a:hover{color:var(--brass-lt)}
 
   <section class="bg-sage"><div class="wrap">
     <div class="head-2 rv">
-      <div><p class="label">Heritage work</p><h2 class="sect">Listed buildings are most of what we do.</h2></div>
+      <div><p class="label">Heritage work</p><h2 class="sect">Joinery that has to satisfy a conservation officer.</h2></div>
       <p class="lede">Conservation officers ask for specific things: correct sightlines, putty-glazed single glazing or slim-profile units, run-through horns, the right moulding profile. We have made those details often enough to know what gets approved and what gets refused.</p>
     </div>
     <p class="rv" style="margin-top:1.6rem"><a class="btn btn-primary" href="/heritage">Listed &amp; conservation work <span class="ar">&#8594;</span></a></p>
@@ -1323,10 +1339,34 @@ footer.site .fb a:hover{color:var(--brass-lt)}
     <p class="rv" style="margin-top:1.6rem"><a class="btn btn-line" href="/accreditation">What approval means <span class="ar">&#8594;</span></a></p>
   </div></section>
 
-  <section class="bg-green tight on-dark"><div class="wrap narrow" style="text-align:center">
-    <h2 class="sect" style="margin:0 auto">Where we work</h2>
-    <p class="lede" style="color:#BDCABE;margin:1rem auto 1.8rem">From the workshop in Telford we cover Shrewsbury, Ironbridge, Coalbrookdale, Broseley, Much Wenlock, Bridgnorth, Newport, Albrighton, Shifnal, Wellington and the villages between them. Further afield for larger jobs &mdash; ask.</p>
-    <a class="btn btn-brass" href="/contact">Get a quote <span class="ar">&#8594;</span></a>
+  <section class="bg-white"><div class="wrap">
+    <div class="head-2 rv">
+      <div><p class="label">History</p><h2 class="sect">How the workshop got here.</h2></div>
+      <p class="lede">Dates and details to be confirmed. Each dashed box below is a placeholder &mdash; replace it with the real milestone.</p>
+    </div>
+    <ol class="tline rv">
+      <li>
+        <span class="yr">Year</span>
+        <div class="tl-slot"><b>David starts the business</b><span>What year, and what was he doing at the outset &mdash; carpentry on site, or joinery from a workshop?</span></div>
+      </li>
+      <li>
+        <span class="yr">Year</span>
+        <div class="tl-slot"><b>The Telford workshop</b><span>When did the business move into Unit 11, Tweedale Court, and where was it before?</span></div>
+      </li>
+      <li>
+        <span class="yr">Year</span>
+        <div class="tl-slot"><b>Harry joins</b><span>When did Harry come into the business, and was there a trade apprenticeship or training worth naming?</span></div>
+      </li>
+      <li>
+        <span class="yr">Year</span>
+        <div class="tl-slot"><b>Accoya approval</b><span>When was approved-manufacturer status granted? The certificate will carry the date.</span></div>
+      </li>
+      <li>
+        <span class="yr">2026</span>
+        <h3>Carpentry Company of the Year</h3>
+        <p>Recognised at the Prestige Awards.</p>
+      </li>
+    </ol>
   </div></section>
 </div>
 
