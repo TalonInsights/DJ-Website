@@ -252,31 +252,34 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
 .pull-grid .n{display:block;font-family:var(--display);font-weight:200;font-size:2.1rem;line-height:1;color:var(--brass-lt);margin-bottom:.55rem}
 .pull-grid h3{font-size:1.08rem;margin:0 0 .4rem}
 .pull-grid p{margin:0;font-size:.92rem}
-/* ---------- claims comparison (Sustainability) ----------
-   Adapted from 21st.dev "Us vs Them Comparison" (7ovr): two cards side by
-   side, one with check rows in the brand green, one muted with cross rows. */
-.cmp-head{text-align:center;max-width:62ch;margin:0 auto}
-.cmp-head .sect{margin:0 auto}
-.cmp-head .lede{margin:1rem auto 0}
-.cmp{display:grid;gap:1.2rem;max-width:1020px;margin:2.6rem auto 0}
-@media (min-width:760px){.cmp{grid-template-columns:1fr 1fr;gap:1.4rem}}
-.cmp-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--rule);border-radius:10px;overflow:hidden}
-.cmp-card.ok{border-color:#AFC0B3;box-shadow:0 0 0 4px var(--green-sf),var(--shadow-s)}
-.cmp-card.no{background:rgba(255,255,255,.55)}
-.cmp-top{padding:1.5rem 1.6rem 1.25rem;border-bottom:1px solid var(--rule)}
-.cmp-top h3{font-size:1.15rem;margin:0 0 .35rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
-.cmp-card.no .cmp-top h3{color:var(--slate)}
-.cmp-top p{margin:0;font-size:.9rem;color:var(--slate)}
-.cmp-tag{font-family:var(--body);font-size:.58rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  background:var(--green);color:#fff;border-radius:100px;padding:.3rem .62rem;line-height:1}
-.cmp-card ul{list-style:none;margin:0;padding:1.3rem 1.6rem;display:flex;flex-direction:column;gap:.8rem;flex:1}
-.cmp-card li{display:flex;gap:.8rem;align-items:flex-start;font-size:.94rem;line-height:1.5}
-.cmp-card li::before{content:"";flex:0 0 auto;width:16px;height:16px;margin-top:.22rem;border-radius:3px;
-  background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E") center/10px no-repeat}
-.cmp-card.no li{color:var(--slate)}
-.cmp-card.no li::before{background:var(--rule) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2359635D' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center/9px no-repeat}
-.cmp-foot{padding:1.1rem 1.6rem 1.3rem;border-top:1px solid var(--rule);font-size:.86rem;color:var(--slate)}
-.cmp-foot .flag{margin:0 .3rem 0 0;vertical-align:middle}
+/* ---------- claims grid (Sustainability) ----------
+   Adapted from 21st.dev "Feature Section with hover effects" (aceternity):
+   a hairline-divided grid, each cell an icon, a title with a left accent
+   bar that grows and turns brass on hover, and a soft wash behind it. */
+.claims-head{text-align:center;max-width:62ch;margin:0 auto}
+.claims-head .sect{margin:0 auto}
+.claims-head .lede{margin:1rem auto 0}
+.claims{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-dk);border:1px solid var(--rule-dk);
+  margin-top:2.8rem;border-radius:10px;overflow:hidden}
+@media (min-width:640px){.claims{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1040px){.claims{grid-template-columns:repeat(4,1fr)}}
+.claim{position:relative;background:var(--sage);padding:2.3rem 1.8rem 2.2rem;overflow:hidden}
+.claim::before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(47,71,57,.09),rgba(47,71,57,0));
+  opacity:0;transition:opacity .35s var(--ease);pointer-events:none}
+.claim:hover::before{opacity:1}
+.claim svg{position:relative;width:26px;height:26px;stroke:var(--green);fill:none;stroke-width:1.5;stroke-linecap:round;
+  stroke-linejoin:round;margin-bottom:1.1rem;display:block}
+.claim h3{position:relative;font-size:1.08rem;margin:0 0 .5rem;padding-left:0}
+.claim h3::before{content:"";position:absolute;left:-1.8rem;top:50%;transform:translateY(-50%);width:4px;height:22px;
+  border-radius:0 4px 4px 0;background:var(--rule-dk);transition:height .25s var(--ease),background .25s}
+.claim:hover h3::before{height:32px;background:var(--brass)}
+.claim h3 span{display:inline-block;transition:transform .25s var(--ease)}
+.claim:hover h3 span{transform:translateX(6px)}
+.claim p{position:relative;margin:0;font-size:.9rem;color:var(--slate);line-height:1.55}
+.claim p a{color:var(--green);font-weight:600;text-decoration:none;border-bottom:1px solid var(--brass)}
+.claim:nth-child(2){transition-delay:.07s}.claim:nth-child(3){transition-delay:.14s}.claim:nth-child(4){transition-delay:.21s}
+.claim:nth-child(5){transition-delay:.28s}.claim:nth-child(6){transition-delay:.35s}.claim:nth-child(7){transition-delay:.42s}
+.claim:nth-child(8){transition-delay:.49s}
 /* ---------- image slots (Fitting on site) ----------
    Each placeholder is a <div class="slot">. To use a real photograph,
    replace that whole div with:
@@ -1660,7 +1663,7 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
         <p>Old ironmongery, sash weights, lead and offcut metal are collected for melting down and re-use.</p>
       </div>
     </div>
-    <p class="rv" style="margin-top:2rem"><span class="flag">Verify</span> <span class="small">Waste is handled through Cartwrights. Confirm the exact company name and whether they can supply diversion figures before this page claims a percentage.</span></p>
+    <p class="rv" style="margin-top:2rem"><span class="small">All four streams are handled by Cartwrights Waste Disposal Services in Telford, a zero-to-landfill business since 2013. What they cannot recycle is recovered as fuel rather than tipped.</span></p>
   </div></section>
 
   <section class="bg-green on-dark"><div class="wrap" style="text-align:center">
@@ -1695,32 +1698,51 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
   </div></section>
 
   <section class="bg-sage"><div class="wrap">
-    <div class="cmp-head rv">
+    <div class="claims-head rv">
       <p class="label">Being straight about it</p>
-      <h2 class="sect">What we will and will not claim.</h2>
-      <p class="lede">We are a small workshop, not a sustainability programme. This is the line between what we can show and what we will not say.</p>
+      <h2 class="sect">What we can put in writing.</h2>
+      <p class="lede">We are a small workshop, not a sustainability programme. These are the things we say because we can show them.</p>
     </div>
-    <div class="cmp rv">
-      <div class="cmp-card ok">
-        <div class="cmp-top"><h3>What we can say <span class="cmp-tag">Paperwork on request</span></h3><p>Each of these can be backed up if you ask.</p></div>
-        <ul>
-          <li>Waste is separated at the workshop as it is produced.</li>
-          <li>Sawdust, offcuts and old frames go to biomass recovery.</li>
-          <li>Glass and metal are recycled rather than sent to landfill.</li>
-          <li>Timber is bought through FSC and PEFC chains of custody.</li>
-          <li>Accoya carries a fifty-year above-ground guarantee.</li>
-        </ul>
-        <div class="cmp-foot"><a class="tlink" href="/contact">Ask us for the paperwork <span class="ar">&#8594;</span></a></div>
+    <div class="claims">
+      <div class="claim rv">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <h3><span>Separated at source</span></h3>
+        <p>Waste is sorted at the workshop as it is produced, not picked over later.</p>
       </div>
-      <div class="cmp-card no">
-        <div class="cmp-top"><h3>What we will not claim</h3><p>Not until there are figures behind it.</p></div>
-        <ul>
-          <li>Zero to landfill.</li>
-          <li>Hundred-per-cent recycled.</li>
-          <li>Carbon neutral or net zero. We have not measured it, so we do not say it.</li>
-          <li>Any percentage we cannot show the paperwork for.</li>
-        </ul>
-        <div class="cmp-foot"><span class="flag">Verify</span> Diversion figures from the waste contractor would move the first two across. Environmental claims are regulated, and an unevidenced one is worse than none.</div>
+      <div class="claim rv">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3.6 2.1-4.6.3 1.5 1 2.4 2 2.9-.4-2.5.1-5.2.9-7.3z"/></svg>
+        <h3><span>Biomass recovery</span></h3>
+        <p>Sawdust, offcuts and old frames go to biomass and are burned for heat rather than tipped.</p>
+      </div>
+      <div class="claim rv">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+        <h3><span>Glass and metal recycled</span></h3>
+        <p>Removed glazing, old ironmongery, sash weights and lead all go for recycling.</p>
+      </div>
+      <div class="claim rv">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>
+        <h3><span>Nothing to landfill</span></h3>
+        <p>Our contractor, Cartwrights of Telford, has run as a zero-to-landfill business since 2013.</p>
+      </div>
+      <div class="claim rv">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>
+        <h3><span>Residue recovered as fuel</span></h3>
+        <p>What cannot be recycled is processed into fuel for energy rather than buried.</p>
+      </div>
+      <div class="claim rv">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l7 10h-4l4 6H5l4-6H5z"/><path d="M12 18v4"/></svg>
+        <h3><span>Certified timber</span></h3>
+        <p>Bought through FSC and PEFC chains of custody, with the chain of paperwork behind it.</p>
+      </div>
+      <div class="claim rv">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/></svg>
+        <h3><span>Fifty-year guarantee</span></h3>
+        <p>Accoya external joinery, made by an approved manufacturer, carries a fifty-year above-ground guarantee.</p>
+      </div>
+      <div class="claim rv">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+        <h3><span>Paperwork on request</span></h3>
+        <p>Documentation for any of these can be provided, which is usually what an architect or heritage trust asks for. <a href="/contact">Ask us</a>.</p>
       </div>
     </div>
   </div></section>
