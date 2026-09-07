@@ -246,7 +246,12 @@ section{padding-block:clamp(3.2rem,7vw,5.8rem)}
 .bg-green .pull{font-family:var(--display);font-weight:200;font-size:clamp(1.65rem,3.4vw,2.55rem);line-height:1.25;
   letter-spacing:-.015em;color:#fff;max-width:30ch;margin:0 auto}
 .bg-green .pull em{font-style:italic;color:var(--brass-lt)}
-.bg-green .pull-note{margin:1.6rem auto 0;max-width:54ch;font-size:.95rem;line-height:1.6;color:#BDCABE}
+.bg-green .pull-note{margin:1.6rem auto 0;max-width:60ch;font-size:1.05rem;line-height:1.6;color:#BDCABE}
+.pull-grid{display:grid;gap:1.6rem;margin:2.8rem auto 0;max-width:1080px;padding-top:2.4rem;border-top:1px solid rgba(255,255,255,.14)}
+@media (min-width:760px){.pull-grid{grid-template-columns:repeat(3,1fr);gap:clamp(1.6rem,3.5vw,3.4rem)}}
+.pull-grid .n{display:block;font-family:var(--display);font-weight:200;font-size:2.1rem;line-height:1;color:var(--brass-lt);margin-bottom:.55rem}
+.pull-grid h3{font-size:1.08rem;margin:0 0 .4rem}
+.pull-grid p{margin:0;font-size:.92rem}
 .aside{border-left:3px solid var(--brass);padding:.25rem 0 .25rem 1.5rem}
 /* ---------- image slots (Fitting on site) ----------
    Each placeholder is a <div class="slot">. To use a real photograph,
@@ -1636,7 +1641,12 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
 
   <section class="bg-green on-dark"><div class="wrap" style="text-align:center">
     <p class="pull rv">Buy it properly. Make it to last a lifetime. And when it finally comes out, <em>put it to use, not in the ground.</em></p>
-    <p class="pull-note rv">Three decisions, in that order: what timber we buy, how well we make the joinery, and where it goes when it finally comes out of the building. Get the first two right and the third is a small problem.</p>
+    <p class="pull-note rv">Three decisions, in that order. Get the first two right and the third is a small problem.</p>
+    <div class="pull-grid rv">
+      <div><span class="n">01</span><h3>What we buy</h3><p>Certified timber through FSC and PEFC chains of custody, with the paperwork to show for it.</p></div>
+      <div><span class="n">02</span><h3>The standard we make it to</h3><p>Machined, sealed and finished to the tolerances the Accoya guarantee depends on, so it serves for decades before anyone thinks about replacing it.</p></div>
+      <div><span class="n">03</span><h3>Where it goes</h3><p>Sawdust and old frames to biomass, glass and metal to recycling, rather than into the ground.</p></div>
+    </div>
   </div></section>
 
   <section><div class="wrap">
