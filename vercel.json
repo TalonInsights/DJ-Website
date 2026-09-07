@@ -1,26 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
   "trailingSlash": false,
 
-  "rewrites": [
-    { "source": "/about",              "destination": "/index.html" },
-    { "source": "/windows",            "destination": "/index.html" },
-    { "source": "/doors",              "destination": "/index.html" },
-    { "source": "/materials",          "destination": "/index.html" },
-    { "source": "/fitting-on-site",    "destination": "/index.html" },
-    { "source": "/sustainability",     "destination": "/index.html" },
-    { "source": "/guidance",           "destination": "/index.html" },
-    { "source": "/guide-repair",       "destination": "/index.html" },
-    { "source": "/guide-conservation", "destination": "/index.html" },
-    { "source": "/accreditation",      "destination": "/index.html" },
-    { "source": "/projects",           "destination": "/index.html" },
-    { "source": "/heritage",           "destination": "/index.html" },
-    { "source": "/contact",            "destination": "/index.html" }
-  ],
-
   "redirects": [
-    { "source": "/drawing-board", "destination": "/materials", "permanent": true },
-    { "source": "/index.html",    "destination": "/",          "permanent": true }
+    { "source": "/drawing-board", "destination": "/materials", "permanent": true }
   ],
 
   "headers": [
