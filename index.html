@@ -717,7 +717,7 @@ a.cmethod:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.
 .cmethod .lbl{display:block;font-size:.63rem;text-transform:uppercase;letter-spacing:.2em;color:var(--brass-lt);font-weight:600;margin-bottom:.35rem}
 .cmethod .val{display:block;font-family:var(--display);font-weight:300;font-size:1.32rem;color:#fff;line-height:1.2;letter-spacing:-.01em}
 .cmethod .val.sm{font-size:1.02rem;word-break:break-word}
-.cmethod .sub{display:block;font-size:.8rem;color:#9FB1A2;margin-top:.45rem;line-height:1.5}
+.cmethod .sub{display:block;font-size:.8rem;font-weight:400;letter-spacing:0;text-transform:none;color:#9FB1A2;margin:.45rem 0 0;line-height:1.5}
 .chours{margin-top:.55rem;font-size:.79rem;color:#9FB1A2;display:flex;justify-content:space-between;gap:.6rem;border-top:1px solid rgba(255,255,255,.14);padding-top:.5rem}
 .chours b{color:#DDE6DE;font-weight:500}
 
@@ -1761,7 +1761,7 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
       <div class="chead rv">
         <p class="label">Get in touch</p>
         <h1 class="ptitle">Tell us about the property.</h1>
-        <p class="lede" style="color:#BDCABE;margin-top:1rem">Ring us, email us, or send the details below &mdash; whichever suits you. There is no hurry at our end. Tell us what you have and we will talk it through properly, and if photographs of the existing windows are easy to take, they are always welcome.</p>
+        <p class="lede" style="color:#BDCABE;margin-top:1rem">Ring us, or fill in the enquiry below, whichever suits you. There is no hurry at our end. Tell us what you have and we will talk it through properly, and if photographs of the existing windows are easy to take, they are always welcome.</p>
       </div>
       <div class="cmethods rv">
         <a class="cmethod" href="tel:01952585709">
@@ -1770,11 +1770,11 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
           <span class="val">01952 585709</span>
           <span class="sub">Straight through to the workshop.</span>
         </a>
-        <a class="cmethod" href="mailto:info@davidjacksonandson.com">
-          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m3 6 9 6 9-6"/></svg></span>
-          <span class="lbl">Email us</span>
-          <span class="val sm">info@davidjacksonandson.com</span>
-          <span class="sub">Attach photographs and rough sizes if you have them.</span>
+        <a class="cmethod" href="#enquiry">
+          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3.5h6M9 12l2 2 4-4M9 17h6"/></svg></span>
+          <span class="lbl">Fill in the enquiry below</span>
+          <span class="val sm">Project enquiry <span class="ar">&#8595;</span></span>
+          <span class="sub">About two minutes, with room to attach photographs and rough sizes.</span>
         </a>
         <div class="cmethod">
           <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></span>
@@ -1806,7 +1806,7 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
   <section>
     <div class="wrap">
       <div class="cgrid">
-      <div class="formcard rv">
+      <div class="formcard rv" id="enquiry" style="scroll-margin-top:96px">
           <header><b>Project enquiry</b><span>About two minutes</span></header>
           <form class="formbody" id="enquiryForm">
             <fieldset class="fset">
