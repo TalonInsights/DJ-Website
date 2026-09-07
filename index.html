@@ -572,7 +572,7 @@ form.ef{background:#fff;border-radius:8px;padding:clamp(1.4rem,3.5vw,2.2rem);box
 
 /* ---------- guidance hub ---------- */
 .gd-hero{display:grid;grid-template-columns:1fr;gap:clamp(1.5rem,4vw,3rem);justify-items:center}
-.gd-hero .sketchbox{width:100%;max-width:680px}
+.gd-hero .sketchbox{width:100%;max-width:680px;justify-self:center}   /* the base rule pins it to the end, and to the start under 900px */
 @media (max-width:900px){.gd-hero{grid-template-columns:1fr}}
 .sketchbox{background:linear-gradient(160deg,#FFFFFF 0%,var(--sage) 100%);border:1px solid var(--rule);border-radius:8px;padding:clamp(1rem,2.5vw,1.8rem);box-shadow:var(--shadow-s);max-width:560px;width:100%;justify-self:end}
 @media (max-width:900px){.sketchbox{justify-self:start}}
