@@ -672,13 +672,20 @@ form.ef{background:#fff;border-radius:8px;padding:clamp(1.4rem,3.5vw,2.2rem);box
 .formcard > header b{font-family:var(--display);font-weight:400;font-size:1.15rem;color:var(--ink)}
 .formcard > header span{font-size:.78rem;color:var(--mute)}
 /* The four-step summary sits under the form heading so it is in view when
-   someone decides whether to press send; the sidebar carries the detail. */
-.fsteps{list-style:none;margin:0;padding:.8rem clamp(1.3rem,3vw,2rem);display:flex;flex-wrap:wrap;gap:.45rem 1.2rem;
-  border-bottom:1px solid var(--rule);background:var(--green-sf);font-size:.8rem;color:var(--slate)}
-.fsteps li{display:flex;align-items:center;gap:.5rem;white-space:nowrap}
-.fsteps i{font-style:normal;font-family:var(--display);font-weight:400;font-size:.98rem;color:var(--brass);line-height:1}
-.fsteps li:not(:last-child)::after{content:"92";color:var(--rule-dk);margin-left:.7rem}
-@media (max-width:600px){.fsteps li:not(:last-child)::after{display:none}}
+   someone decides whether to press send; the sidebar carries the detail.
+   Four equal cells across the card, numbered in the display face. */
+.fsteps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);
+  border-bottom:1px solid var(--rule);background:var(--green-sf)}
+.fsteps li{display:flex;align-items:center;gap:.75rem;padding:.95rem 1.1rem;font-size:.84rem;line-height:1.3;
+  color:var(--ink);border-left:1px solid var(--rule)}
+.fsteps li:first-child{border-left:0;padding-left:clamp(1.3rem,3vw,2rem)}
+.fsteps i{font-style:normal;font-family:var(--display);font-weight:300;font-size:1.5rem;letter-spacing:-.02em;
+  color:var(--brass);line-height:1;flex:none}
+@media (max-width:720px){
+  .fsteps{grid-template-columns:repeat(2,1fr)}
+  .fsteps li:nth-child(3){border-left:0;padding-left:clamp(1.3rem,3vw,2rem)}
+  .fsteps li:nth-child(n+3){border-top:1px solid var(--rule)}
+}
 .formbody{padding:clamp(1.3rem,3vw,2rem)}
 .fset{border:0;padding:0;margin:0 0 1.6rem}
 .fset > legend{display:flex;align-items:center;gap:.6rem;font-size:.64rem;font-weight:600;text-transform:uppercase;letter-spacing:.2em;color:var(--mute);padding:0;margin-bottom:.9rem;width:100%}
@@ -1801,10 +1808,10 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
       <div class="formcard rv" id="enquiry" style="scroll-margin-top:96px">
           <header><b>Project enquiry</b><span>About two minutes</span></header>
           <ol class="fsteps" aria-label="What happens next">
-            <li><i>1</i>You send the details</li>
-            <li><i>2</i>We visit and measure</li>
-            <li><i>3</i>Fixed written quote</li>
-            <li><i>4</i>Made and fitted</li>
+            <li><i>01</i>You send the details</li>
+            <li><i>02</i>We visit and measure</li>
+            <li><i>03</i>Fixed written quote</li>
+            <li><i>04</i>Made and fitted</li>
           </ol>
           <form class="formbody" id="enquiryForm">
             <fieldset class="fset">
@@ -1840,10 +1847,10 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
             <button class="btn btn-brass" type="submit" style="width:100%">Send my enquiry <span class="ar">→</span></button>
           </form>
           <div class="formfoot">
-            <p class="small" id="formStatus" role="status" style="margin:0"><span class="flag">Confirm</span> We usually reply the same working day.</p>
+            <p class="small" id="formStatus" role="status" style="margin:0">We usually reply the same working day.</p>
             <div class="trustrow">
               <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> No obligation</span>
-              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Free survey <span class="flag" style="margin:0 0 0 .3rem">Confirm</span></span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Free survey</span>
               <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Never shared</span>
             </div>
           </div>
