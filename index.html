@@ -572,7 +572,6 @@ form.ef{background:#fff;border-radius:8px;padding:clamp(1.4rem,3.5vw,2.2rem);box
 
 /* ---------- guidance hub ---------- */
 .gd-hero{display:grid;grid-template-columns:1fr;gap:clamp(1.5rem,4vw,3rem);justify-items:center}
-.gd-hero .sketchbox{width:100%;max-width:680px;justify-self:center}   /* the base rule pins it to the end, and to the start under 900px */
 @media (max-width:900px){.gd-hero{grid-template-columns:1fr}}
 .sketchbox{background:linear-gradient(160deg,#FFFFFF 0%,var(--sage) 100%);border:1px solid var(--rule);border-radius:8px;padding:clamp(1rem,2.5vw,1.8rem);box-shadow:var(--shadow-s);max-width:560px;width:100%;justify-self:end}
 @media (max-width:900px){.sketchbox{justify-self:start}}
@@ -1043,7 +1042,6 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
           </div>
           <p class="small" style="margin-top:1.6rem">Written in the Telford workshop, not by a marketing agency.</p>
         </div>
-        <div class="sketchbox rv" id="heroSketch"></div>
       </div>
     </div>
   </section>
@@ -2356,8 +2354,7 @@ var FEATURED={cat:'conservation', key:'terrace', href:'/guide-conservation',
 function clockSvg(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'; }
 
 function renderGuidance(){
-  var hs=document.getElementById('heroSketch'); if(!hs) return;
-  hs.innerHTML=SKETCH.elevation(440,300);
+  if(!document.getElementById('featuredGuide')) return;
   document.getElementById('featuredGuide').innerHTML =
     '<div class="fig">'+SKETCH[FEATURED.key](400,300)+'</div>'+
     '<div class="txt"><span class="cat">Featured guide · Windows</span>'+
