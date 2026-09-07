@@ -671,6 +671,14 @@ form.ef{background:#fff;border-radius:8px;padding:clamp(1.4rem,3.5vw,2.2rem);box
 .formcard > header{padding:1.15rem clamp(1.3rem,3vw,2rem);border-bottom:1px solid var(--rule);background:#FCFCFA;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
 .formcard > header b{font-family:var(--display);font-weight:400;font-size:1.15rem;color:var(--ink)}
 .formcard > header span{font-size:.78rem;color:var(--mute)}
+/* The four-step summary sits under the form heading so it is in view when
+   someone decides whether to press send; the sidebar carries the detail. */
+.fsteps{list-style:none;margin:0;padding:.8rem clamp(1.3rem,3vw,2rem);display:flex;flex-wrap:wrap;gap:.45rem 1.2rem;
+  border-bottom:1px solid var(--rule);background:var(--green-sf);font-size:.8rem;color:var(--slate)}
+.fsteps li{display:flex;align-items:center;gap:.5rem;white-space:nowrap}
+.fsteps i{font-style:normal;font-family:var(--display);font-weight:400;font-size:.98rem;color:var(--brass);line-height:1}
+.fsteps li:not(:last-child)::after{content:"92";color:var(--rule-dk);margin-left:.7rem}
+@media (max-width:600px){.fsteps li:not(:last-child)::after{display:none}}
 .formbody{padding:clamp(1.3rem,3vw,2rem)}
 .fset{border:0;padding:0;margin:0 0 1.6rem}
 .fset > legend{display:flex;align-items:center;gap:.6rem;font-size:.64rem;font-weight:600;text-transform:uppercase;letter-spacing:.2em;color:var(--mute);padding:0;margin-bottom:.9rem;width:100%}
@@ -1787,27 +1795,17 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
     </div>
   </section>
 
-  <section class="bg-sage tight">
-    <div class="wrap">
-      <div class="head-2 rv" style="margin-bottom:1.8rem">
-        <div><p class="label">Before you request a quotation</p><h2 class="sect">Five things that speed this up.</h2></div>
-        <p class="lede">A few photographs and rough measurements help us understand the project before we visit.</p>
-      </div>
-      <div class="checklist rv">
-        <div><span class="step">01</span><svg viewBox="0 0 24 24" fill="none" stroke="#2F4739" stroke-width="1.6"><path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.4"/></svg><b style="display:block;font-size:.92rem;margin-bottom:.3rem">Photograph the full opening</b><p>Stand back far enough to get the whole window and the brickwork around it.</p></div>
-        <div><span class="step">02</span><svg viewBox="0 0 24 24" fill="none" stroke="#2F4739" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg><b style="display:block;font-size:.92rem;margin-bottom:.3rem">Include close-up details</b><p>Meeting rails, horns, mouldings and any rot — these decide repair versus replace.</p></div>
-        <div><span class="step">03</span><svg viewBox="0 0 24 24" fill="none" stroke="#2F4739" stroke-width="1.6"><path d="M3 8h18v8H3z"/><path d="M7 8v4M11 8v6M15 8v4M19 8v6"/></svg><b style="display:block;font-size:.92rem;margin-bottom:.3rem">Note approximate sizes</b><p>Width and height to the nearest 50mm is plenty. We measure properly on site.</p></div>
-        <div><span class="step">04</span><svg viewBox="0 0 24 24" fill="none" stroke="#2F4739" stroke-width="1.6"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg><b style="display:block;font-size:.92rem;margin-bottom:.3rem">Tell us the property location</b><p>The postcode tells us whether you are inside our area and which council applies.</p></div>
-        <div><span class="step">05</span><svg viewBox="0 0 24 24" fill="none" stroke="#2F4739" stroke-width="1.6"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h7M9 16h7"/></svg><b style="display:block;font-size:.92rem;margin-bottom:.3rem">Mention listed or conservation status</b><p>If you are not sure, our three-question checker will tell you in a minute.</p></div>
-      </div>
-      <p style="margin-top:1.5rem" class="rv"><a class="tlink" href="/heritage">Not sure about listed or conservation status? Check it here <span class="ar">→</span></a></p>
-    </div>
-  </section>
   <section>
     <div class="wrap">
       <div class="cgrid">
       <div class="formcard rv" id="enquiry" style="scroll-margin-top:96px">
           <header><b>Project enquiry</b><span>About two minutes</span></header>
+          <ol class="fsteps" aria-label="What happens next">
+            <li><i>1</i>You send the details</li>
+            <li><i>2</i>We visit and measure</li>
+            <li><i>3</i>Fixed written quote</li>
+            <li><i>4</i>Made and fitted</li>
+          </ol>
           <form class="formbody" id="enquiryForm">
             <fieldset class="fset">
               <legend><i>1</i> About you</legend>
@@ -1855,7 +1853,7 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
           <div class="sidecard">
             <h3>What happens next</h3>
                         <ol class="steps">
-              <li><b>You send the details</b><span>Form, email or phone — whichever suits.</span></li>
+              <li><b>You send the details</b><span>The form or the phone, whichever suits.</span></li>
               <li><b>We come and measure</b><span>Free survey across Shropshire. We will tell you honestly what the window needs.</span></li>
               <li><b>Fixed written quote</b><span>Itemised, with a lead time.</span></li>
               <li><b>Made and fitted</b><span>Made in Telford, finished, delivered and installed by us or trusted contractors.</span></li>
@@ -1872,6 +1870,23 @@ footer.site .fmark{width:150px;height:auto;display:block;margin-top:1rem;border-
   </section>
 
 
+
+  <section class="bg-sage tight">
+    <div class="wrap">
+      <div class="head-2 rv" style="margin-bottom:1.8rem">
+        <div><p class="label">Optional, but it helps</p><h2 class="sect">Five things that speed the quote up.</h2></div>
+        <p class="lede">None of this is required. If any of it is easy to do, it helps us understand the job before we visit.</p>
+      </div>
+      <div class="checklist rv">
+        <div><span class="step">01</span><svg viewBox="0 0 24 24" fill="none" stroke="#2F4739" stroke-width="1.6"><path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.4"/></svg><b style="display:block;font-size:.92rem;margin-bottom:.3rem">Photograph the full opening</b><p>Stand back far enough to get the whole window and the brickwork around it.</p></div>
+        <div><span class="step">02</span><svg viewBox="0 0 24 24" fill="none" stroke="#2F4739" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg><b style="display:block;font-size:.92rem;margin-bottom:.3rem">Include close-up details</b><p>Meeting rails, horns, mouldings and any rot — these decide repair versus replace.</p></div>
+        <div><span class="step">03</span><svg viewBox="0 0 24 24" fill="none" stroke="#2F4739" stroke-width="1.6"><path d="M3 8h18v8H3z"/><path d="M7 8v4M11 8v6M15 8v4M19 8v6"/></svg><b style="display:block;font-size:.92rem;margin-bottom:.3rem">Note approximate sizes</b><p>Width and height to the nearest 50mm is plenty. We measure properly on site.</p></div>
+        <div><span class="step">04</span><svg viewBox="0 0 24 24" fill="none" stroke="#2F4739" stroke-width="1.6"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg><b style="display:block;font-size:.92rem;margin-bottom:.3rem">Tell us the property location</b><p>The postcode tells us whether you are inside our area and which council applies.</p></div>
+        <div><span class="step">05</span><svg viewBox="0 0 24 24" fill="none" stroke="#2F4739" stroke-width="1.6"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h7M9 16h7"/></svg><b style="display:block;font-size:.92rem;margin-bottom:.3rem">Mention listed or conservation status</b><p>If you are not sure, our three-question checker will tell you in a minute.</p></div>
+      </div>
+      <p style="margin-top:1.5rem" class="rv"><a class="tlink" href="/heritage">Not sure about listed or conservation status? Check it here <span class="ar">→</span></a></p>
+    </div>
+  </section>
 
   <section class="tight"><div class="wrap">
     <div class="tradestrip rv">
