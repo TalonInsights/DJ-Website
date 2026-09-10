@@ -38,9 +38,19 @@ safe. Each was parsed against the real PostgreSQL grammar before shipping, but
 Expect to fix something on first run, and run the acceptance script immediately
 afterwards rather than trusting it.
 
-**Removing the seed**, one command:
+**Seed files.** `seed/enquiries.sql` gives 60 enquiries over 18 months.
+`seed/jobs.sql` adds 90 more enquiries concentrated in the last 12 months, 26
+completed jobs across the past year and 10 live on the board, and links the two
+sides together. Load the enquiries first; the jobs seed attaches itself to won
+enquiries that have no job yet.
+
+Without the jobs seed the capacity, schedule variance, estimate accuracy and
+delivered-on-time panels are correct and empty, which reads as a fault.
+
+**Removing the seed**, two commands:
 
 ```sql
+delete from public.jobs      where ref like 'TEST-%';
 delete from public.enquiries where notes like '%[seed data]%';
 ```
 
