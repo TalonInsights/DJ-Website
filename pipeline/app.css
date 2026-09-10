@@ -50,8 +50,8 @@ a{color:var(--green)}
 .gate-card{width:min(430px,100%);background:#fff;border:1px solid var(--rule);border-radius:12px;
   padding:clamp(1.6rem,4vw,2.4rem);box-shadow:var(--shadow-m)}
 .gate-brand{display:flex;align-items:center;gap:.85rem;margin-bottom:1.6rem}
-.mark{width:40px;height:40px;border-radius:9px;background:var(--green);color:#fff;flex:none;
-  display:grid;place-items:center;font-family:var(--display);font-size:1.05rem;letter-spacing:.02em}
+.mark{width:42px;height:42px;flex:none;display:block}
+header.bar .mark{width:38px;height:38px}
 .gate-brand h1{font-size:1.12rem}
 .gate-brand .sub{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute-tx)}
 .gate h2{font-size:1.5rem;margin-bottom:.5rem}
@@ -76,7 +76,8 @@ header.bar .brand h1{font-size:1rem;line-height:1.2}
 header.bar .brand .sub{font-size:.63rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute-tx)}
 .tabs{display:flex;gap:.25rem;background:var(--sage);padding:.2rem;border-radius:100px}
 .tabs a{padding:.42rem 1rem;border-radius:100px;text-decoration:none;font-size:.83rem;font-weight:600;
-  color:var(--slate)}
+  color:var(--slate);min-height:34px;display:inline-flex;align-items:center}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
 .tabs a[aria-current="page"]{background:#fff;color:var(--green);box-shadow:var(--shadow-s)}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:40px;
@@ -207,7 +208,11 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 .tile .delta.up{color:var(--ok)} .tile .delta.down{color:var(--bad)} .tile .delta.flat{color:var(--mute-tx)}
 .tile.action{border-color:var(--brass-lt);box-shadow:0 0 0 3px rgba(199,155,76,.13)}
 .tile.thin .big{opacity:.45}
-.tile a{text-decoration:none}
+/* The link is the body of the tile, never the heading, so the help icon
+   beside the heading can never be swallowed by it. */
+.tile-go{display:block;color:inherit;text-decoration:none;border-radius:6px;margin:-.2rem;padding:.2rem}
+.tile-go .go{display:inline-block;margin-top:.55rem;font-size:.74rem;font-weight:600;color:var(--green)}
+.tile-go:hover .go{text-decoration:underline}
 
 .panel{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:1.1rem 1.2rem;margin-bottom:1.1rem}
 .panel > h2{font-size:1.15rem;margin-bottom:.15rem}
@@ -304,40 +309,38 @@ svg.chart .dot{animation:fade-in .4s var(--ease) 1s backwards}
 
 .thin-note{font-size:.74rem;color:var(--mute-tx);font-style:italic}
 
-/* ---------- info popovers ----------
-   A question mark beside a figure. Small, quiet, and never in the way of
-   the number it belongs to. */
-.info{position:relative;display:inline-block;margin-left:.4rem;vertical-align:middle}
+/* ---------- help popovers ----------
+   After Origin UI's "tooltip with title and icon" (21st.dev, originui/
+   tooltip): a light card, a small icon and a bold one-line title, then
+   the explanation in the muted colour. Positioned from JavaScript with
+   position:fixed so it can never be clipped by a panel edge or run off
+   the side of the screen. */
+.info{display:inline-flex;margin-left:.35rem;vertical-align:middle}
 .info-btn{
-  width:16px;height:16px;padding:0;border-radius:50%;cursor:pointer;
-  border:1px solid var(--rule-ctl);background:#fff;color:var(--slate);
-  font:inherit;font-size:.62rem;font-weight:700;line-height:1;
-  display:inline-flex;align-items:center;justify-content:center;
-  transition:background .2s var(--ease),border-color .2s var(--ease),color .2s var(--ease);
+  width:22px;height:22px;padding:0;border:0;border-radius:50%;cursor:pointer;
+  background:transparent;color:var(--mute-tx);display:inline-flex;align-items:center;justify-content:center;
+  transition:color .2s var(--ease),background .2s var(--ease);
 }
-.info-btn:hover,.info-btn[aria-expanded="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.info-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.info-btn:hover,.info-btn[aria-expanded="true"]{color:var(--green);background:var(--green-sf)}
 .info-pop{
-  position:absolute;z-index:25;top:calc(100% + .5rem);left:50%;transform:translateX(-50%);
-  width:max(240px,20vw);max-width:300px;
-  background:var(--ink);color:#F2F4F1;border-radius:8px;padding:.7rem .85rem;
-  font-family:var(--body);font-size:.8rem;font-weight:400;font-style:normal;
-  line-height:1.5;letter-spacing:0;text-transform:none;text-align:left;
-  box-shadow:0 6px 24px rgba(23,26,24,.28);
+  position:fixed;z-index:70;width:min(320px,calc(100vw - 20px));
+  background:#fff;border:1px solid var(--rule-dk);border-radius:10px;padding:.75rem .9rem .8rem;
+  box-shadow:0 10px 30px rgba(23,26,24,.14),0 2px 6px rgba(23,26,24,.06);
+  font-family:var(--body);font-weight:400;font-style:normal;letter-spacing:0;text-transform:none;
+  text-align:left;color:var(--slate);font-size:.8rem;line-height:1.5;
 }
-.info-pop::before{
-  content:"";position:absolute;bottom:100%;left:50%;margin-left:-5px;
-  border:5px solid transparent;border-bottom-color:var(--ink);
-}
-/* Near the right-hand edge a centred popover would run off the panel. */
-.pair > .panel:last-child .info-pop,
-.tiles > .tile:last-child .info-pop{left:auto;right:0;transform:none}
-.pair > .panel:last-child .info-pop::before,
-.tiles > .tile:last-child .info-pop::before{left:auto;right:14px}
+.info-pop .info-head{display:flex;align-items:center;gap:.45rem;margin-bottom:.3rem;color:var(--ink);
+  font-size:.82rem;font-weight:600}
+.info-pop .info-head svg{width:15px;height:15px;stroke:var(--green);fill:none;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round;flex:none}
+.info-pop p{margin:0}
 @media (prefers-reduced-motion:no-preference){
-  .info-pop{animation:info-in .18s var(--ease)}
-  @keyframes info-in{from{opacity:0;transform:translateX(-50%) translateY(-4px)}}
+  .info-pop{animation:info-in .16s var(--ease)}
+  @keyframes info-in{from{opacity:0;transform:translateY(-4px)}}
 }
-.tile h3,.panel > h2{display:flex;align-items:center;gap:0}
+.tile h3{display:flex;align-items:center;justify-content:space-between;gap:.4rem}
+.panel > h2{display:flex;align-items:center;gap:0}
 
 /* An empty state says what to do next; it never just reports emptiness. */
 .empty-state{text-align:center;padding:2.4rem 1.2rem;color:var(--slate)}

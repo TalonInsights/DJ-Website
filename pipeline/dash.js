@@ -103,18 +103,25 @@ function delta(now, before, { invert = false, suffix = "" } = {}) {
   return `<span class="delta ${cls}">${arrow}${Math.abs(change).toFixed(0)}%${suffix}</span>`;
 }
 
-/* A question mark beside a figure, explaining it in plain words. Real
-   buttons, so the keyboard reaches them; one open at a time; Escape or a
-   click anywhere else closes it. */
+/* A small "i" beside every figure, opening a card that says what the
+   figure means in plain words. Real buttons, so the keyboard reaches
+   them; one open at a time; Escape, scrolling, or a click anywhere else
+   closes it. The card is position:fixed and placed from the trigger's
+   rectangle, so it can never be clipped or run off the screen. */
+const ICON_INFO = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.25"/><path d="M12 11v5.2"/><path d="M12 7.8h.01"/></svg>`;
+
 let infoSeq = 0;
-function info(key) {
+function info(key, title) {
   const text = EXPLAIN[key];
   if (!text) return "";
   const id = "info-" + (++infoSeq);
   return `<span class="info">
     <button type="button" class="info-btn" aria-expanded="false" aria-controls="${id}"
-            aria-label="What does this mean?">?</button>
-    <span class="info-pop" id="${id}" role="tooltip" hidden>${esc(text)}</span>
+            aria-label="What does ${esc(title || "this")} mean?">${ICON_INFO}</button>
+    <div class="info-pop" id="${id}" role="dialog" aria-label="${esc(title || "Explanation")}" hidden>
+      <div class="info-head">${ICON_INFO}<span>${esc(title || "What this shows")}</span></div>
+      <p>${esc(text)}</p>
+    </div>
   </span>`;
 }
 
@@ -126,21 +133,32 @@ function closeInfo() {
   });
 }
 
+function placeInfo(btn, pop) {
+  pop.hidden = false;
+  const r = btn.getBoundingClientRect();
+  const w = pop.offsetWidth, h = pop.offsetHeight, gap = 8, edge = 10;
+  let left = r.left + r.width / 2 - 22;
+  left = Math.max(edge, Math.min(left, window.innerWidth - w - edge));
+  let top = r.bottom + gap;
+  if (top + h > window.innerHeight - edge) top = Math.max(edge, r.top - h - gap);
+  pop.style.left = left + "px";
+  pop.style.top = top + "px";
+}
+
 /* Registered once for the life of the page. wireInfo runs on every draw,
    and adding these each time would stack a listener per redraw. */
 let infoGlobals = false;
 function infoGlobalsOnce() {
   if (infoGlobals) return;
   infoGlobals = true;
-  /* Closing on any click except one inside the widget itself, rather
-     than relying on stopPropagation reaching document in the right
-     order. Order-independent, so a real click cannot open and
-     immediately close the same popover. */
   document.addEventListener("click", e => {
     if (e.target.closest && e.target.closest(".info")) return;
     closeInfo();
   });
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeInfo(); });
+  /* A fixed card would drift away from its trigger as the page scrolls. */
+  document.addEventListener("scroll", closeInfo, { capture: true, passive: true });
+  window.addEventListener("resize", closeInfo);
 }
 
 function wireInfo(root) {
@@ -150,21 +168,24 @@ function wireInfo(root) {
       const pop = document.getElementById(btn.getAttribute("aria-controls"));
       const wasOpen = btn.getAttribute("aria-expanded") === "true";
       closeInfo();
-      if (!wasOpen && pop) { btn.setAttribute("aria-expanded", "true"); pop.hidden = false; }
+      if (!wasOpen && pop) { btn.setAttribute("aria-expanded", "true"); placeInfo(btn, pop); }
     });
   });
 }
 
-function tile({ title, value, sub, deltaHtml, thin, n, action, href, explain }) {
-  const inner = `
-    <h3>${esc(title)}${explain ? info(explain) : ""}</h3>
+/* The heading row holds the title and the help icon. When a tile links
+   somewhere, only the body is the link, so the icon is never inside it. */
+function tile({ title, value, sub, deltaHtml, thin, n, action, href, go, explain }) {
+  const body = `
     <div class="big">${value}${deltaHtml || ""}</div>
     <div class="sub">${thin
       ? `Only ${n} to go on, so treat this as a hint, not a trend.`
       : (sub || "")}</div>`;
-  return `<div class="tile${action ? " action" : ""}${thin ? " thin" : ""}"
+  return `<article class="tile${action ? " action" : ""}${thin ? " thin" : ""}"
     ${thin ? `title="Computed from ${n} records. Rates need at least ${THIN_N} before they mean much."` : ""}>
-    ${href ? `<a href="${href}">${inner}</a>` : inner}</div>`;
+    <h3><span>${esc(title)}</span>${explain ? info(explain, title) : ""}</h3>
+    ${href ? `<a class="tile-go" href="${href}">${body}<span class="go">${esc(go || "Open")} &rarr;</span></a>` : body}
+  </article>`;
 }
 
 async function draw({ auto = false } = {}) {
@@ -229,7 +250,7 @@ async function drawInner({ auto = false } = {}) {
     tile({
       title: "Weighted pipeline", value: money(s.weighted_pipeline), explain: "weighted_pipeline",
       sub: `${num(s.open_enquiries)} open, ${money(s.open_pipeline_value)} unweighted`,
-      href: "/pipeline"
+      href: "/pipeline", go: "See the open enquiries"
     }),
     tile({
       title: "Forward capacity", value: s.weeks_at_capacity + " wk", explain: "forward_capacity",
@@ -242,7 +263,7 @@ async function drawInner({ auto = false } = {}) {
       title: "Overdue follow-ups", value: num(s.overdue_actions), explain: "overdue",
       sub: s.overdue_actions > 0 ? "oldest first on the board" : "nothing waiting",
       action: Number(s.overdue_actions) > 0,
-      href: "/pipeline"
+      href: "/pipeline", go: "Go to the board"
     }),
     tile({
       title: "Delivered on time", value: s.on_time_rate === null ? "—" : s.on_time_rate + "%", explain: "on_time",
@@ -301,7 +322,7 @@ async function drawInner({ auto = false } = {}) {
     <div class="tiles">${tiles}</div>
 
     <section class="panel">
-      <h2>Capacity against pipeline${info("capacity")}</h2>
+      <h2>Capacity against pipeline${info("capacity", "Capacity against pipeline")}</h2>
       <p class="note">The dark line steps across what each week can take. Committed work is the solid bar,
         and what the open pipeline would likely add is stacked on top, each enquiry spread across the window
         it might land in. Anything standing above the line is work with nowhere to go.</p>
@@ -318,7 +339,7 @@ async function drawInner({ auto = false } = {}) {
 
     <div class="pair">
       <section class="panel">
-        <h2>Funnel${info("funnel")}</h2>
+        <h2>Funnel${info("funnel", "Funnel")}</h2>
         <p class="note">Enquiries that reached each stage in this period.</p>
         ${funnelList([
           { label: "Received", value: tot.received },
@@ -330,7 +351,7 @@ async function drawInner({ auto = false } = {}) {
       </section>
 
       <section class="panel">
-        <h2>Cycle times${info("cycle")}</h2>
+        <h2>Cycle times${info("cycle", "Cycle times")}</h2>
         <p class="note">Median days from enquiry to a decision. Medians, not averages, so one job that sat
           for months does not move the line on its own.</p>
         ${lineChart(cycles.map(c => ({ label: monthLabel(c.period), value: c.median_days_total })),
@@ -340,14 +361,14 @@ async function drawInner({ auto = false } = {}) {
 
     <div class="pair">
       <section class="panel">
-        <h2>Why work is lost${info("lost")}</h2>
+        <h2>Why work is lost${info("lost", "Why work is lost")}</h2>
         <p class="note">By value, not by count. Losing one large job to price matters more than three
           small ones going quiet.</p>
         ${barList(lostByReason, { fmt: money, accent: true })}
       </section>
 
       <section class="panel">
-        <h2>Schedule variance${info("variance")}</h2>
+        <h2>Schedule variance${info("variance", "Schedule variance")}</h2>
         <p class="note">How far completed jobs ran from the baseline they were first committed to,
           in days. Not from the current plan, which moves every time a bar is dragged.</p>
         ${varianceChart(jobs.filter(j => j.is_complete).map(j => j.actual_end_variance_days))}
@@ -356,7 +377,7 @@ async function drawInner({ auto = false } = {}) {
 
     <div class="pair">
       <section class="panel">
-        <h2>Delivered on time, by product${info("delivery")}</h2>
+        <h2>Delivered on time, by product${info("delivery", "Delivered on time, by product")}</h2>
         <p class="note">Against the date the customer was actually given.</p>
         ${byProduct.length
           ? barList(byProduct.map(p => ({ ...p, value: p.value })), { fmt: v => v + "%" })
@@ -367,7 +388,7 @@ async function drawInner({ auto = false } = {}) {
       </section>
 
       <section class="panel">
-        <h2>Where the work comes from${info("sources")}</h2>
+        <h2>Where the work comes from${info("sources", "Where the work comes from")}</h2>
         <p class="note">Revenue by source. Only enquiries that became jobs count, so work typed
           straight onto the schedule is not represented here.</p>
         ${barList(bySource, { fmt: money })}

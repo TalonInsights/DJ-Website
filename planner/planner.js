@@ -600,6 +600,7 @@ function renderOverload(){
 
 function renderAll(){
   computeRange(); renderHeader(); renderRows(); renderStats(); renderOverload();
+  if(typeof updateJump === "function") updateJump();
 }
 function esc(s){ return String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 
@@ -860,6 +861,33 @@ function scrollToToday(smooth){
   gridEl.scrollTo({left: Math.max(0, x - 160), behavior: smooth?"smooth":"auto"});
 }
 $("btnToday").addEventListener("click",()=>scrollToToday(true));
+
+/* A chip that appears whenever today has left the viewport, pointing the
+   way back. The commonest way to get lost on a long timeline is to
+   scroll past the work and not know which direction home is. */
+const jump = $("jump");
+function updateJump(){
+  if(!jump) return;
+  const tx = diffD(range.start, TODAY);
+  if(tx < 0 || tx >= range.days){ jump.classList.remove("show"); return; }
+  const leftw = (document.querySelector(".head-left") || {offsetWidth:348}).offsetWidth;
+  const x = tx*dayW + dayW/2;
+  const visStart = gridEl.scrollLeft, visEnd = gridEl.scrollLeft + gridEl.clientWidth - leftw;
+  const onScreen = x >= visStart && x <= visEnd;
+  jump.classList.toggle("show", !onScreen);
+  jump.innerHTML = x < visStart ? "&larr; Back to today" : "Back to today &rarr;";
+}
+gridEl.addEventListener("scroll", updateJump, {passive:true});
+window.addEventListener("resize", updateJump);
+if(jump) jump.addEventListener("click", ()=>scrollToToday(true));
+
+/* The overflow menu closes after a choice, and on a click anywhere else. */
+const more = $("more");
+if(more){
+  more.querySelectorAll(".menu button").forEach(b=>b.addEventListener("click", ()=>{ more.open=false; }));
+  document.addEventListener("click", e=>{ if(more.open && !more.contains(e.target)) more.open=false; });
+  document.addEventListener("keydown", e=>{ if(e.key==="Escape") more.open=false; });
+}
 
 $("btnExport").addEventListener("click",()=>{
   const blob = new Blob([JSON.stringify(projects,null,2)],{type:"application/json"});

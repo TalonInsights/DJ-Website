@@ -45,7 +45,7 @@
   --headh:58px;
 }
 *{box-sizing:border-box}
-html,body{height:100%}
+html,body{height:100%;overscroll-behavior-x:none}
 body{
   margin:0;background:var(--paper);color:var(--ink);
   font-family:var(--body);font-size:14px;-webkit-font-smoothing:antialiased;
@@ -93,11 +93,7 @@ body[data-state="ready"]   #gate{display:none}
 }
 .gate-brand{display:flex;align-items:center;gap:14px;margin-bottom:30px;
   padding-bottom:22px;border-bottom:1px solid var(--rule)}
-.mark{
-  width:42px;height:42px;border-radius:7px;flex:0 0 auto;
-  background:var(--green);display:grid;place-items:center;color:#fff;
-  font-family:var(--display);font-weight:300;font-size:17px;letter-spacing:.02em;
-}
+.mark{width:44px;height:44px;flex:0 0 auto;display:block}
 .gate-brand h1{margin:0;font-family:var(--display);font-weight:300;font-size:1.3rem;
   line-height:1.05;letter-spacing:-.02em;color:var(--ink)}
 .gate-brand .sub{font-size:.58rem;text-transform:uppercase;letter-spacing:.24em;
@@ -141,13 +137,44 @@ body[data-state="ready"]   #gate{display:none}
   flex:0 0 auto;flex-wrap:wrap;box-shadow:var(--shadow-s);z-index:20;
 }
 .brand{display:flex;align-items:center;gap:12px;margin-right:auto}
-.brand .mark{width:36px;height:36px;font-size:15px}
+.brand .mark{width:38px;height:38px}
 .brand h1{margin:0;font-family:var(--display);font-weight:300;font-size:1.12rem;
   letter-spacing:-.015em;line-height:1.1;color:var(--ink)}
 .brand h1 .div{color:var(--rule-dk);margin:0 .3rem}
 .brand h1 .mod{color:var(--slate)}
 .brand .sub{font-size:.55rem;text-transform:uppercase;letter-spacing:.22em;
   color:var(--mute);margin-top:.3rem}
+
+/* Same pill navigation as the enquiries and analytics pages, so the
+   three screens read as one product rather than three. */
+.tabs{display:flex;gap:.25rem;background:var(--sage);padding:.2rem;border-radius:100px}
+.tabs a{padding:.42rem 1rem;border-radius:100px;text-decoration:none;font-size:.83rem;font-weight:600;
+  color:var(--slate);min-height:34px;display:inline-flex;align-items:center}
+.tabs a[aria-current="page"]{background:#fff;color:var(--green);box-shadow:var(--shadow-s)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+/* Backup, restore and sign out live behind one button. They are used a
+   few times a year; the bar is for what is used every hour. */
+.more{position:relative}
+.more summary{list-style:none;cursor:pointer;width:40px;padding:.5rem 0;font-size:1.1rem;line-height:1}
+.more summary::-webkit-details-marker{display:none}
+.more .menu{position:absolute;right:0;top:calc(100% + 6px);min-width:230px;background:#fff;
+  border:1px solid var(--rule-dk);border-radius:10px;box-shadow:var(--shadow-m);padding:.35rem;
+  z-index:60;display:grid}
+.more .menu button{text-align:left;padding:.6rem .85rem;border-radius:7px;font:inherit;font-size:.86rem;
+  color:var(--ink);background:none;border:0;cursor:pointer;width:100%}
+.more .menu button:hover{background:var(--green-sf)}
+.more .menu button small{display:block;font-size:.72rem;color:var(--mute);margin-top:.1rem}
+.more .menu hr{border:0;border-top:1px solid var(--rule);margin:.3rem 0}
+
+/* Appears when today has been scrolled out of view, pointing back to it. */
+.jump{position:fixed;left:50%;bottom:64px;transform:translateX(-50%) translateY(6px);z-index:35;
+  display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.1rem;border-radius:100px;
+  background:var(--ink);color:#fff;font:inherit;font-size:.82rem;font-weight:600;border:0;cursor:pointer;
+  box-shadow:var(--shadow-m);opacity:0;pointer-events:none;
+  transition:opacity .25s var(--ease),transform .25s var(--ease)}
+.jump.show{opacity:1;pointer-events:auto;transform:translateX(-50%)}
+.jump:hover{background:var(--green-dp)}
 
 .stats{display:flex;gap:22px;align-items:center;padding-right:6px}
 .stat{text-align:right;line-height:1.1}
@@ -204,7 +231,7 @@ select.sel:hover{border-color:var(--green)}
 .chip:hover{border-color:var(--green);color:var(--ink)}
 
 /* ---------- grid ---------- */
-.grid{flex:1 1 auto;overflow:auto;position:relative;background:var(--paper)}
+.grid{flex:1 1 auto;overflow:auto;position:relative;background:var(--paper);overscroll-behavior:contain}
 .grid::-webkit-scrollbar{width:12px;height:12px}
 .grid::-webkit-scrollbar-track{background:var(--sage)}
 .grid::-webkit-scrollbar-thumb{background:var(--rule-dk);border-radius:8px;border:3px solid var(--sage)}
@@ -487,7 +514,14 @@ select.sel:hover{border-color:var(--green)}
 <div id="gate">
   <div class="gate-card">
     <div class="gate-brand">
-      <div class="mark">DJ</div>
+      <svg class="mark" viewBox="0 0 44 44" aria-hidden="true" focusable="false">
+        <circle cx="22" cy="22" r="22" fill="#2F4739"/>
+        <circle cx="22" cy="22" r="18.5" fill="none" stroke="#F3EEDF" stroke-opacity=".28" stroke-width="1"/>
+        <rect x="14.5" y="10.5" width="15" height="21" rx="1" fill="none" stroke="#F3EEDF" stroke-width="1.5"/>
+        <path d="M22 10.5v21M14.5 15.75h15M14.5 26.25h15" fill="none" stroke="#F3EEDF" stroke-width=".9" stroke-opacity=".85"/>
+        <path d="M14.5 21h15" stroke="#F3EEDF" stroke-width="1.6"/>
+        <path d="M12 32.5h20" stroke="#C79B4C" stroke-width="2" stroke-linecap="round"/>
+      </svg>
       <div>
         <h1>David Jackson &amp; Son</h1>
         <div class="sub">Production Planning</div>
@@ -535,12 +569,25 @@ select.sel:hover{border-color:var(--green)}
 
 <header class="topbar">
   <div class="brand">
-    <div class="mark">DJ</div>
+    <svg class="mark" viewBox="0 0 44 44" aria-hidden="true" focusable="false">
+        <circle cx="22" cy="22" r="22" fill="#2F4739"/>
+        <circle cx="22" cy="22" r="18.5" fill="none" stroke="#F3EEDF" stroke-opacity=".28" stroke-width="1"/>
+        <rect x="14.5" y="10.5" width="15" height="21" rx="1" fill="none" stroke="#F3EEDF" stroke-width="1.5"/>
+        <path d="M22 10.5v21M14.5 15.75h15M14.5 26.25h15" fill="none" stroke="#F3EEDF" stroke-width=".9" stroke-opacity=".85"/>
+        <path d="M14.5 21h15" stroke="#F3EEDF" stroke-width="1.6"/>
+        <path d="M12 32.5h20" stroke="#C79B4C" stroke-width="2" stroke-linecap="round"/>
+      </svg>
     <div>
-      <h1>David Jackson &amp; Son <span class="div">/</span> <span class="mod">Production Planning</span></h1>
-      <div class="sub">Joinery — Workshop Schedule</div>
+      <h1>David Jackson &amp; Son</h1>
+      <div class="sub">Workshop schedule</div>
     </div>
   </div>
+
+  <nav class="tabs" aria-label="Sections">
+    <a href="/planner" aria-current="page">Schedule</a>
+    <a href="/pipeline">Enquiries</a>
+    <a href="/pipeline/analytics">Analytics</a>
+  </nav>
 
   <div class="stats">
     <div class="stat"><b id="stProjects">0</b><span>Jobs</span></div>
@@ -554,12 +601,17 @@ select.sel:hover{border-color:var(--green)}
   </span>
 
   <button class="btn" id="btnToday">Today</button>
-  <button class="btn icon" id="btnExport" title="Download a backup of the schedule">↓ Backup</button>
-  <button class="btn icon" id="btnImport" title="Restore a schedule from a backup file">↑ Restore</button>
-  <input type="file" id="fileImport" accept="application/json" hidden>
-  <a class="btn" href="/pipeline" title="Enquiries and analytics">Enquiries</a>
   <button class="btn primary" id="btnAdd">+ Add job</button>
-  <button class="btn" id="btnSignOut" title="Sign out of the planner">Sign out</button>
+  <details class="more" id="more">
+    <summary class="btn icon" aria-label="More options" title="Backup, restore and sign out">&#8943;</summary>
+    <div class="menu">
+      <button type="button" id="btnExport">Download a backup<small>A copy of the whole schedule, as a file</small></button>
+      <button type="button" id="btnImport">Restore from a backup<small>Replaces the schedule with a saved file</small></button>
+      <hr>
+      <button type="button" id="btnSignOut">Sign out</button>
+    </div>
+  </details>
+  <input type="file" id="fileImport" accept="application/json" hidden>
 </header>
 
 <div class="toolbar">
@@ -602,6 +654,8 @@ select.sel:hover{border-color:var(--green)}
     <div class="today-line" id="todayLine"></div>
   </div>
 </div>
+
+<button class="jump" id="jump" type="button">&larr; Back to today</button>
 
 <footer class="credit">
   <span class="c-left">David Jackson &amp; Son Joinery</span>
