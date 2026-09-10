@@ -304,6 +304,41 @@ svg.chart .dot{animation:fade-in .4s var(--ease) 1s backwards}
 
 .thin-note{font-size:.74rem;color:var(--mute-tx);font-style:italic}
 
+/* ---------- info popovers ----------
+   A question mark beside a figure. Small, quiet, and never in the way of
+   the number it belongs to. */
+.info{position:relative;display:inline-block;margin-left:.4rem;vertical-align:middle}
+.info-btn{
+  width:16px;height:16px;padding:0;border-radius:50%;cursor:pointer;
+  border:1px solid var(--rule-ctl);background:#fff;color:var(--slate);
+  font:inherit;font-size:.62rem;font-weight:700;line-height:1;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:background .2s var(--ease),border-color .2s var(--ease),color .2s var(--ease);
+}
+.info-btn:hover,.info-btn[aria-expanded="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.info-pop{
+  position:absolute;z-index:25;top:calc(100% + .5rem);left:50%;transform:translateX(-50%);
+  width:max(240px,20vw);max-width:300px;
+  background:var(--ink);color:#F2F4F1;border-radius:8px;padding:.7rem .85rem;
+  font-family:var(--body);font-size:.8rem;font-weight:400;font-style:normal;
+  line-height:1.5;letter-spacing:0;text-transform:none;text-align:left;
+  box-shadow:0 6px 24px rgba(23,26,24,.28);
+}
+.info-pop::before{
+  content:"";position:absolute;bottom:100%;left:50%;margin-left:-5px;
+  border:5px solid transparent;border-bottom-color:var(--ink);
+}
+/* Near the right-hand edge a centred popover would run off the panel. */
+.pair > .panel:last-child .info-pop,
+.tiles > .tile:last-child .info-pop{left:auto;right:0;transform:none}
+.pair > .panel:last-child .info-pop::before,
+.tiles > .tile:last-child .info-pop::before{left:auto;right:14px}
+@media (prefers-reduced-motion:no-preference){
+  .info-pop{animation:info-in .18s var(--ease)}
+  @keyframes info-in{from{opacity:0;transform:translateX(-50%) translateY(-4px)}}
+}
+.tile h3,.panel > h2{display:flex;align-items:center;gap:0}
+
 /* An empty state says what to do next; it never just reports emptiness. */
 .empty-state{text-align:center;padding:2.4rem 1.2rem;color:var(--slate)}
 .empty-state h3{font-size:1.2rem;margin-bottom:.4rem;color:var(--ink)}

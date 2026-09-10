@@ -291,6 +291,49 @@ async function removeJob(id){
   setSync();
 }
 
+/* ================= capacity =================
+   How many jobs the workshop can have running at once. capacity_weeks
+   holds job-days per week; divided by five working days that is the
+   number of jobs that can be on the bench on any given day. Weeks with
+   no row fall back to fifteen, the same default the analytics use.
+
+   If the table is not there yet the map stays empty and everything
+   falls back, so an older database still works. */
+let capacity = new Map();
+const DEFAULT_WEEK_DAYS = 15;
+
+async function loadCapacity(){
+  const { data, error } = await sb.from("capacity_weeks").select("week_start,available_days");
+  if(error){ capacity = new Map(); return; }
+  capacity = new Map((data||[]).map(r=>[r.week_start, Number(r.available_days)]));
+}
+
+function mondayOf(iso){
+  let s = iso;
+  while(dow(s) !== 1) s = addD(s, -1);
+  return s;
+}
+
+function jobsPerDay(iso){
+  const wk = mondayOf(iso);
+  const wkDays = capacity.has(wk) ? capacity.get(wk) : DEFAULT_WEEK_DAYS;
+  return wkDays / 5;
+}
+
+/* One entry per date, counting the stages running that day. Two stages
+   of the same job on one day is two calls on the workshop, so stages
+   are counted rather than jobs. */
+function loadByDay(){
+  const counts = new Map();
+  projects.forEach(p => p.phases.forEach(ph => {
+    if(!ph.start || !ph.end) return;
+    for(let s = ph.start; s <= ph.end; s = addD(s, 1)){
+      counts.set(s, (counts.get(s) || 0) + 1);
+    }
+  }));
+  return counts;
+}
+
 async function loadJobs(){
   const { data, error } = await sb
     .from("jobs")
@@ -517,8 +560,46 @@ function renderChips(){
   });
 }
 
+/* A red column behind the bars on any working day with more work on it
+   than the week can carry, and the same day tinted in the header so it
+   is still findable when bars cover the column. */
+function renderOverload(){
+  const layer = $("overloadLayer");
+  if(!layer) return;
+  const counts = loadByDay();
+  layer.innerHTML = "";
+
+  const cells = daysEl.children;
+  let worst = 0;
+
+  for(let k = 0; k < range.days; k++){
+    const s = addD(range.start, k);
+    const cell = cells[k];
+    if(cell) cell.classList.remove("over");
+    if(isWE(s)) continue;
+
+    const n = counts.get(s) || 0;
+    const room = jobsPerDay(s);
+    if(n <= room) continue;
+
+    worst = Math.max(worst, n - room);
+    const el = document.createElement("div");
+    el.className = "overload-day";
+    el.style.left  = "calc(var(--leftw) + " + (k * dayW) + "px)";
+    el.style.width = dayW + "px";
+    el.title = pretty(s) + " — " + n + " stage" + (n === 1 ? "" : "s") +
+               " running, room for " + (Math.round(room * 10) / 10) +
+               ". Something has to move.";
+    layer.appendChild(el);
+    if(cell) cell.classList.add("over");
+  }
+
+  const stat = $("stOver");
+  if(stat) stat.textContent = layer.children.length;
+}
+
 function renderAll(){
-  computeRange(); renderHeader(); renderRows(); renderStats();
+  computeRange(); renderHeader(); renderRows(); renderStats(); renderOverload();
 }
 function esc(s){ return String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 
@@ -618,7 +699,7 @@ gridEl.addEventListener("pointerup", e=>{
 gridEl.addEventListener("pointercancel", ()=>{
   if(!drag) return;
   drag.el.classList.remove("dragging");
-  drag=null; readout.style.display="none"; renderRows();
+  drag=null; readout.style.display="none"; renderRows(); renderOverload();
 });
 
 /* ================= modal ================= */
@@ -765,7 +846,7 @@ document.addEventListener("keydown", e=>{
 
 /* ================= toolbar wiring ================= */
 $("btnAdd").addEventListener("click",()=>openModal(null));
-$("sortSel").addEventListener("change",e=>{ sortBy=e.target.value; renderRows(); });
+$("sortSel").addEventListener("change",e=>{ sortBy=e.target.value; renderRows(); renderOverload(); });
 
 $("zoomSeg").addEventListener("click",e=>{
   const b = e.target.closest("button"); if(!b) return;
@@ -816,7 +897,7 @@ $("fileImport").addEventListener("change", e=>{
         const ins = await sb.from("jobs").insert(rows);
         if(ins.error) throw ins.error;
       }
-      await loadJobs();
+      await loadJobs(); await loadCapacity();
       renderAll();
     }catch(err){
       alert(err && err.message ? "Restore failed: "+err.message : "That file isn't a schedule backup.");
@@ -831,7 +912,7 @@ let started = false;
 async function start(){
   if(started) return;
   started = true;
-  await loadJobs();
+  await loadJobs(); await loadCapacity();
   setState("ready");
   renderChips();
   renderAll();

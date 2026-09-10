@@ -291,6 +291,27 @@ select.sel:hover{border-color:var(--green)}
   background:linear-gradient(180deg,var(--brass),rgba(169,128,59,.15));
 }
 
+/* ---------- overloaded days ----------
+   A working day carrying more stages than the week has room for. Sits
+   behind the bars, at z-index 4, so it never hides the work it is
+   warning about; the day in the header is tinted too, because on a busy
+   week the bars cover the column completely. Red is used nowhere else
+   on the board. */
+.overload{position:absolute;top:0;bottom:0;left:0;right:0;z-index:4;pointer-events:none}
+.overload-day{
+  position:absolute;top:0;bottom:0;
+  background:linear-gradient(180deg,rgba(168,57,42,.20),rgba(168,57,42,.10));
+  border-left:1px solid rgba(168,57,42,.42);
+  border-right:1px solid rgba(168,57,42,.42);
+  pointer-events:auto;
+}
+.day.over{background:var(--red-sf);color:#7C2B1E;box-shadow:inset 0 -2px 0 var(--red)}
+.day.over .dn{font-weight:700}
+@media (prefers-reduced-motion:no-preference){
+  .overload-day{animation:overload-in .45s var(--ease) backwards}
+  @keyframes overload-in{from{opacity:0}to{opacity:1}}
+}
+
 /* ---------- bars ---------- */
 .bar{
   position:absolute;top:9px;height:48px;border-radius:5px;z-index:8;
@@ -525,6 +546,7 @@ select.sel:hover{border-color:var(--green)}
     <div class="stat"><b id="stProjects">0</b><span>Jobs</span></div>
     <div class="stat"><b id="stPhases">0</b><span>Stages</span></div>
     <div class="stat risk"><b id="stRisk">0</b><span>Past deadline</span></div>
+  <div class="stat risk"><b id="stOver">0</b><span>Overloaded days</span></div>
   </div>
 
   <span class="sync" id="sync" data-sync="saved" title="Changes save to the workshop database automatically">
@@ -576,6 +598,7 @@ select.sel:hover{border-color:var(--green)}
   </div>
   <div class="body" id="bodyEl">
     <div class="rows" id="rows"></div>
+    <div class="overload" id="overloadLayer" aria-hidden="true"></div>
     <div class="today-line" id="todayLine"></div>
   </div>
 </div>

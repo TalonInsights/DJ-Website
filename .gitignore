@@ -21,3 +21,4 @@ nul
 
 # Verification harnesses, never shipped
 pipeline/_harness*.html
+planner/_harness*.html

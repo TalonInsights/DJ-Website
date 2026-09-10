@@ -281,6 +281,38 @@ export async function convertToJob(enquiryId, name) {
   return data;
 }
 
+/* Plain-English explanations, one per figure on the dashboard.
+   Written for Harry, not for whoever built it: no jargon, no formulae,
+   and where a number is easy to misread the note says so outright. */
+export const EXPLAIN = {
+  enquiries:
+    "How many new enquiries came in over the last 90 days, and whether that is more or fewer than the 90 days before it.",
+  win_rate:
+    "Of the enquiries that have been settled one way or the other, the share you won. Ones still open are left out, because they have not been decided yet. If the count beside it is small, treat the percentage as a hint rather than a fact.",
+  weighted_pipeline:
+    "Every open quote added up, but each one counted only in proportion to how likely it is. A £10,000 quote you put at 50% counts as £5,000. It is a realistic view of what might land, not a forecast.",
+  forward_capacity:
+    "How many weeks ahead are already full. If it says six, the next six weeks have no room left, so anything sold now lands after that.",
+  overdue:
+    "Enquiries where the next thing you meant to do has a date that has passed. These are the ones most likely to go quiet, and they are the biggest single source of lost work.",
+  on_time:
+    "Of the jobs finished in the last year that had a date promised to the customer, the share finished by that date. Jobs with no promised date are not counted.",
+  capacity:
+    "The dark line is how much work each week can take. The solid bar is what is already booked in. The paler block on top is work you have quoted for but not won yet, spread across the weeks it might land in. Anything sticking up above the line has nowhere to go.",
+  funnel:
+    "How many enquiries got as far as each stage. It counts everything that passed through a stage, not what is sitting there now, so a job that went straight to won still shows at every step on its way.",
+  cycle:
+    "How many days it typically takes from a first enquiry to a decision. Typical means the middle one, so a single job that sat in a drawer for months does not drag the whole line up.",
+  lost:
+    "Why quotes did not turn into work, ranked by the value of the work rather than how many quotes. Losing one big job to price matters more than three small ones going quiet.",
+  variance:
+    "How many days out each finished job was, against the plan first agreed for it. Not against the current plan, which moves every time a bar is dragged, so it would always look perfect.",
+  delivery:
+    "Of the jobs finished, the share that met the date the customer was given, broken down by what was being made.",
+  sources:
+    "Which channels the money actually came from. It can only see work that started as an enquiry, so anything typed straight onto the schedule is missing from this."
+};
+
 export async function refreshDashboard() {
   const { data, error } = await sb.rpc("refresh_dashboard");
   if (error) fail("Could not refresh", error);

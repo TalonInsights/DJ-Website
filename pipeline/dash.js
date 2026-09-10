@@ -15,11 +15,21 @@ import { $, mountGate } from "./client.js";
 import {
   periodRange, getSummary, getFunnel, getCycleTimes, getLostAnalysis,
   getCapacity, getJobPerformance, getPromiseVsDelivery, getSourcePerformance,
-  refreshDashboard, money, num, monthLabel, isThin, THIN_N
+  refreshDashboard, money, num, monthLabel, isThin, THIN_N, EXPLAIN
 } from "./data.js";
 import { capacityChart, lineChart, varianceChart, barList, funnelList } from "./charts.js";
 
 let period = "90d";
+
+/* The summary is a materialised view, so it holds whatever was true when
+   it was last built. Rather than leaving that to a button nobody will
+   press, the page rebuilds it whenever it finds it stale, and again on a
+   timer while it is open and being looked at. The button stays for when
+   someone wants it now. */
+const STALE_MS = 20 * 60 * 1000;
+let autoTimer = null;
+let lastDrawn = 0;
+let drawing = false;
 
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -27,7 +37,36 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
 mountGate(async () => {
   wire();
   await draw();
+  startAuto();
 });
+
+function startAuto() {
+  clearInterval(autoTimer);
+  autoTimer = setInterval(() => {
+    if (document.visibilityState === "visible") draw({ auto: true });
+  }, STALE_MS);
+
+  /* Coming back to a tab left open overnight should not show yesterday. */
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && Date.now() - lastDrawn > STALE_MS) {
+      draw({ auto: true });
+    }
+  });
+}
+
+/* Age of the figures, in words, plus what the page does about it. */
+function stamp(at, rebuilt) {
+  const el = $("stamp");
+  if (!el) return;
+  if (!at) { el.textContent = "These figures have not been built yet."; return; }
+  const mins = Math.round((Date.now() - new Date(at).getTime()) / 60000);
+  const when = rebuilt ? "just now"
+             : mins < 1 ? "moments ago"
+             : mins < 60 ? mins + " minute" + (mins === 1 ? "" : "s") + " ago"
+             : new Date(at).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" });
+  el.textContent = "Figures rebuilt " + when +
+    ". They rebuild themselves when they go stale, so there is nothing to press.";
+}
 
 function wire() {
   document.querySelectorAll("#periodSeg [data-period]").forEach(b =>
@@ -40,10 +79,13 @@ function wire() {
 
   $("btnRefresh").addEventListener("click", async () => {
     const btn = $("btnRefresh");
-    btn.disabled = true; btn.textContent = "Refreshing…";
+    btn.disabled = true; btn.textContent = "Rebuilding…";
     try { await refreshDashboard(); await draw(); }
-    catch (e) { alert(e.message); }
-    finally { btn.disabled = false; btn.textContent = "Refresh"; }
+    catch (e) {
+      const stampEl = $("stamp");
+      if (stampEl) { stampEl.textContent = "Could not rebuild: " + e.message; }
+    }
+    finally { btn.disabled = false; btn.textContent = "Rebuild now"; }
   });
 }
 
@@ -61,9 +103,61 @@ function delta(now, before, { invert = false, suffix = "" } = {}) {
   return `<span class="delta ${cls}">${arrow}${Math.abs(change).toFixed(0)}%${suffix}</span>`;
 }
 
-function tile({ title, value, sub, deltaHtml, thin, n, action, href }) {
+/* A question mark beside a figure, explaining it in plain words. Real
+   buttons, so the keyboard reaches them; one open at a time; Escape or a
+   click anywhere else closes it. */
+let infoSeq = 0;
+function info(key) {
+  const text = EXPLAIN[key];
+  if (!text) return "";
+  const id = "info-" + (++infoSeq);
+  return `<span class="info">
+    <button type="button" class="info-btn" aria-expanded="false" aria-controls="${id}"
+            aria-label="What does this mean?">?</button>
+    <span class="info-pop" id="${id}" role="tooltip" hidden>${esc(text)}</span>
+  </span>`;
+}
+
+function closeInfo() {
+  document.querySelectorAll(".info-btn[aria-expanded='true']").forEach(b => {
+    b.setAttribute("aria-expanded", "false");
+    const pop = document.getElementById(b.getAttribute("aria-controls"));
+    if (pop) pop.hidden = true;
+  });
+}
+
+/* Registered once for the life of the page. wireInfo runs on every draw,
+   and adding these each time would stack a listener per redraw. */
+let infoGlobals = false;
+function infoGlobalsOnce() {
+  if (infoGlobals) return;
+  infoGlobals = true;
+  /* Closing on any click except one inside the widget itself, rather
+     than relying on stopPropagation reaching document in the right
+     order. Order-independent, so a real click cannot open and
+     immediately close the same popover. */
+  document.addEventListener("click", e => {
+    if (e.target.closest && e.target.closest(".info")) return;
+    closeInfo();
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeInfo(); });
+}
+
+function wireInfo(root) {
+  infoGlobalsOnce();
+  root.querySelectorAll(".info-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const pop = document.getElementById(btn.getAttribute("aria-controls"));
+      const wasOpen = btn.getAttribute("aria-expanded") === "true";
+      closeInfo();
+      if (!wasOpen && pop) { btn.setAttribute("aria-expanded", "true"); pop.hidden = false; }
+    });
+  });
+}
+
+function tile({ title, value, sub, deltaHtml, thin, n, action, href, explain }) {
   const inner = `
-    <h3>${esc(title)}</h3>
+    <h3>${esc(title)}${explain ? info(explain) : ""}</h3>
     <div class="big">${value}${deltaHtml || ""}</div>
     <div class="sub">${thin
       ? `Only ${n} to go on, so treat this as a hint, not a trend.`
@@ -73,15 +167,36 @@ function tile({ title, value, sub, deltaHtml, thin, n, action, href }) {
     ${href ? `<a href="${href}">${inner}</a>` : inner}</div>`;
 }
 
-async function draw() {
+async function draw({ auto = false } = {}) {
+  /* A period button pressed twice quickly, or a timer landing on top of
+     a manual rebuild, would otherwise run two draws over each other and
+     render whichever finished last. */
+  if (drawing) return;
+  drawing = true;
+  try { await drawInner({ auto }); } finally { drawing = false; }
+}
+
+async function drawInner({ auto = false } = {}) {
   const range = periodRange(period);
   const dash = $("dash");
-  dash.innerHTML = `<p class="thin-note">Loading…</p>`;
+  if (!auto) dash.innerHTML = `<p class="thin-note">Loading…</p>`;
 
   let s, funnel, cycles, lost, capacity, jobs, delivery, sources;
+  let rebuilt = false;
   try {
-    [s, funnel, cycles, lost, capacity, jobs, delivery, sources] = await Promise.all([
-      getSummary(), getFunnel(range), getCycleTimes(range), getLostAnalysis(range),
+    /* Fetch the summary first so its age can be judged before anything
+       is drawn. Rebuilding after rendering would mean showing a stale
+       figure and then quietly changing it under the reader. */
+    s = await getSummary();
+    const stale = !s || !s.generated_at ||
+                  Date.now() - new Date(s.generated_at).getTime() > STALE_MS;
+    if (stale) {
+      try { await refreshDashboard(); s = await getSummary(); rebuilt = true; }
+      catch (e) { /* keep the stale figures rather than showing nothing */ }
+    }
+
+    [funnel, cycles, lost, capacity, jobs, delivery, sources] = await Promise.all([
+      getFunnel(range), getCycleTimes(range), getLostAnalysis(range),
       getCapacity(), getJobPerformance(), getPromiseVsDelivery(range), getSourcePerformance(range)
     ]);
   } catch (e) {
@@ -101,36 +216,36 @@ async function draw() {
   /* ---- tiles ---- */
   const tiles = [
     tile({
-      title: "Enquiries, 90 days", value: num(s.enquiries),
+      title: "Enquiries, 90 days", value: num(s.enquiries), explain: "enquiries",
       deltaHtml: delta(s.enquiries, s.enquiries_prev),
       sub: `${num(s.enquiries_prev)} in the 90 before`
     }),
     tile({
-      title: "Win rate", value: s.win_rate === null ? "—" : s.win_rate + "%",
+      title: "Win rate", value: s.win_rate === null ? "—" : s.win_rate + "%", explain: "win_rate",
       deltaHtml: delta(s.win_rate, s.win_rate_prev),
       thin: isThin(s.win_rate_n), n: s.win_rate_n,
       sub: `from ${num(s.win_rate_n)} decided enquiries`
     }),
     tile({
-      title: "Weighted pipeline", value: money(s.weighted_pipeline),
+      title: "Weighted pipeline", value: money(s.weighted_pipeline), explain: "weighted_pipeline",
       sub: `${num(s.open_enquiries)} open, ${money(s.open_pipeline_value)} unweighted`,
       href: "/pipeline"
     }),
     tile({
-      title: "Forward capacity", value: s.weeks_at_capacity + " wk",
+      title: "Forward capacity", value: s.weeks_at_capacity + " wk", explain: "forward_capacity",
       sub: s.weeks_at_capacity > 0
         ? `full for the next ${s.weeks_at_capacity} week${s.weeks_at_capacity === 1 ? "" : "s"}`
         : "room in every week ahead",
       action: Number(s.weeks_at_capacity) >= 6
     }),
     tile({
-      title: "Overdue follow-ups", value: num(s.overdue_actions),
+      title: "Overdue follow-ups", value: num(s.overdue_actions), explain: "overdue",
       sub: s.overdue_actions > 0 ? "oldest first on the board" : "nothing waiting",
       action: Number(s.overdue_actions) > 0,
       href: "/pipeline"
     }),
     tile({
-      title: "Delivered on time", value: s.on_time_rate === null ? "—" : s.on_time_rate + "%",
+      title: "Delivered on time", value: s.on_time_rate === null ? "—" : s.on_time_rate + "%", explain: "on_time",
       thin: isThin(s.on_time_rate_n), n: s.on_time_rate_n,
       sub: `from ${num(s.on_time_rate_n)} completed jobs, 12 months`
     })
@@ -186,7 +301,7 @@ async function draw() {
     <div class="tiles">${tiles}</div>
 
     <section class="panel">
-      <h2>Capacity against pipeline</h2>
+      <h2>Capacity against pipeline${info("capacity")}</h2>
       <p class="note">The dark line steps across what each week can take. Committed work is the solid bar,
         and what the open pipeline would likely add is stacked on top, each enquiry spread across the window
         it might land in. Anything standing above the line is work with nowhere to go.</p>
@@ -203,7 +318,7 @@ async function draw() {
 
     <div class="pair">
       <section class="panel">
-        <h2>Funnel</h2>
+        <h2>Funnel${info("funnel")}</h2>
         <p class="note">Enquiries that reached each stage in this period.</p>
         ${funnelList([
           { label: "Received", value: tot.received },
@@ -215,7 +330,7 @@ async function draw() {
       </section>
 
       <section class="panel">
-        <h2>Cycle times</h2>
+        <h2>Cycle times${info("cycle")}</h2>
         <p class="note">Median days from enquiry to a decision. Medians, not averages, so one job that sat
           for months does not move the line on its own.</p>
         ${lineChart(cycles.map(c => ({ label: monthLabel(c.period), value: c.median_days_total })),
@@ -225,14 +340,14 @@ async function draw() {
 
     <div class="pair">
       <section class="panel">
-        <h2>Why work is lost</h2>
+        <h2>Why work is lost${info("lost")}</h2>
         <p class="note">By value, not by count. Losing one large job to price matters more than three
           small ones going quiet.</p>
         ${barList(lostByReason, { fmt: money, accent: true })}
       </section>
 
       <section class="panel">
-        <h2>Schedule variance</h2>
+        <h2>Schedule variance${info("variance")}</h2>
         <p class="note">How far completed jobs ran from the baseline they were first committed to,
           in days. Not from the current plan, which moves every time a bar is dragged.</p>
         ${varianceChart(jobs.filter(j => j.is_complete).map(j => j.actual_end_variance_days))}
@@ -241,7 +356,7 @@ async function draw() {
 
     <div class="pair">
       <section class="panel">
-        <h2>Delivered on time, by product</h2>
+        <h2>Delivered on time, by product${info("delivery")}</h2>
         <p class="note">Against the date the customer was actually given.</p>
         ${byProduct.length
           ? barList(byProduct.map(p => ({ ...p, value: p.value })), { fmt: v => v + "%" })
@@ -252,13 +367,16 @@ async function draw() {
       </section>
 
       <section class="panel">
-        <h2>Where the work comes from</h2>
+        <h2>Where the work comes from${info("sources")}</h2>
         <p class="note">Revenue by source. Only enquiries that became jobs count, so work typed
           straight onto the schedule is not represented here.</p>
         ${barList(bySource, { fmt: money })}
       </section>
     </div>
 
-    <p class="thin-note">Summary generated ${s.generated_at ? new Date(s.generated_at).toLocaleString("en-GB") : "—"}.
-      Press Refresh to rebuild it.</p>`;
+    <p class="thin-note" id="stamp"></p>`;
+
+  wireInfo(dash);
+  stamp(s.generated_at, rebuilt);
+  lastDrawn = Date.now();
 }

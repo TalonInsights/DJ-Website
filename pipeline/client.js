@@ -133,17 +133,29 @@ export function mountGate(onReady) {
     emailStage(); say("You have been signed out.", "ok");
   });
 
-  sb.auth.onAuthStateChange((_e, session) => {
-    if (session) {
-      gate.hidden = true; app.hidden = false;
-      onReady(session);
-    } else {
-      gate.hidden = false; app.hidden = true;
-    }
-  });
+  /* Both onAuthStateChange and getSession report the same session on
+     load, and a token refresh reports it again later. Without this guard
+     onReady runs two or three times on every visit, so the page loads
+     its data and rebuilds the summary two or three times over. Fire once
+     per signed-in user, and again only after a real sign-out. */
+  let readyFor = null;
+
+  const enter = session => {
+    gate.hidden = true; app.hidden = false;
+    const who = session.user && session.user.id;
+    if (readyFor === who) return;
+    readyFor = who;
+    onReady(session);
+  };
+
+  const leave = () => {
+    readyFor = null;
+    gate.hidden = false; app.hidden = true;
+  };
+
+  sb.auth.onAuthStateChange((_e, session) => { if (session) enter(session); else leave(); });
 
   sb.auth.getSession().then(({ data: { session } }) => {
-    if (session) { gate.hidden = true; app.hidden = false; onReady(session); }
-    else { emailStage(); }
+    if (session) enter(session); else emailStage();
   });
 }
