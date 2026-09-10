@@ -387,7 +387,8 @@ do $jobs$
 declare
   owner uuid;
   crew  text[] := array['Harry','David','Tom','Harry','David'];
-  i int; j_id uuid; e record;
+  i int; j_id uuid;
+  e public.enquiries%rowtype;   -- %rowtype, never `record`: see the null assignment below
   ph jsonb; start_on date; p_start date; p_end date;
   n_stages int; drift int; est numeric(6,1); act numeric(6,1);
   prod text; people text[]; started date; finished date;
@@ -409,12 +410,17 @@ begin
     -- One in six is work that never was an enquiry: repeat custom or a
     -- phone call typed straight onto the board. These are the jobs the
     -- revenue figures cannot see, and the test data should show that.
+    -- A typed null row, not a bare null. Assigning null to a plain
+    -- `record` leaves it with no tuple structure at all, and the next
+    -- e.field raises "record is not assigned yet".
     if i % 6 = 0 then
-      e := null; n_noenq := n_noenq + 1;
+      e := null::public.enquiries;
+      n_noenq := n_noenq + 1;
     else
       select * into e from public.enquiries
        where status = 'won' and job_id is null and notes like '%[seed data]%'
        order by won_on limit 1;
+      if not found then e := null::public.enquiries; end if;
     end if;
 
     prod := coalesce(e.product_type[1], (array['Sliding sash windows','Casement windows',
@@ -475,6 +481,7 @@ begin
     select * into e from public.enquiries
      where status = 'won' and job_id is null and notes like '%[seed data]%'
      order by won_on desc limit 1;
+    if not found then e := null::public.enquiries; end if;
 
     prod := coalesce(e.product_type[1], (array['Sliding sash windows','Casement windows',
              'Entrance doors','French doors','Bespoke joinery'])[1 + floor(random()*5)::int]);
