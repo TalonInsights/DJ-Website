@@ -229,31 +229,45 @@ svg.chart .lbl{fill:var(--slate);font-weight:600}
 svg.chart .band{fill:var(--green-sf)}
 
 /* ---------- capacity chart ----------
-   A pale track for what the week can take, committed work in front of
-   it, and the weighted pipeline stacked on top. Brass is the alarm: a
-   week already over on committed work alone. */
-svg.chart.cap .track{fill:var(--sage)}
-svg.chart.cap .pipe{fill:var(--brass);opacity:.5;stroke:var(--brass);stroke-width:.6;
-  stroke-opacity:.55}   /* a top edge, or it merges with the sage track */
+   The capacity line is the reference everything else is read against, so
+   it sits on top of the bars and is the only thing drawn in the ink
+   colour. Brass is the alarm and nothing else uses it. */
+svg.chart.cap .band{fill:var(--green-sf);opacity:.55}
+svg.chart.cap .past-band{fill:var(--sage);opacity:.45}
+svg.chart.cap .grid{stroke:var(--rule);stroke-width:1}
+svg.chart.cap .grid.base{stroke:var(--rule-dk)}
+svg.chart.cap .tick{font-size:11px;fill:var(--slate)}
+svg.chart.cap .month{font-size:11.5px;font-weight:600;fill:var(--slate);letter-spacing:.02em}
+svg.chart.cap .bar{fill:var(--green)}
+svg.chart.cap .bar.over{fill:var(--brass)}
+svg.chart.cap .pipe{fill:var(--brass);opacity:.34}
 svg.chart.cap .hit{fill:transparent;pointer-events:all}
-svg.chart.cap .wk.past .bar{opacity:.42}
-svg.chart.cap .wk.past .track{opacity:.5}
-svg.chart.cap .wk.past .pipe{opacity:.2}
-svg.chart.cap .wk:hover .track{fill:var(--rule-dk)}
-svg.chart.cap .today{stroke:var(--slate);stroke-width:1;stroke-dasharray:3 3}
-svg.chart.cap .today-l{font-size:9.5px;font-weight:600;fill:var(--slate)}
+svg.chart.cap .wk.past .bar{opacity:.4}
+svg.chart.cap .wk.past .pipe{opacity:.16}
+svg.chart.cap .wk:hover .bar{fill:var(--green-dp)}
+svg.chart.cap .wk:hover .bar.over{fill:#8D6A30}
 
-/* Bars grow from the axis, left to right, so the eye is walked forward
-   through the weeks rather than shown a finished wall. */
+/* Drawn last, over everything, with a pale halo so it stays legible
+   where it crosses a bar. */
+svg.chart.cap .capline{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round;
+  paint-order:stroke;stroke-dasharray:none;
+  filter:drop-shadow(0 0 2px rgba(252,251,249,.95))}
+svg.chart.cap .today{stroke:var(--slate);stroke-width:1.2;stroke-dasharray:4 3}
+svg.chart.cap .today-l{font-size:11px;font-weight:700;fill:var(--slate)}
+
+/* Bars grow from the axis, left to right, then the capacity line draws
+   across once they have settled. */
 @keyframes bar-rise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
-svg.chart.cap .track,
 svg.chart.cap .pipe,
 svg.chart.cap .bar{transform-box:fill-box;transform-origin:50% 100%;
-  animation:bar-rise .52s var(--ease) backwards;
-  animation-delay:calc(var(--i,0) * 16ms)}
-svg.chart.cap .pipe{animation-delay:calc(var(--i,0) * 16ms + .16s)}
+  animation:bar-rise .5s var(--ease) backwards;
+  animation-delay:calc(var(--i,0) * 15ms)}
+svg.chart.cap .pipe{animation-delay:calc(var(--i,0) * 15ms + .14s)}
 @keyframes fade-in{from{opacity:0}to{opacity:1}}
-svg.chart.cap .today,svg.chart.cap .today-l{animation:fade-in .4s var(--ease) .7s backwards}
+@keyframes cap-draw{to{stroke-dashoffset:0}}
+svg.chart.cap .capline{stroke-dasharray:4000;stroke-dashoffset:4000;
+  animation:cap-draw 1.1s var(--ease) .3s forwards}
+svg.chart.cap .today,svg.chart.cap .today-l{animation:fade-in .4s var(--ease) .8s backwards}
 
 /* A line chart draws itself along its own length. 4000 comfortably
    exceeds any path in a 1000-unit viewBox, so no measuring is needed. */
@@ -263,14 +277,15 @@ svg.chart .line{stroke-dasharray:4000;stroke-dashoffset:4000;
 svg.chart .dot{animation:fade-in .4s var(--ease) 1s backwards}
 
 @media (prefers-reduced-motion:reduce){
-  svg.chart.cap .track,svg.chart.cap .pipe,svg.chart.cap .bar,
+  svg.chart.cap .pipe,svg.chart.cap .bar,svg.chart.cap .capline,
   svg.chart.cap .today,svg.chart.cap .today-l,
   svg.chart .line,svg.chart .dot{animation:none}
-  svg.chart .line{stroke-dasharray:none;stroke-dashoffset:0}
+  svg.chart .line,svg.chart.cap .capline{stroke-dasharray:none;stroke-dashoffset:0}
 }
 
 .legend{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;font-size:.76rem;color:var(--slate);margin-top:.6rem}
 .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:.35rem;vertical-align:-1px}
+.legend i.rule-key{width:18px;height:0;border-radius:0;border-top:2px solid var(--ink);vertical-align:4px}
 
 .funnel{list-style:none;margin:0;padding:0}
 .funnel li{display:flex;align-items:center;gap:.7rem;padding:.4rem 0;font-size:.86rem}

@@ -13,102 +13,147 @@
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+const NL = String.fromCharCode(10);
+
 const path = pts => pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
 
 /* ---------------------------------------------------------------------
    Capacity, and what the pipeline would add to it.
 
-   The one chart that changes a decision, so it is drawn as plainly as
-   possible: a pale track for what the week can take, committed work
-   stacked in front of it, and the weighted pipeline stacked on top of
-   that. Where the stack rises past the track, the work being sold has
-   nowhere to go.
+   The one chart that changes a decision, so everything in it earns its
+   place:
 
-   Stacked rather than a line over bars, because the question is
-   "committed plus likely, against available", and a line makes the
-   reader do that addition in their head.
+     a stepped CAPACITY LINE across the top of what each week can take,
+     drawn over the bars so it is never hidden by them. Anything standing
+     above that line is work with nowhere to go, and it is legible at a
+     glance without reading a single number;
 
-   Brass is reserved for the alarm: a week already over on committed work
-   alone. Pipeline that would tip it over is shown lighter, because it is
-   a risk rather than a fact.
+     committed work as a solid bar, and the weighted pipeline stacked on
+     top in a lighter tint, because the question is committed plus likely
+     against available and a separate line would make the reader add up;
+
+     faint month bands behind, so the eye can find November without
+     counting weeks, and a shaded region behind everything before today.
+
+   Brass is the alarm and nothing else uses it: a week already over on
+   committed work alone, before a single new enquiry lands.
    --------------------------------------------------------------------- */
-export function capacityChart(weeks, { height = 250 } = {}) {
+export function capacityChart(weeks, { height = 290 } = {}) {
   if (!weeks.length) return emptySvg("No capacity data yet.");
 
-  const W = 1000, H = height, padL = 46, padR = 14, padT = 20, padB = 46;
+  const W = 1000, H = height, padL = 48, padR = 16, padT = 26, padB = 52;
   const iw = W - padL - padR, ih = H - padT - padB;
 
-  const val = (w, k) => Math.max(Number(w[k] || 0), 0);
+  const num = (w, k) => Math.max(Number(w[k] || 0), 0);
   const rawMax = Math.max(
-    ...weeks.map(w => Math.max(val(w, "available_days"),
-                               val(w, "committed_days") + val(w, "weighted_pipeline_days"))), 1);
-  const step = rawMax > 40 ? 10 : rawMax > 20 ? 5 : 2;
+    ...weeks.map(w => Math.max(num(w, "available_days"),
+                               num(w, "committed_days") + num(w, "weighted_pipeline_days"))), 1);
+  const step = rawMax > 60 ? 20 : rawMax > 30 ? 10 : rawMax > 12 ? 5 : 2;
   const max = Math.ceil(rawMax / step) * step;
 
   const bw = iw / weeks.length;
-  const barW = Math.max(Math.min(bw * 0.62, 26), 3);
+  const barW = Math.max(Math.min(bw * 0.66, 30), 3);
   const y = v => padT + ih - (v / max) * ih;
   const hOf = v => Math.max((v / max) * ih, 0);
-
-  const ticks = [];
-  for (let v = 0; v <= max; v += step) {
-    if (max / step > 6 && v % (step * 2)) continue;
-    ticks.push(`<line class="grid" x1="${padL}" x2="${W - padR}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/>
-      <text class="tick" x="${padL - 8}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end">${v}</text>`);
-  }
 
   const today = new Date(); today.setHours(0, 0, 0, 0);
   let todayIdx = weeks.findIndex(w => new Date(w.week_start) >= today);
   if (todayIdx < 0) todayIdx = weeks.length;
 
+  /* ---- month bands, so a month can be found without counting ---- */
+  const bands = [];
+  let runStart = 0, runMonth = new Date(weeks[0].week_start).getMonth(), band = 0;
+  const closeBand = (from, to) => {
+    if (band % 2 === 0) bands.push(
+      `<rect class="band" x="${(padL + from * bw).toFixed(1)}" y="${padT - 8}"
+             width="${((to - from) * bw).toFixed(1)}" height="${ih + 8}"/>`);
+    band++;
+  };
+  weeks.forEach((w, i) => {
+    const mo = new Date(w.week_start).getMonth();
+    if (mo !== runMonth) { closeBand(runStart, i); runStart = i; runMonth = mo; }
+  });
+  closeBand(runStart, weeks.length);
+
+  const pastBand = todayIdx > 0
+    ? `<rect class="past-band" x="${padL}" y="${padT - 8}"
+             width="${(todayIdx * bw).toFixed(1)}" height="${ih + 8}"/>` : "";
+
+  /* ---- gridlines ---- */
+  const ticks = [];
+  for (let v = 0; v <= max; v += step) {
+    ticks.push(`<line class="grid${v === 0 ? " base" : ""}" x1="${padL}" x2="${W - padR}"
+      y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/>
+      <text class="tick" x="${padL - 10}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end">${v}</text>`);
+  }
+
+  /* ---- bars ---- */
   const bars = weeks.map((w, i) => {
     const x = padL + i * bw + (bw - barW) / 2;
-    const av = val(w, "available_days");
-    const cd = val(w, "committed_days");
-    const pl = val(w, "weighted_pipeline_days");
+    const av = num(w, "available_days");
+    const cd = num(w, "committed_days");
+    const pl = num(w, "weighted_pipeline_days");
     const overNow = cd > av;
-    const overLater = !overNow && cd + pl > av && av > 0;
-    const past = i < todayIdx;
+    const overLater = !overNow && cd + pl > av;
 
-    const title = `Week of ${esc(w.week_start)}: ${cd} of ${av} job-days committed`
-      + (pl > 0 ? `, ${pl} likely from the pipeline` : "")
-      + (overNow ? " — already over capacity" : overLater ? " — would go over if the pipeline lands" : "");
+    /* Built as lines and joined, rather than embedding newline escapes.
+       An escape sequence written into this file through a shell heredoc
+       loses a level and lands as a real line break inside the string,
+       which is a syntax error. NL avoids the question entirely. */
+    const lines = [`Week of ${esc(w.week_start)}`,
+                   `${cd} of ${av} job-days committed`];
+    if (pl > 0) lines.push(`${pl} likely from the pipeline`);
+    if (overNow) lines.push("Already over capacity");
+    else if (overLater) lines.push("Would go over if the pipeline lands");
+    if (w.capacity_note) lines.push(w.capacity_note);
+    const title = lines.join(NL);
 
-    return `<g class="wk${past ? " past" : ""}" style="--i:${i}">
-      <rect class="track" x="${x.toFixed(1)}" y="${y(av).toFixed(1)}"
-            width="${barW.toFixed(1)}" height="${hOf(av).toFixed(1)}" rx="2"/>
+    return `<g class="wk${i < todayIdx ? " past" : ""}" style="--i:${i}">
       ${pl > 0 ? `<rect class="pipe" x="${x.toFixed(1)}" y="${y(cd + pl).toFixed(1)}"
             width="${barW.toFixed(1)}" height="${hOf(pl).toFixed(1)}" rx="2"/>` : ""}
       <rect class="bar${overNow ? " over" : ""}" x="${x.toFixed(1)}" y="${y(cd).toFixed(1)}"
             width="${barW.toFixed(1)}" height="${hOf(cd).toFixed(1)}" rx="2"/>
-      <rect class="hit" x="${(padL + i * bw).toFixed(1)}" y="${padT}"
-            width="${bw.toFixed(1)}" height="${ih}"><title>${title}</title></rect>
+      <rect class="hit" x="${(padL + i * bw).toFixed(1)}" y="${padT - 8}"
+            width="${bw.toFixed(1)}" height="${ih + 8}"><title>${title}</title></rect>
     </g>`;
   }).join("");
 
-  /* Label the first week of each month rather than every nth week, so
-     the axis reads as a calendar instead of a stride. */
+  /* ---- the capacity line, stepped across each week ---- */
+  let cap = "";
+  weeks.forEach((w, i) => {
+    const x0 = padL + i * bw, x1 = x0 + bw, yv = y(num(w, "available_days"));
+    cap += (i === 0 ? `M ${x0.toFixed(1)} ${yv.toFixed(1)}`
+                    : ` L ${x0.toFixed(1)} ${yv.toFixed(1)}`) + ` L ${x1.toFixed(1)} ${yv.toFixed(1)}`;
+  });
+
+  /* ---- month names, once each, on a baseline rule ---- */
   let lastMonth = -1;
   const labels = weeks.map((w, i) => {
     const dt = new Date(w.week_start);
     if (dt.getMonth() === lastMonth) return "";
     lastMonth = dt.getMonth();
-    const x = padL + i * bw + bw / 2;
-    if (x < padL + 6 || x > W - padR - 6) return "";
-    return `<text class="tick" x="${x.toFixed(1)}" y="${H - 24}" text-anchor="middle">${
-      dt.toLocaleDateString("en-GB", { month: "short" })}</text>`;
+    const x = padL + i * bw + 2;
+    if (x > W - padR - 30) return "";
+    return `<text class="month" x="${x.toFixed(1)}" y="${H - 26}">${
+      dt.toLocaleDateString("en-GB", { month: "short" })}${
+      dt.getMonth() === 0 ? " " + dt.getFullYear() : ""}</text>`;
   }).join("");
 
   const todayX = padL + todayIdx * bw;
   const todayMark = (todayIdx > 0 && todayIdx < weeks.length)
-    ? `<line class="today" x1="${todayX.toFixed(1)}" x2="${todayX.toFixed(1)}" y1="${padT - 6}" y2="${padT + ih}"/>
-       <text class="today-l" x="${(todayX + 5).toFixed(1)}" y="${padT - 9}">today</text>` : "";
+    ? `<line class="today" x1="${todayX.toFixed(1)}" x2="${todayX.toFixed(1)}"
+         y1="${padT - 14}" y2="${padT + ih}"/>
+       <text class="today-l" x="${(todayX + 6).toFixed(1)}" y="${padT - 15}">today</text>` : "";
 
   return `<svg class="chart cap" viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet"
-      aria-label="Committed job-days and likely pipeline against available capacity, by week">
+      aria-label="Committed job-days and likely pipeline against a stepped capacity line, by week">
+    ${bands.join("")}${pastBand}
     ${ticks.join("")}
-    <line class="axis" x1="${padL}" x2="${W - padR}" y1="${padT + ih}" y2="${padT + ih}"/>
-    ${bars}${todayMark}${labels}
+    ${bars}
+    <path class="capline" d="${cap}"/>
+    ${todayMark}
+    <line class="axis" x1="${padL}" x2="${W - padR}" y1="${(padT + ih).toFixed(1)}" y2="${(padT + ih).toFixed(1)}"/>
+    ${labels}
   </svg>`;
 }
 

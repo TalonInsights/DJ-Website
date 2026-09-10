@@ -187,14 +187,14 @@ async function draw() {
 
     <section class="panel">
       <h2>Capacity against pipeline</h2>
-      <p class="note">The pale bar is what a week can take. Committed work sits in front of it, and what the
-        open pipeline would likely add is stacked on top, each enquiry spread across the window it might
-        land in. Where the stack rises past the pale bar, the work being sold has nowhere to go.</p>
+      <p class="note">The dark line steps across what each week can take. Committed work is the solid bar,
+        and what the open pipeline would likely add is stacked on top, each enquiry spread across the window
+        it might land in. Anything standing above the line is work with nowhere to go.</p>
       ${capacityChart(window)}
       <div class="legend">
-        <span><i style="background:var(--sage);border:1px solid var(--rule-dk)"></i>What the week can take</span>
+        <span><i class="rule-key"></i>Capacity &mdash; anything above this line has nowhere to go</span>
         <span><i style="background:var(--green)"></i>Committed</span>
-        <span><i style="background:var(--brass);opacity:.45"></i>Likely from the pipeline</span>
+        <span><i style="background:var(--brass);opacity:.34"></i>Likely from the pipeline</span>
         <span><i style="background:var(--brass)"></i>Already over capacity</span>
       </div>
       ${usingDefault ? `<p class="thin-note" style="margin-top:.5rem">${usingDefault} of these weeks have no
