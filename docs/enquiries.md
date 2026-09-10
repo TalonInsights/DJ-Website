@@ -18,7 +18,7 @@ and no local Postgres, so this is done by hand in the **Supabase SQL Editor**.
 the whole of **`supabase/install.sql`**, and press Run. That file is the five
 migrations concatenated in order, so nothing can be run out of sequence. Then
 paste `supabase/tests/acceptance.sql` for a PASS or FAIL on each check, and
-`supabase/seed/enquiries.sql` first if you want test data to look at.
+`supabase/seed/seed.sql` first if you want test data to look at.
 
 **The long way**, if you would rather see each step land:
 
@@ -29,7 +29,7 @@ paste `supabase/tests/acceptance.sql` for a PASS or FAIL on each check, and
 | 3 | `migrations/20260910_0003_production_measurement.sql` | Baseline, actuals, schedule history, capacity |
 | 4 | `migrations/20260910_0004_analytics_views.sql` | `dim_date`, twelve views, the summary |
 | 5 | `migrations/20260910_0005_transition_rules.sql` | Transition rules, enquiry conversion |
-| 6 | `seed/enquiries.sql` | 60 test enquiries — **never in production** |
+| 6 | `seed/seed.sql` | The full test dataset — **never in production** |
 | 7 | `tests/acceptance.sql` | Prints PASS or FAIL per check |
 
 Every file has a matching `_down.sql`. Each one is idempotent, so re-running is
@@ -38,13 +38,24 @@ safe. Each was parsed against the real PostgreSQL grammar before shipping, but
 Expect to fix something on first run, and run the acceptance script immediately
 afterwards rather than trusting it.
 
-**Seed files.** `seed/enquiries.sql` gives 60 enquiries over 18 months.
-`seed/jobs.sql` adds 90 more enquiries concentrated in the last 12 months, 26
-completed jobs across the past year and 10 live on the board, and links the two
-sides together. Load the enquiries first; the jobs seed attaches itself to won
-enquiries that have no job yet.
+**Seed.** One file, `seed/seed.sql`. It clears its own previous run first, so
+it is safe to paste again at any point.
 
-Without the jobs seed the capacity, schedule variance, estimate accuracy and
+It creates 150 enquiries across two years with every column populated, 30
+completed jobs, 10 live on the board, and two years of varying weekly capacity.
+Three things about it are deliberate:
+
+- **History is earned, not asserted.** A job's baseline comes from the trigger
+  reading its first plan, and the drift comes from really updating the plan
+  afterwards. So `reschedule_count` and `job_events` are what the triggers
+  actually recorded, and the seed doubles as a test of them.
+- **Every status is reached**, including `on_hold` and `follow_up`, and some
+  enquiries stall and are chased before they close.
+- **One job in six has no enquiry behind it.** That is the repeat and phone work
+  the revenue figures cannot see, and the test data shows the hole rather than
+  hiding it.
+
+Without it the capacity, schedule variance, estimate accuracy and
 delivered-on-time panels are correct and empty, which reads as a fault.
 
 **Removing the seed**, two commands:

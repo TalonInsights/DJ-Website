@@ -16,60 +16,99 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
 const path = pts => pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
 
 /* ---------------------------------------------------------------------
-   Committed work against available capacity, with weighted pipeline
-   riding over the top as a line.
+   Capacity, and what the pipeline would add to it.
 
-   This is the one chart that changes a decision: where the line climbs
-   above the bars, Harry is about to sell work he has no room to build.
-   Over-capacity weeks are the only bars allowed to use the accent.
+   The one chart that changes a decision, so it is drawn as plainly as
+   possible: a pale track for what the week can take, committed work
+   stacked in front of it, and the weighted pipeline stacked on top of
+   that. Where the stack rises past the track, the work being sold has
+   nowhere to go.
+
+   Stacked rather than a line over bars, because the question is
+   "committed plus likely, against available", and a line makes the
+   reader do that addition in their head.
+
+   Brass is reserved for the alarm: a week already over on committed work
+   alone. Pipeline that would tip it over is shown lighter, because it is
+   a risk rather than a fact.
    --------------------------------------------------------------------- */
-export function capacityChart(weeks, { height = 210 } = {}) {
+export function capacityChart(weeks, { height = 250 } = {}) {
   if (!weeks.length) return emptySvg("No capacity data yet.");
 
-  const W = 900, H = height, padL = 38, padR = 12, padT = 12, padB = 26;
+  const W = 1000, H = height, padL = 46, padR = 14, padT = 20, padB = 46;
   const iw = W - padL - padR, ih = H - padT - padB;
-  const max = Math.max(
-    ...weeks.map(w => Math.max(Number(w.available_days || 0), Number(w.committed_days || 0),
-      Number(w.weighted_pipeline_days || 0))), 1);
+
+  const val = (w, k) => Math.max(Number(w[k] || 0), 0);
+  const rawMax = Math.max(
+    ...weeks.map(w => Math.max(val(w, "available_days"),
+                               val(w, "committed_days") + val(w, "weighted_pipeline_days"))), 1);
+  const step = rawMax > 40 ? 10 : rawMax > 20 ? 5 : 2;
+  const max = Math.ceil(rawMax / step) * step;
 
   const bw = iw / weeks.length;
+  const barW = Math.max(Math.min(bw * 0.62, 26), 3);
   const y = v => padT + ih - (v / max) * ih;
+  const hOf = v => Math.max((v / max) * ih, 0);
+
+  const ticks = [];
+  for (let v = 0; v <= max; v += step) {
+    if (max / step > 6 && v % (step * 2)) continue;
+    ticks.push(`<line class="grid" x1="${padL}" x2="${W - padR}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/>
+      <text class="tick" x="${padL - 8}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end">${v}</text>`);
+  }
+
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  let todayIdx = weeks.findIndex(w => new Date(w.week_start) >= today);
+  if (todayIdx < 0) todayIdx = weeks.length;
 
   const bars = weeks.map((w, i) => {
-    const x = padL + i * bw;
-    const cd = Number(w.committed_days || 0);
-    const av = Number(w.available_days || 0);
-    const over = cd > av;
-    return `
-      <rect class="bar ghost" x="${(x + bw * .13).toFixed(1)}" y="${y(av).toFixed(1)}"
-            width="${(bw * .74).toFixed(1)}" height="${Math.max(padT + ih - y(av), 0).toFixed(1)}" rx="2"/>
-      <rect class="bar${over ? " over" : ""}" x="${(x + bw * .13).toFixed(1)}" y="${y(cd).toFixed(1)}"
-            width="${(bw * .74).toFixed(1)}" height="${Math.max(padT + ih - y(cd), 0).toFixed(1)}" rx="2">
-        <title>Week of ${esc(w.week_start)}: ${cd} of ${av} job-days committed${over ? " — over capacity" : ""}</title>
-      </rect>`;
+    const x = padL + i * bw + (bw - barW) / 2;
+    const av = val(w, "available_days");
+    const cd = val(w, "committed_days");
+    const pl = val(w, "weighted_pipeline_days");
+    const overNow = cd > av;
+    const overLater = !overNow && cd + pl > av && av > 0;
+    const past = i < todayIdx;
+
+    const title = `Week of ${esc(w.week_start)}: ${cd} of ${av} job-days committed`
+      + (pl > 0 ? `, ${pl} likely from the pipeline` : "")
+      + (overNow ? " — already over capacity" : overLater ? " — would go over if the pipeline lands" : "");
+
+    return `<g class="wk${past ? " past" : ""}" style="--i:${i}">
+      <rect class="track" x="${x.toFixed(1)}" y="${y(av).toFixed(1)}"
+            width="${barW.toFixed(1)}" height="${hOf(av).toFixed(1)}" rx="2"/>
+      ${pl > 0 ? `<rect class="pipe" x="${x.toFixed(1)}" y="${y(cd + pl).toFixed(1)}"
+            width="${barW.toFixed(1)}" height="${hOf(pl).toFixed(1)}" rx="2"/>` : ""}
+      <rect class="bar${overNow ? " over" : ""}" x="${x.toFixed(1)}" y="${y(cd).toFixed(1)}"
+            width="${barW.toFixed(1)}" height="${hOf(cd).toFixed(1)}" rx="2"/>
+      <rect class="hit" x="${(padL + i * bw).toFixed(1)}" y="${padT}"
+            width="${bw.toFixed(1)}" height="${ih}"><title>${title}</title></rect>
+    </g>`;
   }).join("");
 
-  const line = path(weeks.map((w, i) =>
-    [padL + i * bw + bw / 2, y(Number(w.weighted_pipeline_days || 0))]));
+  /* Label the first week of each month rather than every nth week, so
+     the axis reads as a calendar instead of a stride. */
+  let lastMonth = -1;
+  const labels = weeks.map((w, i) => {
+    const dt = new Date(w.week_start);
+    if (dt.getMonth() === lastMonth) return "";
+    lastMonth = dt.getMonth();
+    const x = padL + i * bw + bw / 2;
+    if (x < padL + 6 || x > W - padR - 6) return "";
+    return `<text class="tick" x="${x.toFixed(1)}" y="${H - 24}" text-anchor="middle">${
+      dt.toLocaleDateString("en-GB", { month: "short" })}</text>`;
+  }).join("");
 
-  const ticks = [0, max / 2, max].map(v =>
-    `<line class="axis" x1="${padL}" x2="${W - padR}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" opacity=".45"/>
-     <text x="${padL - 6}" y="${(y(v) + 3).toFixed(1)}" text-anchor="end">${Math.round(v)}</text>`).join("");
+  const todayX = padL + todayIdx * bw;
+  const todayMark = (todayIdx > 0 && todayIdx < weeks.length)
+    ? `<line class="today" x1="${todayX.toFixed(1)}" x2="${todayX.toFixed(1)}" y1="${padT - 6}" y2="${padT + ih}"/>
+       <text class="today-l" x="${(todayX + 5).toFixed(1)}" y="${padT - 9}">today</text>` : "";
 
-  const every = Math.ceil(weeks.length / 12);
-  const labels = weeks.map((w, i) => i % every ? "" :
-    `<text x="${(padL + i * bw + bw / 2).toFixed(1)}" y="${H - 8}" text-anchor="middle">${
-      new Date(w.week_start).toLocaleDateString("en-GB", { month: "short", day: "numeric" })}</text>`).join("");
-
-  const today = weeks.findIndex(w => new Date(w.week_start) >= new Date());
-  const todayMark = today > 0
-    ? `<line class="axis" x1="${(padL + today * bw).toFixed(1)}" x2="${(padL + today * bw).toFixed(1)}"
-        y1="${padT}" y2="${padT + ih}" stroke-dasharray="3 3"/>` : "";
-
-  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img"
-      aria-label="Committed job-days against available capacity by week, with weighted pipeline over the top">
-    ${ticks}${todayMark}${bars}
-    <path class="line" d="${line}"/>${labels}
+  return `<svg class="chart cap" viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet"
+      aria-label="Committed job-days and likely pipeline against available capacity, by week">
+    ${ticks.join("")}
+    <line class="axis" x1="${padL}" x2="${W - padR}" y1="${padT + ih}" y2="${padT + ih}"/>
+    ${bars}${todayMark}${labels}
   </svg>`;
 }
 

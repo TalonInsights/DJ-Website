@@ -137,9 +137,11 @@ async function draw() {
   ].join("");
 
   /* ---- capacity, first because it is the only chart that changes a plan ---- */
+  /* Four weeks behind for context, six months ahead for planning.
+     Forty-plus weeks squeezed every bar into a sliver. */
   const window = capacity.filter(w => {
     const d = new Date(w.week_start), now = new Date();
-    return d >= new Date(now.getTime() - 84 * 86400000) && d <= new Date(now.getTime() + 250 * 86400000);
+    return d >= new Date(now.getTime() - 28 * 86400000) && d <= new Date(now.getTime() + 182 * 86400000);
   });
   const usingDefault = window.filter(w => w.using_default_capacity).length;
 
@@ -185,14 +187,15 @@ async function draw() {
 
     <section class="panel">
       <h2>Capacity against pipeline</h2>
-      <p class="note">Bars are job-days already committed to the schedule; the pale bar behind is what the
-        week can take. The line is open pipeline weighted by probability. Where the line runs above the
-        bars, the work being sold has nowhere to go.</p>
+      <p class="note">The pale bar is what a week can take. Committed work sits in front of it, and what the
+        open pipeline would likely add is stacked on top, each enquiry spread across the window it might
+        land in. Where the stack rises past the pale bar, the work being sold has nowhere to go.</p>
       ${capacityChart(window)}
       <div class="legend">
+        <span><i style="background:var(--sage);border:1px solid var(--rule-dk)"></i>What the week can take</span>
         <span><i style="background:var(--green)"></i>Committed</span>
-        <span><i style="background:var(--rule-dk)"></i>Available</span>
-        <span><i style="background:var(--brass)"></i>Over capacity, and weighted pipeline</span>
+        <span><i style="background:var(--brass);opacity:.45"></i>Likely from the pipeline</span>
+        <span><i style="background:var(--brass)"></i>Already over capacity</span>
       </div>
       ${usingDefault ? `<p class="thin-note" style="margin-top:.5rem">${usingDefault} of these weeks have no
         capacity set and are assuming 15 job-days. Set the real figures in capacity_weeks.</p>` : ""}
