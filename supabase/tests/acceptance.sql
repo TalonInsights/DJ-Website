@@ -122,11 +122,19 @@ select '--- 3. Job baseline, reschedule counting and history ---' as section;
 do $t$
 declare
   j_id uuid;
+  u_id uuid;
   b_start date; b_end date; p_end date;
   n_resched int; n_events int;
 begin
-  insert into public.jobs (name, phases) values (
+  -- There is no signed-in user in the SQL Editor, so auth.uid() is null.
+  -- Borrow a real account for the test row rather than relying on the
+  -- column default, and record the owner explicitly.
+  select coalesce(auth.uid(), (select id from auth.users order by created_at limit 1))
+    into u_id;
+
+  insert into public.jobs (name, owner_id, phases) values (
     'Acceptance test job',
+    u_id,
     '[{"key":"assembly","start":"2026-10-05","end":"2026-10-09","who":"Harry"},
       {"key":"spray","start":"2026-10-12","end":"2026-10-14","who":"David"}]'::jsonb
   ) returning id, baseline_start, baseline_end, planned_end into j_id, b_start, b_end, p_end;
