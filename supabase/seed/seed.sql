@@ -463,7 +463,10 @@ begin
 
   -- ---- ten live on the board now ------------------------------------
   for i in 1..n_live loop
-    start_on := current_date + ((i - 3) * 6) + floor(random() * 4)::int;
+    -- Nine days apart, not six. At six the ten live jobs overlapped four
+    -- deep against a fifteen job-day week, so the chart was brass from
+    -- end to end and the over-capacity signal stopped meaning anything.
+    start_on := current_date + ((i - 3) * 9) + floor(random() * 5)::int;
     n_stages := 5 + floor(random() * 4)::int;
     people   := array[crew[1 + floor(random()*5)::int],
                       crew[1 + floor(random()*5)::int],

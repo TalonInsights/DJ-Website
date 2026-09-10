@@ -239,11 +239,36 @@ select pg_temp.info('6 Seed', 'capacity weeks configured: ' || count(*)) from pu
 
 
 -- ---------------------------------------------------------------------
---  7. The dashboard summary
+--  7. The capacity spread reconciles
+--
+--  Every open enquiry must contribute its weighted size to the weekly
+--  view exactly once. If the totals diverge, the spread is duplicating
+--  work across the days of its window or losing it. This one comparison
+--  would have caught a twenty-five-fold duplication that shipped and had
+--  to be found by eye on a chart.
 -- ---------------------------------------------------------------------
-select pg_temp.info('7 Dashboard', 'summary rebuilt at ' || public.refresh_dashboard());
+select pg_temp.chk('7 Capacity',
+       abs(coalesce((select sum(weighted_value)         from public.v_pipeline_open), 0)
+         - coalesce((select sum(weighted_pipeline_days) from public.v_weekly_capacity), 0)) < 1.0,
+       'pipeline spread matches its own total: '
+       || round(coalesce((select sum(weighted_value)         from public.v_pipeline_open), 0), 1)
+       || ' on open enquiries vs '
+       || round(coalesce((select sum(weighted_pipeline_days) from public.v_weekly_capacity), 0), 1)
+       || ' spread across the weeks');
 
-select pg_temp.chk('7 Dashboard', enquiries is not null,
+select pg_temp.info('7 Capacity', 'weeks over on committed work alone: ' || count(*))
+  from public.v_weekly_capacity where over_capacity;
+
+select pg_temp.info('7 Capacity', 'weeks that would go over if the pipeline lands: ' || count(*))
+  from public.v_weekly_capacity where over_when_pipeline_lands and not over_capacity;
+
+
+-- ---------------------------------------------------------------------
+--  8. The dashboard summary
+-- ---------------------------------------------------------------------
+select pg_temp.info('8 Dashboard', 'summary rebuilt at ' || public.refresh_dashboard());
+
+select pg_temp.chk('8 Dashboard', enquiries is not null,
        'summary has figures: ' || coalesce(enquiries::text, 'null')
        || ' enquiries in 90 days, win rate ' || coalesce(win_rate::text, 'null')
        || '% from ' || coalesce(win_rate_n::text, '0') || ' decided')
