@@ -339,7 +339,7 @@ async function openDrawer(id, opts = {}) {
       </div>
       ${current.job_id ? `<div class="fieldset"><h3>Job</h3>
         <p style="font-size:.85rem;margin:0">This enquiry became a job.
-        <a href="/planner/">Open the schedule</a>.</p></div>` : ""}
+        <a href="/planner">Open the schedule</a>.</p></div>` : ""}
     </div>`;
 
   $("drawerBody").querySelectorAll("[data-key]").forEach(el =>

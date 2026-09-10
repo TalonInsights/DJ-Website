@@ -94,7 +94,7 @@ async function draw() {
   if (!s) {
     dash.innerHTML = `<div class="empty-state"><h3>Nothing to show yet</h3>
       <p>The summary has not been built. Press Refresh, or add your first enquiry.</p>
-      <a class="btn" href="/pipeline/">Go to enquiries</a></div>`;
+      <a class="btn" href="/pipeline">Go to enquiries</a></div>`;
     return;
   }
 
@@ -114,7 +114,7 @@ async function draw() {
     tile({
       title: "Weighted pipeline", value: money(s.weighted_pipeline),
       sub: `${num(s.open_enquiries)} open, ${money(s.open_pipeline_value)} unweighted`,
-      href: "/pipeline/"
+      href: "/pipeline"
     }),
     tile({
       title: "Forward capacity", value: s.weeks_at_capacity + " wk",
@@ -127,7 +127,7 @@ async function draw() {
       title: "Overdue follow-ups", value: num(s.overdue_actions),
       sub: s.overdue_actions > 0 ? "oldest first on the board" : "nothing waiting",
       action: Number(s.overdue_actions) > 0,
-      href: "/pipeline/"
+      href: "/pipeline"
     }),
     tile({
       title: "Delivered on time", value: s.on_time_rate === null ? "—" : s.on_time_rate + "%",
