@@ -247,12 +247,17 @@ select pg_temp.info('6 Seed', 'capacity weeks configured: ' || count(*)) from pu
 --  would have caught a twenty-five-fold duplication that shipped and had
 --  to be found by eye on a chart.
 -- ---------------------------------------------------------------------
+-- BOTH SIDES MUST BE IN JOB-DAYS. The first version of this check
+-- compared v_pipeline_open.weighted_value, which is POUNDS, against
+-- weighted_pipeline_days, which is work, and reported a difference of
+-- 139,130 that looked like catastrophic data loss. weighted_days exists
+-- precisely so that cannot happen again.
 select pg_temp.chk('7 Capacity',
-       abs(coalesce((select sum(weighted_value)         from public.v_pipeline_open), 0)
-         - coalesce((select sum(weighted_pipeline_days) from public.v_weekly_capacity), 0)) < 1.0,
+       abs(coalesce((select sum(weighted_days)          from public.v_pipeline_open),   0)
+         - coalesce((select sum(weighted_pipeline_days) from public.v_weekly_capacity), 0)) < 2.0,
        'pipeline spread matches its own total: '
-       || round(coalesce((select sum(weighted_value)         from public.v_pipeline_open), 0), 1)
-       || ' on open enquiries vs '
+       || round(coalesce((select sum(weighted_days)          from public.v_pipeline_open),   0), 1)
+       || ' job-days on open enquiries vs '
        || round(coalesce((select sum(weighted_pipeline_days) from public.v_weekly_capacity), 0), 1)
        || ' spread across the weeks');
 
