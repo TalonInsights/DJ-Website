@@ -1693,22 +1693,27 @@ pipeline as (
     from spread
    group by week_start
 )
+-- COLUMN ORDER AND TYPES ARE FIXED BY THE EXISTING VIEW.
+-- `create or replace view` refuses to retype a column or slot a new one
+-- into the middle, and mv_dashboard_summary depends on this view, so
+-- dropping it would take the summary with it. weighted_pipeline_days
+-- therefore keeps its numeric(8,1), and the new column goes on the end.
 select
   w.week_start,
   coalesce(c.available_days, 15.0)                        as available_days,
   coalesce(cm.days, 0)                                    as committed_days,
-  round(coalesce(pl.weighted_days, 0), 1)                 as weighted_pipeline_days,
+  round(coalesce(pl.weighted_days, 0), 1)::numeric(8,1)   as weighted_pipeline_days,
   greatest(coalesce(c.available_days, 15.0) - coalesce(cm.days, 0), 0) as free_days,
   round(100.0 * coalesce(cm.days, 0)
         / nullif(coalesce(c.available_days, 15.0), 0), 1) as utilisation_rate,
   coalesce(c.available_days, 15.0)                        as utilisation_rate_n,
   (coalesce(cm.days, 0) > coalesce(c.available_days, 15.0)) as over_capacity,
-  -- Committed work plus what the pipeline would add, against what the
-  -- week can take. This is the number that says "do not sell into April".
-  (coalesce(cm.days, 0) + coalesce(pl.weighted_days, 0)
-     > coalesce(c.available_days, 15.0))                   as over_when_pipeline_lands,
   (c.week_start is null)                                   as using_default_capacity,
-  c.note                                                   as capacity_note
+  c.note                                                   as capacity_note,
+  -- Committed work plus what the pipeline would add, against what the
+  -- week can take. The number that says "do not sell into April".
+  (coalesce(cm.days, 0) + coalesce(pl.weighted_days, 0)
+     > coalesce(c.available_days, 15.0))                   as over_when_pipeline_lands
 from weeks w
 left join public.capacity_weeks c  on c.week_start  = w.week_start
 left join committed             cm on cm.week_start = w.week_start
