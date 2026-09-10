@@ -1,4 +1,11 @@
-# Data protection — Production Planning board
+# Data protection — Production Planning board and Enquiry pipeline
+
+> [!important] Updated 10 September 2026
+> The enquiry pipeline (`/pipeline`) holds **substantially more personal data**
+> than the scheduling board ever did, and access to both was widened from the
+> creating user to all signed-in staff on the same date. Section 9 covers what
+> changed and what still needs doing. The rest of this document describes the
+> scheduling board and remains accurate.
 
 Internal record for **David Jackson & Son Joinery**, covering the
 staff-only production planner at `/planner/`.
@@ -172,4 +179,101 @@ Technical work is done; these are the things only you can do:
 
 ---
 
-*Last reviewed: 20 August 2026*
+## 9. The enquiry pipeline (added 10 September 2026)
+
+### What it holds
+
+The scheduling board holds two name fields. The enquiry pipeline holds a
+customer file:
+
+| Data | Where |
+| --- | --- |
+| Customer and contact name | `enquiries.customer_name`, `contact_name` |
+| Phone and email | `enquiries.phone`, `email` |
+| Site address and postcode | `enquiries.site_address_1/2`, `site_town`, `site_postcode` |
+| Billing address | `enquiries.billing_*` |
+| Property details, access notes | `enquiries.property_type`, `access_notes` |
+| Quote values and outcomes | `enquiries.quote_value`, `lost_reason`, `lost_to` |
+| Who did what, and when | `enquiry_events.actor`, `job_events.actor` |
+
+`enquiry_events` and `job_events` are append-only audit logs. They record which
+staff account made each change. That is staff personal data as well as an audit
+trail, and it is covered by the same staff privacy notice as the board.
+
+### Two deliberate changes that need recording
+
+**1. Access widened from owner to workshop.** Until this date every policy on
+`jobs` was scoped to `owner_id = auth.uid()`: a job belonged to one account and
+was invisible to everyone else. Enquiries are workshop-wide, and `jobs` was
+brought into line, because a per-user pipeline cannot produce a shared board or
+a shared dashboard.
+
+The consequence is that **any signed-in member of staff can read every
+customer's name, address and phone number.** There are no roles. With two people
+that is proportionate. Before a third account is created, decide whether it
+should be, and if not, build the roles table.
+
+**2. Personal data and access widened in the same change.** Both happened on the
+same day. That is worth a written note in the record of processing activities
+rather than leaving it to be reconstructed from commit messages.
+
+### Lawful basis
+
+Enquiries are handled to respond to a request from the person themselves and to
+prepare a quotation, so **Art. 6(1)(b), steps prior to entering a contract**,
+covers the live pipeline. Keeping lost enquiries afterwards for analysis is
+**Art. 6(1)(f), legitimate interests**, and needs the short balancing note the
+board's own basis already has.
+
+### Retention
+
+`purge_old_enquiries(keep_months)` deletes won and lost enquiries whose outcome
+date is older than the period given. It defaults to 36 months and, like
+`purge_old_jobs`, **nothing calls it**. Agree a period and schedule both
+together:
+
+```sql
+select cron.schedule('purge-enquiries', '30 3 1 * *',
+                     $$select public.purge_old_enquiries(36)$$);
+```
+
+Deleting an enquiry cascades its history away with it, so a deletion is complete.
+
+### Subject access and erasure
+
+An enquiry is one row plus its events. Both are reachable by reference:
+
+```sql
+select * from public.enquiries      where ref = 'DJS-2026-0042';
+select * from public.enquiry_events where enquiry_id =
+       (select id from public.enquiries where ref = 'DJS-2026-0042');
+delete from public.enquiries        where ref = 'DJS-2026-0042';
+```
+
+Note that erasing an enquiry that became a job leaves the job, which still holds
+the customer's name in `jobs.client`. Handle both.
+
+### If the website form is ever connected
+
+The enquiry form on the public site is currently a demo stub that sends nothing.
+When it is wired up:
+
+- it must post through a **server route holding the service key**, never an
+  anonymous insert, because an anon insert policy would let anyone on the
+  internet write rows;
+- the form needs a **lawful-basis line beside the submit button**, not buried in
+  a policy page;
+- the **privacy policy page must actually exist** — the footer still links to
+  one that is plain text with nothing behind it.
+
+### Additions to the setup checklist
+
+- [ ] Agree a **retention period for enquiries** and schedule `purge_old_enquiries`
+- [ ] Decide whether a **third staff account** should see quote values, and build roles if not
+- [ ] Record the **access widening of 10 Sep 2026** in the record of processing activities
+- [ ] Confirm **point-in-time recovery** is available on the Supabase plan in use — not verified either way
+- [ ] Extend the **staff privacy notice** to cover the audit logs
+
+---
+
+*Last reviewed: 10 September 2026*

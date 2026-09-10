@@ -15,6 +15,14 @@
   --brass:#A9803B; --brass-lt:#C79B4C;
   --paper:#FCFBF9; --sage:#EAEDE6; --rule:#E2E5DE; --rule-dk:#CBD0C6;
   --bad:#8C3B36; --ok:#3D6B4C;
+  /* The marketing site's --mute and --brass are 3.1:1 and 3.6:1 on white.
+     That is fine for a rule or a bar but fails WCAG AA as text, and this
+     is a tool people read all day. These are the same hues walked down
+     until they clear 4.5:1 on white, paper and sage; the graphic tokens
+     above keep their original values for bars, borders and rings, where
+     3:1 is the bar. --rule-ctl is the input border, which 1.4.11 asks to
+     reach 3:1 so the field edge is findable. */
+  --mute-tx:#666B65; --brass-tx:#86652F; --rule-ctl:#8E928B;
   --display:"Newsreader","Iowan Old Style",Georgia,serif;
   --body:"Archivo","Helvetica Neue",Arial,sans-serif;
   --ease:cubic-bezier(.22,.61,.36,1);
@@ -45,11 +53,11 @@ a{color:var(--green)}
 .mark{width:40px;height:40px;border-radius:9px;background:var(--green);color:#fff;flex:none;
   display:grid;place-items:center;font-family:var(--display);font-size:1.05rem;letter-spacing:.02em}
 .gate-brand h1{font-size:1.12rem}
-.gate-brand .sub{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.gate-brand .sub{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute-tx)}
 .gate h2{font-size:1.5rem;margin-bottom:.5rem}
 .gate p{color:var(--slate);font-size:.9rem;margin:0 0 1.3rem}
 .gate label{display:block;font-size:.78rem;font-weight:600;margin-bottom:.35rem}
-.gate input{width:100%;padding:.72rem .85rem;border:1px solid var(--rule-dk);border-radius:8px;
+.gate input{width:100%;padding:.72rem .85rem;border:1px solid var(--rule-ctl);border-radius:8px;
   font:inherit;background:#fff}
 .gate input:focus{border-color:var(--green);outline:none;box-shadow:0 0 0 3px var(--green-sf)}
 #gateCode{letter-spacing:.4em;font-size:1.15rem;text-align:center}
@@ -65,7 +73,7 @@ header.bar{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
   position:sticky;top:0;z-index:30}
 header.bar .brand{display:flex;align-items:center;gap:.7rem;margin-right:auto}
 header.bar .brand h1{font-size:1rem;line-height:1.2}
-header.bar .brand .sub{font-size:.63rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+header.bar .brand .sub{font-size:.63rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute-tx)}
 .tabs{display:flex;gap:.25rem;background:var(--sage);padding:.2rem;border-radius:100px}
 .tabs a{padding:.42rem 1rem;border-radius:100px;text-decoration:none;font-size:.83rem;font-weight:600;
   color:var(--slate)}
@@ -76,7 +84,7 @@ header.bar .brand .sub{font-size:.63rem;letter-spacing:.16em;text-transform:uppe
   color:#fff;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;
   transition:background .25s var(--ease),border-color .25s var(--ease)}
 .btn:hover{background:var(--green-dp)}
-.btn.line{background:transparent;color:var(--green);border-color:var(--rule-dk)}
+.btn.line{background:transparent;color:var(--green);border-color:var(--rule-ctl)}
 .btn.line:hover{background:var(--green-sf);border-color:var(--green)}
 .btn.sm{min-height:32px;padding:.3rem .8rem;font-size:.78rem}
 .btn:disabled{opacity:.5;cursor:not-allowed}
@@ -100,14 +108,14 @@ main{padding:clamp(.9rem,2.5vw,1.5rem)}
 .strip li:hover{background:var(--green-sf)}
 .strip li .when{font-variant-numeric:tabular-nums;color:var(--slate);flex:none;min-width:74px}
 .strip li .who{font-weight:600}
-.strip li .where{color:var(--mute)}
-.strip li .tag{margin-left:auto;flex:none;font-size:.7rem;font-weight:700;color:var(--brass)}
-.strip .empty{padding:1.1rem 1rem;color:var(--mute);font-size:.85rem}
+.strip li .where{color:var(--mute-tx)}
+.strip li .tag{margin-left:auto;flex:none;font-size:.7rem;font-weight:700;color:var(--brass-tx)}
+.strip .empty{padding:1.1rem 1rem;color:var(--mute-tx);font-size:.85rem}
 
 /* ---------- board ---------- */
 .toolbar{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.9rem}
 .toolbar input[type="search"]{flex:1;min-width:180px;max-width:320px;padding:.5rem .8rem;
-  border:1px solid var(--rule-dk);border-radius:100px;font:inherit;font-size:.85rem;background:#fff}
+  border:1px solid var(--rule-ctl);border-radius:100px;font:inherit;font-size:.85rem;background:#fff}
 .seg{display:flex;background:var(--sage);border-radius:100px;padding:.18rem}
 .seg button{border:0;background:transparent;font:inherit;font-size:.8rem;font-weight:600;color:var(--slate);
   padding:.35rem .9rem;border-radius:100px;cursor:pointer}
@@ -119,7 +127,7 @@ main{padding:clamp(.9rem,2.5vw,1.5rem)}
 .col > h3{font-family:var(--body);font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
   color:var(--slate);padding:.7rem .85rem;display:flex;align-items:center;gap:.5rem}
 .col > h3 b{margin-left:auto;font-family:var(--display);font-size:.95rem;font-weight:400;letter-spacing:0;color:var(--ink)}
-.col > h3 .val{font-size:.7rem;font-weight:600;letter-spacing:0;color:var(--mute);text-transform:none}
+.col > h3 .val{font-size:.7rem;font-weight:600;letter-spacing:0;color:var(--mute-tx);text-transform:none}
 .col .drop{padding:0 .55rem .55rem;overflow:auto;flex:1;min-height:60px}
 .col.over .drop{outline:2px dashed var(--brass);outline-offset:-4px;border-radius:8px}
 .col.closed{opacity:.85}
@@ -130,12 +138,12 @@ main{padding:clamp(.9rem,2.5vw,1.5rem)}
 .card:active{cursor:grabbing}
 .card.dragging{opacity:.45}
 .card .name{font-weight:600;font-size:.9rem}
-.card .meta{display:flex;flex-wrap:wrap;gap:.3rem .6rem;margin-top:.2rem;font-size:.76rem;color:var(--mute)}
+.card .meta{display:flex;flex-wrap:wrap;gap:.3rem .6rem;margin-top:.2rem;font-size:.76rem;color:var(--mute-tx)}
 .card .foot{display:flex;align-items:center;gap:.5rem;margin-top:.5rem;font-size:.76rem;color:var(--slate)}
 .card .value{font-family:var(--display);font-size:1rem;color:var(--ink)}
-.card .flag{margin-left:auto;font-size:.7rem;font-weight:700;color:var(--brass)}
+.card .flag{margin-left:auto;font-size:.7rem;font-weight:700;color:var(--brass-tx)}
 .card.overdue{border-left:3px solid var(--brass)}
-.ref{font-variant-numeric:tabular-nums;font-size:.7rem;color:var(--mute);letter-spacing:.02em}
+.ref{font-variant-numeric:tabular-nums;font-size:.7rem;color:var(--mute-tx);letter-spacing:.02em}
 
 /* ---------- table ---------- */
 .tablewrap{overflow:auto;background:#fff;border:1px solid var(--rule);border-radius:10px}
@@ -167,13 +175,13 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 .frow{display:grid;gap:.7rem}
 @media (min-width:560px){.frow.two{grid-template-columns:1fr 1fr}}
 .field label{display:block;font-size:.76rem;font-weight:600;margin-bottom:.25rem}
-.field input,.field select,.field textarea{width:100%;padding:.5rem .7rem;border:1px solid var(--rule-dk);
+.field input,.field select,.field textarea{width:100%;padding:.5rem .7rem;border:1px solid var(--rule-ctl);
   border-radius:7px;font:inherit;font-size:.86rem;background:#fff}
 .field textarea{min-height:78px;resize:vertical}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green);outline:none;
   box-shadow:0 0 0 3px var(--green-sf)}
 .field.needed input,.field.needed select{border-color:var(--brass);box-shadow:0 0 0 3px rgba(199,155,76,.18)}
-.field .hint{font-size:.72rem;color:var(--mute);margin-top:.2rem}
+.field .hint{font-size:.72rem;color:var(--mute-tx);margin-top:.2rem}
 
 .timeline{list-style:none;margin:0;padding:0;position:relative}
 .timeline::before{content:"";position:absolute;left:5px;top:.5rem;bottom:.5rem;width:1px;background:var(--rule-dk)}
@@ -181,7 +189,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 .timeline li::before{content:"";position:absolute;left:0;top:.42rem;width:11px;height:11px;border-radius:50%;
   background:#fff;border:1.5px solid var(--brass);box-shadow:0 0 0 3px var(--paper)}
 .timeline b{display:block}
-.timeline span{color:var(--mute);font-size:.76rem}
+.timeline span{color:var(--mute-tx);font-size:.76rem}
 
 .drawer > footer{display:flex;align-items:center;gap:.6rem;padding:.9rem 1.2rem;border-top:1px solid var(--rule);
   background:#fff;flex-wrap:wrap}
@@ -194,21 +202,21 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 .tile h3{font-family:var(--body);font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
   color:var(--slate);margin-bottom:.45rem}
 .tile .big{font-family:var(--display);font-size:2.1rem;line-height:1;letter-spacing:-.02em}
-.tile .sub{font-size:.76rem;color:var(--mute);margin-top:.35rem}
+.tile .sub{font-size:.76rem;color:var(--mute-tx);margin-top:.35rem}
 .tile .delta{font-size:.78rem;font-weight:600;margin-left:.45rem}
-.tile .delta.up{color:var(--ok)} .tile .delta.down{color:var(--bad)} .tile .delta.flat{color:var(--mute)}
+.tile .delta.up{color:var(--ok)} .tile .delta.down{color:var(--bad)} .tile .delta.flat{color:var(--mute-tx)}
 .tile.action{border-color:var(--brass-lt);box-shadow:0 0 0 3px rgba(199,155,76,.13)}
 .tile.thin .big{opacity:.45}
 .tile a{text-decoration:none}
 
 .panel{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:1.1rem 1.2rem;margin-bottom:1.1rem}
 .panel > h2{font-size:1.15rem;margin-bottom:.15rem}
-.panel > .note{font-size:.8rem;color:var(--mute);margin:0 0 .9rem}
+.panel > .note{font-size:.8rem;color:var(--mute-tx);margin:0 0 .9rem}
 .pair{display:grid;gap:1.1rem}
 @media (min-width:960px){.pair{grid-template-columns:1fr 1fr}}
 figure{margin:0}
 svg.chart{display:block;width:100%;height:auto;overflow:visible}
-svg.chart text{font-family:var(--body);font-size:10px;fill:var(--mute)}
+svg.chart text{font-family:var(--body);font-size:10px;fill:var(--mute-tx)}
 svg.chart .axis{stroke:var(--rule-dk);stroke-width:1}
 svg.chart .bar{fill:var(--green);opacity:.85}
 svg.chart .bar.over{fill:var(--brass)}
@@ -226,7 +234,7 @@ svg.chart .band{fill:var(--green-sf)}
 .funnel .track{flex:1;height:22px;background:var(--sage);border-radius:4px;overflow:hidden}
 .funnel .fill{height:100%;background:var(--green);opacity:.85}
 .funnel .n{font-variant-numeric:tabular-nums;min-width:34px;text-align:right;font-weight:600}
-.funnel .pc{font-size:.74rem;color:var(--mute);min-width:46px;text-align:right}
+.funnel .pc{font-size:.74rem;color:var(--mute-tx);min-width:46px;text-align:right}
 .funnel .name{min-width:112px;color:var(--slate)}
 
 .bars{list-style:none;margin:0;padding:0}
@@ -236,12 +244,12 @@ svg.chart .band{fill:var(--green-sf)}
 .bars .fill{height:100%;background:var(--brass);opacity:.75}
 .bars .n{font-variant-numeric:tabular-nums;color:var(--slate);font-size:.8rem}
 
-.thin-note{font-size:.74rem;color:var(--mute);font-style:italic}
+.thin-note{font-size:.74rem;color:var(--mute-tx);font-style:italic}
 
 /* An empty state says what to do next; it never just reports emptiness. */
 .empty-state{text-align:center;padding:2.4rem 1.2rem;color:var(--slate)}
 .empty-state h3{font-size:1.2rem;margin-bottom:.4rem;color:var(--ink)}
-.empty-state p{font-size:.88rem;color:var(--mute);max-width:44ch;margin:0 auto 1rem}
+.empty-state p{font-size:.88rem;color:var(--mute-tx);max-width:44ch;margin:0 auto 1rem}
 
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);
   white-space:nowrap;border:0}
