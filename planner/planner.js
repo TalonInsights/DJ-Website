@@ -77,6 +77,13 @@ function workSpan(start, n){            // n working days from start → end dat
 let projects = [];
 let dayW = 32;
 let sortBy = "deadline";
+
+/* Finished work is hidden by default. A joinery schedule accumulates
+   years of it, and a board that opens on last autumn's jobs is a board
+   nobody trusts. The toggle brings it back when someone wants to look. */
+let showCompleted = false;
+const isDone = p => !!p.actualEnd;
+const onBoard = () => showCompleted ? projects : projects.filter(p => !isDone(p));
 let hidden = new Set();
 let editingId = null;
 let range = {start:TODAY, days:120};
@@ -264,6 +271,7 @@ function rowFor(p){
     name:     p.name,
     client:   p.client   || null,
     deadline: p.deadline || null,
+    actual_end: p.actualEnd || null,
     phases:   p.phases
   };
 }
@@ -325,7 +333,7 @@ function jobsPerDay(iso){
    are counted rather than jobs. */
 function loadByDay(){
   const counts = new Map();
-  projects.forEach(p => p.phases.forEach(ph => {
+  onBoard().forEach(p => p.phases.forEach(ph => {
     if(!ph.start || !ph.end) return;
     for(let s = ph.start; s <= ph.end; s = addD(s, 1)){
       counts.set(s, (counts.get(s) || 0) + 1);
@@ -337,7 +345,7 @@ function loadByDay(){
 async function loadJobs(){
   const { data, error } = await sb
     .from("jobs")
-    .select("id,ref,name,client,deadline,phases")
+    .select("id,ref,name,client,deadline,phases,actual_end")
     .order("deadline", {ascending:true, nullsFirst:false});
 
   if(error){ syncError = error.message; setSync(); return false; }
@@ -348,6 +356,11 @@ async function loadJobs(){
     name: r.name || "",
     client: r.client || "",
     deadline: r.deadline || "",
+    /* The date the work actually finished. Null while the job is live.
+       The same column the analytics count as complete, and setting it
+       fires the database trigger that writes a 'completed' entry into
+       the job's history, so this is a real record and not a UI flag. */
+    actualEnd: r.actual_end || null,
     phases: Array.isArray(r.phases) ? r.phases : []
   }));
   syncError = null; setSync();
@@ -377,7 +390,10 @@ function breached(p){ return p.phases.length>0 && !!p.deadline && projEnd(p) > p
 
 function computeRange(){
   let min = TODAY, max = TODAY;
-  projects.forEach(p=>{
+  /* Sized to what is on the board, not to everything ever recorded.
+     Otherwise hiding a year of finished jobs would leave a year of
+     empty timeline still to scroll through. */
+  onBoard().forEach(p=>{
     p.phases.forEach(ph=>{ if(ph.start<min) min=ph.start; if(ph.end>max) max=ph.end; });
     if(p.deadline){ if(p.deadline<min) min=p.deadline; if(p.deadline>max) max=p.deadline; }
   });
@@ -388,7 +404,7 @@ function computeRange(){
   range = {start, days};
 }
 function sorted(){
-  const list = projects.slice();
+  const list = onBoard().slice();
   const cmp = {
     deadline:(a,b)=> (a.deadline||"9").localeCompare(b.deadline||"9"),
     start:(a,b)=> String(projStart(a)||"9").localeCompare(String(projStart(b)||"9")),
@@ -474,7 +490,8 @@ function renderRows(){
   const frag = document.createDocumentFragment();
   list.forEach(p=>{
     const row = document.createElement("div");
-    row.className="row"; row.dataset.pid=p.id;
+    row.className = "row" + (isDone(p) ? " done" : "");
+    row.dataset.pid = p.id;
 
     // ---- left cell ----
     const cell = document.createElement("div");
@@ -540,9 +557,20 @@ function renderRows(){
 }
 
 function renderStats(){
-  $("stProjects").textContent = projects.length;
-  $("stPhases").textContent = projects.reduce((n,p)=>n+p.phases.length,0);
-  $("stRisk").textContent = projects.filter(breached).length;
+  /* The header counts what is on the board, so it agrees with what is
+     in front of Harry rather than with the whole archive. A finished
+     job is never late, so it is out of the risk count either way. */
+  const list = onBoard();
+  $("stProjects").textContent = list.length;
+  $("stPhases").textContent = list.reduce((n,p)=>n+p.phases.length,0);
+  $("stRisk").textContent = list.filter(p=>!isDone(p) && breached(p)).length;
+
+  const done = projects.filter(isDone).length;
+  const btn = $("btnCompleted"), n = $("nCompleted");
+  if(n) n.textContent = done ? done : "";
+  if(btn) btn.title = done
+    ? done + (done===1?" finished job":" finished jobs") + (showCompleted ? " shown" : " hidden")
+    : "No finished jobs yet";
 }
 
 function renderChips(){
@@ -755,6 +783,11 @@ function openModal(id){
   $("fStart").value   = p && p.phases.length ? projStart(p) : nextWork(TODAY);
   $("fDeadline").value= p ? (p.deadline||"") : "";
 
+  const done = !!(p && p.actualEnd);
+  $("fDone").checked = done;
+  $("fDoneOn").value = done ? p.actualEnd : "";
+  $("fDoneWrap").hidden = !done;
+
   if(p){
     p.phases.forEach(ph=>{
       const r = $("plist").querySelector('.prow[data-key="'+ph.key+'"]'); if(!r) return;
@@ -776,6 +809,20 @@ function nextRef(){
   projects.forEach(p=>{ const m=/^(\d+)/.exec(p.ref||""); if(m) max=Math.max(max,+m[1]); });
   return String(max+1).padStart(3,"0")+"/"+y;
 }
+
+$("fDone").addEventListener("change", e => {
+  const on = e.target.checked;
+  $("fDoneWrap").hidden = !on;
+  if(on && !$("fDoneOn").value){
+    let last = "";
+    $("plist").querySelectorAll(".prow").forEach(r=>{
+      if(!r.querySelector('[data-role="on"]').checked) return;
+      const v = r.querySelector('[data-role="end"]').value;
+      if(v > last) last = v;
+    });
+    $("fDoneOn").value = last || TODAY;
+  }
+});
 
 $("btnAuto").addEventListener("click",()=>{
   let cur = nextWork($("fStart").value || TODAY);
@@ -818,7 +865,15 @@ $("mSave").addEventListener("click",()=>{
     deadline = workSpan(nextWork(addD(deadline,1)),1);
   }
 
-  const data = {name, client:$("fClient").value.trim(), ref:$("fRef").value.trim(), deadline, phases};
+  /* Finished on defaults to the last stage's end date, so ticking the
+     box and saving is enough for the common case. */
+  let actualEnd = null;
+  if($("fDone").checked){
+    actualEnd = $("fDoneOn").value || phases.reduce((a,x)=> x.end>a?x.end:a, phases[0].end);
+  }
+
+  const data = {name, client:$("fClient").value.trim(), ref:$("fRef").value.trim(),
+                deadline, actualEnd, phases};
   let target;
   if(editingId){
     target = projects.find(x=>x.id===editingId);
@@ -848,6 +903,16 @@ document.addEventListener("keydown", e=>{
 /* ================= toolbar wiring ================= */
 $("btnAdd").addEventListener("click",()=>openModal(null));
 $("sortSel").addEventListener("change",e=>{ sortBy=e.target.value; renderRows(); renderOverload(); });
+
+$("btnCompleted").addEventListener("click", e => {
+  showCompleted = !showCompleted;
+  e.currentTarget.setAttribute("aria-pressed", showCompleted ? "true" : "false");
+  /* The range changes with the list, so this is a full redraw, and the
+     view is put back on today rather than left wherever the old, longer
+     timeline had been scrolled to. */
+  renderAll();
+  scrollToToday(false);
+});
 
 $("zoomSeg").addEventListener("click",e=>{
   const b = e.target.closest("button"); if(!b) return;

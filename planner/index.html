@@ -457,6 +457,40 @@ select.sel:hover{border-color:var(--green)}
 #mClose{--bd:transparent;--fg:var(--mute);min-height:32px;padding:.3rem .6rem}
 #mClose:hover{--bd:var(--rule-dk);--fg:var(--ink)}
 .mbody{padding:22px;display:flex;flex-direction:column;gap:22px}
+/* A toolbar toggle, shaped like the stage chips beside it so the whole
+   row reads as one set of controls. */
+.toggle{
+  display:inline-flex;align-items:center;gap:.5rem;padding:.32rem .8rem;
+  border-radius:100px;border:1px solid var(--rule-dk);background:#fff;
+  font-size:.74rem;font-weight:600;color:var(--mute);transition:.2s var(--ease);
+}
+.toggle:hover{border-color:var(--green);color:var(--ink)}
+.toggle .box{
+  width:13px;height:13px;border-radius:3px;border:1.5px solid var(--rule-dk);
+  flex:0 0 auto;display:grid;place-items:center;transition:.2s var(--ease);
+}
+.toggle[aria-pressed="true"]{border-color:var(--green);color:var(--green);background:var(--green-sf)}
+.toggle[aria-pressed="true"] .box{background:var(--green);border-color:var(--green)}
+.toggle[aria-pressed="true"] .box::after{content:"";width:6px;height:3px;border:1.5px solid #fff;
+  border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.toggle .n{font-variant-numeric:tabular-nums;color:var(--mute);font-weight:600}
+.toggle[aria-pressed="true"] .n{color:var(--green)}
+
+/* Marking a job finished. Set apart from the stage list because it takes
+   the job off the board, which is not an edit like the others. */
+.done-row{
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  margin:18px 0 4px;padding:12px 14px;border-radius:8px;
+  background:var(--green-sf);border:1px solid var(--rule);
+}
+.done-tick{display:inline-flex;align-items:center;gap:.55rem;cursor:pointer;font-size:.86rem;font-weight:600}
+.done-tick input{width:16px;height:16px;accent-color:var(--green);cursor:pointer}
+.done-date{flex:0 0 170px}
+.done-note{margin:0;flex:1 1 220px;font-size:.72rem;color:var(--mute);line-height:1.5}
+.done-note b{color:var(--slate)}
+.row.done .rcell{opacity:.62}
+.row.done .bar{opacity:.5;filter:saturate(.55)}
+
 .fgrid{display:grid;grid-template-columns:1fr 1fr 170px;gap:14px}
 .field{display:flex;flex-direction:column;gap:.4rem;min-width:0}
 .field label{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
@@ -637,6 +671,12 @@ select.sel:hover{border-color:var(--green)}
     </select>
   </div>
   <div class="tgroup">
+    <span class="tlabel">Show</span>
+    <button class="toggle" id="btnCompleted" type="button" aria-pressed="false">
+      <span class="box" aria-hidden="true"></span>Completed<span class="n" id="nCompleted"></span>
+    </button>
+  </div>
+  <div class="tgroup">
     <span class="tlabel">Zoom</span>
     <div class="seg" id="zoomSeg">
       <button data-w="20">S</button>
@@ -724,7 +764,20 @@ select.sel:hover{border-color:var(--green)}
           <h3>Stages — tick the ones this job needs, then set the dates</h3>
           <span class="hint">Drag on the board later to adjust</span>
         </div>
-        <div class="plist" id="plist"></div>
+        <div class="done-row">
+        <label class="done-tick">
+          <input type="checkbox" id="fDone">
+          <span>This job is finished</span>
+        </label>
+        <div class="field done-date" id="fDoneWrap" hidden>
+          <label for="fDoneOn">Finished on</label>
+          <input id="fDoneOn" type="date">
+        </div>
+        <p class="done-note">Finished jobs come off the board. Tick <b>Show: Completed</b> in the
+          toolbar to see them again.</p>
+      </div>
+
+      <div class="plist" id="plist"></div>
       </div>
     </div>
     <div class="mfoot">
