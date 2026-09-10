@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analytics — David Jackson &amp; Son</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#2F4739">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Archivo:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/pipeline/app.css">
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-brand">
+      <div class="mark">DJ</div>
+      <div><h1>David Jackson &amp; Son</h1><div class="sub">Analytics</div></div>
+    </div>
+    <h2 id="gateHead">Staff sign in</h2>
+    <p id="gateIntro">We will email you a code.</p>
+    <form id="gateForm" novalidate>
+      <div class="gate-field" id="stepEmail">
+        <label for="gateEmail">Work email address</label>
+        <input id="gateEmail" type="email" autocomplete="email" inputmode="email" spellcheck="false">
+      </div>
+      <div class="gate-field" id="stepCode" hidden>
+        <label for="gateCode">Your code</label>
+        <input id="gateCode" type="text" inputmode="numeric" autocomplete="one-time-code" spellcheck="false">
+      </div>
+      <div class="gate-actions">
+        <button class="btn" id="gateBtn" type="submit">Email me a code</button>
+        <button class="btn line" id="gateBack" type="button" hidden>Back</button>
+      </div>
+      <p class="gmsg" id="gateMsg" role="status"></p>
+    </form>
+  </div>
+</div>
+
+<div class="app" id="app" hidden>
+  <header class="bar">
+    <div class="brand">
+      <div class="mark">DJ</div>
+      <div><h1>David Jackson &amp; Son</h1><div class="sub">Analytics</div></div>
+    </div>
+    <nav class="tabs" aria-label="Sections">
+      <a href="/pipeline/">Enquiries</a>
+      <a href="/pipeline/analytics.html" aria-current="page">Analytics</a>
+      <a href="/planner/">Schedule</a>
+    </nav>
+    <div class="seg" role="group" aria-label="Period" id="periodSeg">
+      <button type="button" data-period="90d" aria-pressed="true">90 days</button>
+      <button type="button" data-period="12m" aria-pressed="false">12 months</button>
+      <button type="button" data-period="ytd" aria-pressed="false">YTD</button>
+    </div>
+    <button class="btn line sm" id="btnRefresh" type="button">Refresh</button>
+    <button class="btn line sm" id="btnSignOut" type="button">Sign out</button>
+  </header>
+
+  <main id="dash">
+    <p class="thin-note" id="loading">Loading…</p>
+  </main>
+</div>
+
+<script type="module" src="/pipeline/dash.js"></script>
+</body>
+</html>

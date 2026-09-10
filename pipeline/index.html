@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enquiries — David Jackson &amp; Son</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#2F4739">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Archivo:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/pipeline/app.css">
+</head>
+<body>
+
+<!-- ============================ GATE ============================ -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-brand">
+      <div class="mark">DJ</div>
+      <div>
+        <h1>David Jackson &amp; Son</h1>
+        <div class="sub">Enquiries</div>
+      </div>
+    </div>
+    <h2 id="gateHead">Staff sign in</h2>
+    <p id="gateIntro">We will email you a code.</p>
+    <form id="gateForm" novalidate>
+      <div class="gate-field" id="stepEmail">
+        <label for="gateEmail">Work email address</label>
+        <input id="gateEmail" type="email" autocomplete="email" inputmode="email" spellcheck="false">
+      </div>
+      <div class="gate-field" id="stepCode" hidden>
+        <label for="gateCode">Your code</label>
+        <input id="gateCode" type="text" inputmode="numeric" autocomplete="one-time-code" spellcheck="false">
+      </div>
+      <div class="gate-actions">
+        <button class="btn" id="gateBtn" type="submit">Email me a code</button>
+        <button class="btn line" id="gateBack" type="button" hidden>Back</button>
+      </div>
+      <p class="gmsg" id="gateMsg" role="status"></p>
+    </form>
+  </div>
+</div>
+
+<!-- ============================ APP ============================ -->
+<div class="app" id="app" hidden>
+
+  <header class="bar">
+    <div class="brand">
+      <div class="mark">DJ</div>
+      <div>
+        <h1>David Jackson &amp; Son</h1>
+        <div class="sub">Enquiries</div>
+      </div>
+    </div>
+    <nav class="tabs" aria-label="Sections">
+      <a href="/pipeline/" aria-current="page">Enquiries</a>
+      <a href="/pipeline/analytics.html">Analytics</a>
+      <a href="/planner/">Schedule</a>
+    </nav>
+    <button class="btn" id="btnNew" type="button">New enquiry</button>
+    <button class="btn line sm" id="btnSignOut" type="button">Sign out</button>
+  </header>
+
+  <main>
+    <!-- The two lists that decide the day. Overdue follow-ups are the
+         largest single source of lost work in firms this size, so they
+         sit above the board rather than below it. -->
+    <section class="strips" aria-label="Needs attention">
+      <div class="strip" id="stripSurveys">
+        <h2>This week&rsquo;s surveys <b id="nSurveys">0</b></h2>
+        <ul id="listSurveys"></ul>
+      </div>
+      <div class="strip urgent" id="stripOverdue">
+        <h2>Overdue follow-ups <b id="nOverdue">0</b></h2>
+        <ul id="listOverdue"></ul>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="View">
+        <button type="button" data-view="board" aria-pressed="true">Board</button>
+        <button type="button" data-view="table" aria-pressed="false">Table</button>
+      </div>
+      <input type="search" id="search" placeholder="Search name, town or reference" aria-label="Search enquiries">
+      <span id="countLabel" class="thin-note"></span>
+      <button class="btn line sm" id="btnCsv" type="button" style="margin-left:auto">Export CSV</button>
+    </div>
+
+    <section id="boardView" aria-label="Enquiry board">
+      <div class="board" id="board"></div>
+    </section>
+
+    <section id="tableView" hidden aria-label="Enquiry table">
+      <div class="tablewrap">
+        <table id="table">
+          <thead><tr id="tableHead"></tr></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ============================ DRAWER ============================ -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" hidden>
+  <header>
+    <h2 id="drawerTitle">Enquiry</h2>
+    <span class="ref" id="drawerRef"></span>
+    <button class="btn line sm" id="drawerClose" type="button">Close</button>
+  </header>
+  <div class="body" id="drawerBody"></div>
+  <footer>
+    <span class="msg" id="drawerMsg" role="status"></span>
+    <button class="btn line" id="btnConvert" type="button" hidden>Create job</button>
+    <button class="btn" id="btnSave" type="button">Save</button>
+  </footer>
+</aside>
+
+<script type="module" src="/pipeline/board.js"></script>
+</body>
+</html>

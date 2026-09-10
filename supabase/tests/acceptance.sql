@@ -81,10 +81,12 @@ begin
 
   -- Three real transitions, plus one update that names status without
   -- changing it, which must not add a phantom row.
-  update public.enquiries set status = 'contacted',     first_contacted_on = current_date where id = a_id;
-  update public.enquiries set status = 'survey_booked', survey_date = current_date + 3     where id = a_id;
-  update public.enquiries set status = 'survey_booked', surveyor = 'Harry'                 where id = a_id;
-  update public.enquiries set status = 'quoted',        quote_value = 1234.00              where id = a_id;
+  update public.enquiries set status = 'contacted', first_contacted_on = current_date where id = a_id;
+  update public.enquiries set status = 'survey_booked',
+         survey_date = current_date + 3, surveyor = 'Harry' where id = a_id;
+  update public.enquiries set status = 'survey_booked', survey_slot = 'am' where id = a_id;  -- no-op transition
+  update public.enquiries set status = 'quoted',
+         quote_value = 1234.00, quote_sent_on = current_date where id = a_id;
 
   select count(*) into n_events from public.enquiry_events where enquiry_id = a_id;
   if n_events = 4 then
@@ -187,6 +189,26 @@ select case when count(*) > 0 then 'PASS' else 'FAIL' end
    and next_action_on < current_date
    and status not in ('won','lost');
 
+
+select '--- 4b. Transition rules ---' as section;
+
+do $t$
+declare c_id uuid; msg text; blocked boolean := false;
+begin
+  insert into public.enquiries (customer_name) values ('Acceptance test C') returning id into c_id;
+  begin
+    update public.enquiries set status = 'quoted' where id = c_id;   -- no quote value
+  exception when others then
+    blocked := true; msg := sqlerrm;
+  end;
+  if blocked then
+    raise notice 'PASS  an invalid transition is refused, and says why: %', msg;
+  else
+    raise notice 'FAIL  moving to quoted with no quote value was allowed';
+  end if;
+  delete from public.enquiries where id = c_id;
+end
+$t$;
 
 select '--- 5. Views ---' as section;
 
