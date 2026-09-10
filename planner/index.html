@@ -237,7 +237,18 @@ select.sel:hover{border-color:var(--green)}
 .grid::-webkit-scrollbar-thumb{background:var(--rule-dk);border-radius:8px;border:3px solid var(--sage)}
 .grid::-webkit-scrollbar-thumb:hover{background:var(--mute)}
 
-.head{display:flex;position:sticky;top:0;z-index:30;height:var(--headh)}
+/* The header, the body, the row list and every row must be as wide as
+   the timeline they contain, not as wide as the window.
+
+   A sticky element stops sticking at the end of its own containing
+   block. These are block-level boxes inside the scroller, so without
+   this they take the scroller's VISIBLE width and the timeline simply
+   overflows them. The sticky job column then unsticks as soon as you
+   scroll past the right edge of its own row - about a thousand pixels -
+   and scrolls away off the left, leaving rows that look empty. It was
+   invisible while the board only held a few weeks of work and appeared
+   the moment a year of history arrived. */
+.head{display:flex;position:sticky;top:0;z-index:30;height:var(--headh);min-width:max-content}
 .head-left{
   position:sticky;left:0;z-index:40;width:var(--leftw);flex:0 0 var(--leftw);
   background:#fff;border-right:1px solid var(--rule-dk);
@@ -271,8 +282,9 @@ select.sel:hover{border-color:var(--green)}
 .day.today .dn{color:var(--brass);font-weight:600}
 .day.today .dw{color:var(--brass)}
 
-.body{position:relative}
-.row{display:flex;height:var(--rowh);position:relative}
+.body{position:relative;min-width:max-content}
+.rows{min-width:max-content}
+.row{display:flex;height:var(--rowh);position:relative;min-width:max-content}
 .row:hover .rcell{background:var(--green-sf)}
 .row:hover .track{background-color:rgba(47,71,57,.022)}
 
