@@ -40,6 +40,16 @@ select case when count(*) = 0 then 'PASS' else 'FAIL' end
   from pg_policies
  where schemaname = 'public' and 'anon' = any(roles);
 
+-- A policy is only half of it. Supabase's default privileges hand new
+-- objects to anon, and a materialised view has no row-level security to
+-- fall back on, so the grant itself has to be checked. This caught a live
+-- leak of the whole dashboard summary on 10 Sep 2026.
+select case when count(*) = 0 then 'PASS' else 'FAIL' end
+       || '  anon holds no table or view grant ('
+       || coalesce(string_agg(distinct table_name, ', '), 'none') || ')'
+  from information_schema.role_table_grants
+ where grantee = 'anon' and table_schema = 'public';
+
 select case when count(*) = 0 then 'PASS' else 'FAIL' end
        || '  history tables are read-only to staff (' || count(*) || ' write policies found)'
   from pg_policies
