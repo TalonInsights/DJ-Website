@@ -16,6 +16,11 @@
 --     reads as "nothing happened here" and is the commonest bug in
 --     dashboards of this shape.
 --
+--  Every view is security_invoker, so it runs with the caller's
+--  permissions and the policies on the tables beneath it still apply.
+--  Without that a view silently bypasses row-level security, which is
+--  exactly the sort of hole nobody notices until it matters.
+--
 --  Run in the Supabase SQL Editor. Idempotent.
 --  Rollback: 20260910_0004_analytics_views_down.sql
 -- =====================================================================
@@ -72,7 +77,8 @@ create index if not exists dim_date_month_idx on public.dim_date (month_start);
 --  rewrite history; an event row is what actually happened, when.
 --  The date columns are still carried through for display.
 -- ---------------------------------------------------------------------
-create or replace view public.v_enquiry_flat as
+create or replace view public.v_enquiry_flat
+  with (security_invoker = true) as
 with first_at as (
   select enquiry_id, to_status, min(occurred_at) as at
     from public.enquiry_events
@@ -140,7 +146,8 @@ comment on view public.v_enquiry_flat is
 --  Each stage counts enquiries that REACHED it, from the history, not
 --  enquiries currently sitting in it.
 -- ---------------------------------------------------------------------
-create or replace view public.v_enquiry_funnel as
+create or replace view public.v_enquiry_funnel
+  with (security_invoker = true) as
 with months as (
   select distinct month_start
     from public.dim_date
@@ -184,7 +191,8 @@ comment on view public.v_enquiry_funnel is
 --  One slow job that sat for eight months would drag an average far
 --  enough to be useless. percentile_cont(0.5) is the median.
 -- ---------------------------------------------------------------------
-create or replace view public.v_enquiry_cycle_times as
+create or replace view public.v_enquiry_cycle_times
+  with (security_invoker = true) as
 with months as (
   select distinct month_start
     from public.dim_date
@@ -215,7 +223,8 @@ group by m.month_start;
 -- ---------------------------------------------------------------------
 --  5. v_pipeline_open — what is live, and what it is worth
 -- ---------------------------------------------------------------------
-create or replace view public.v_pipeline_open as
+create or replace view public.v_pipeline_open
+  with (security_invoker = true) as
 select
   f.id, f.ref, f.customer_name, f.site_town, f.status, f.source,
   f.product_type, f.approx_units,
@@ -244,7 +253,8 @@ comment on view public.v_pipeline_open is
 -- ---------------------------------------------------------------------
 --  6. v_lost_analysis — why work is lost, and what it was worth
 -- ---------------------------------------------------------------------
-create or replace view public.v_lost_analysis as
+create or replace view public.v_lost_analysis
+  with (security_invoker = true) as
 select
   d.month_start                       as period,
   coalesce(f.lost_reason, 'Not recorded') as lost_reason,
@@ -265,7 +275,8 @@ group by d.month_start, coalesce(f.lost_reason, 'Not recorded');
 --  against planned_*. The plan moves every time a bar is dragged, so
 --  measuring against it makes adherence read as 100% forever.
 -- ---------------------------------------------------------------------
-create or replace view public.v_job_performance as
+create or replace view public.v_job_performance
+  with (security_invoker = true) as
 select
   j.id, j.ref, j.name, j.client, j.enquiry_id, j.product_type,
   j.baseline_start, j.baseline_end,
@@ -305,7 +316,8 @@ left join public.dim_date d on d.d = j.actual_end;
 --  running three jobs at once. Change the default here, or better, put a
 --  row in capacity_weeks.
 -- ---------------------------------------------------------------------
-create or replace view public.v_weekly_capacity as
+create or replace view public.v_weekly_capacity
+  with (security_invoker = true) as
 with weeks as (
   select distinct week_start
     from public.dim_date
@@ -354,7 +366,8 @@ comment on view public.v_weekly_capacity is
 -- ---------------------------------------------------------------------
 --  9. v_promise_vs_delivery — did we do it when we said
 -- ---------------------------------------------------------------------
-create or replace view public.v_promise_vs_delivery as
+create or replace view public.v_promise_vs_delivery
+  with (security_invoker = true) as
 select
   j.id as job_id, j.ref, j.name, j.client,
   coalesce(pt.product, 'Not recorded') as product_type,
@@ -382,7 +395,8 @@ where j.actual_end is not null;
 -- ---------------------------------------------------------------------
 --  10. v_estimate_accuracy — do we know how long our own work takes
 -- ---------------------------------------------------------------------
-create or replace view public.v_estimate_accuracy as
+create or replace view public.v_estimate_accuracy
+  with (security_invoker = true) as
 select
   d.month_start                        as period,
   coalesce(pt.product, 'Not recorded') as product_type,
@@ -413,7 +427,8 @@ group by d.month_start, coalesce(pt.product, 'Not recorded');
 --  with recorded actual days. Work typed straight onto the board never
 --  had an enquiry and is invisible here — see docs/gaps.md.
 -- ---------------------------------------------------------------------
-create or replace view public.v_source_performance as
+create or replace view public.v_source_performance
+  with (security_invoker = true) as
 select
   d.month_start as period,
   f.source,
@@ -442,7 +457,8 @@ group by d.month_start, f.source;
 --  views rather than component queries for the same reason as the rest:
 --  "what counts as overdue" is a definition, and it belongs in one place.
 -- ---------------------------------------------------------------------
-create or replace view public.v_survey_diary as
+create or replace view public.v_survey_diary
+  with (security_invoker = true) as
 select
   f.id, f.ref, f.customer_name, f.site_town, f.site_postcode,
   f.survey_date, f.survey_slot, f.surveyor, f.status,
@@ -458,7 +474,8 @@ where f.survey_date is not null
   and f.status not in ('won','lost')
   and f.survey_completed_on is null;
 
-create or replace view public.v_overdue_actions as
+create or replace view public.v_overdue_actions
+  with (security_invoker = true) as
 select
   f.id, f.ref, f.customer_name, f.site_town, f.status, f.source,
   f.next_action, f.next_action_on, f.quote_value, f.probability,

@@ -32,6 +32,13 @@ drop policy if exists jobs_insert_own on public.jobs;
 drop policy if exists jobs_update_own on public.jobs;
 drop policy if exists jobs_delete_own on public.jobs;
 
+-- Drop the new names too, so a second run replaces them rather than
+-- failing on "policy already exists".
+drop policy if exists jobs_select_staff on public.jobs;
+drop policy if exists jobs_insert_staff on public.jobs;
+drop policy if exists jobs_update_staff on public.jobs;
+drop policy if exists jobs_delete_staff on public.jobs;
+
 create policy jobs_select_staff on public.jobs
   for select to authenticated using (true);
 

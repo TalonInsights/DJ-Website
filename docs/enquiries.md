@@ -11,9 +11,16 @@ the personal-data position.
 
 ## 1. Running it
 
-Nothing here is applied automatically. There is no Supabase CLI in this
-project and no local Postgres, so migrations are pasted into the **Supabase SQL
-Editor**, in this order:
+Nothing here is applied automatically. There is no Supabase CLI in this project
+and no local Postgres, so this is done by hand in the **Supabase SQL Editor**.
+
+**The short way.** Open the Supabase dashboard → SQL Editor → New query, paste
+the whole of **`supabase/install.sql`**, and press Run. That file is the five
+migrations concatenated in order, so nothing can be run out of sequence. Then
+paste `supabase/tests/acceptance.sql` for a PASS or FAIL on each check, and
+`supabase/seed/enquiries.sql` first if you want test data to look at.
+
+**The long way**, if you would rather see each step land:
 
 | Order | File | What it does |
 | --- | --- | --- |

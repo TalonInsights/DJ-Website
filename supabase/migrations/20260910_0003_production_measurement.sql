@@ -144,6 +144,14 @@ create trigger jobs_derive_plan
   for each row execute function public.jobs_derive_plan();
 
 
+-- Backfill the derived columns and baselines for jobs already on the
+-- board, BEFORE the history trigger exists. Their true original plan is
+-- unrecoverable — it was overwritten long ago — so the baseline is set to
+-- wherever the plan stands today. Doing this first means migrating an old
+-- job does not write a 'rescheduled' event for a move that never happened.
+update public.jobs set updated_at = updated_at where planned_start is null;
+
+
 create or replace function public.log_job_schedule()
 returns trigger
 language plpgsql
@@ -187,13 +195,6 @@ drop trigger if exists jobs_log_schedule on public.jobs;
 create trigger jobs_log_schedule
   after insert or update on public.jobs
   for each row execute function public.log_job_schedule();
-
--- Backfill the derived columns and baselines for jobs already on the
--- board. Their true original plan is unrecoverable — it was overwritten
--- long ago — so the baseline is set to wherever the plan stands today.
--- Every job created from here on has an honest one.
-update public.jobs set updated_at = updated_at where planned_start is null;
-
 
 -- ---------------------------------------------------------------------
 --  4. Capacity
