@@ -17,7 +17,7 @@ import {
   getCapacity, getJobPerformance, getPromiseVsDelivery, getSourcePerformance,
   refreshDashboard, money, num, monthLabel, isThin, THIN_N, EXPLAIN
 } from "./data.js";
-import { capacityChart, lineChart, varianceChart, barList, funnelList } from "./charts.js";
+import { capacityChart, lineChart, varianceChart, barList, funnelChart, dotPlot } from "./charts.js";
 
 let period = "90d";
 
@@ -340,8 +340,9 @@ async function drawInner({ auto = false } = {}) {
     <div class="pair">
       <section class="panel">
         <h2>Funnel${info("funnel", "Funnel")}</h2>
-        <p class="note">Enquiries that reached each stage in this period.</p>
-        ${funnelList([
+        <p class="note">Enquiries that reached each stage in this period. The number beside each step is
+          how many were lost getting to it, and the step that loses the most is marked.</p>
+        ${funnelChart([
           { label: "Received", value: tot.received },
           { label: "Contacted", value: tot.contacted },
           { label: "Surveyed", value: tot.surveyed },
@@ -355,7 +356,7 @@ async function drawInner({ auto = false } = {}) {
         <p class="note">Median days from enquiry to a decision. Medians, not averages, so one job that sat
           for months does not move the line on its own.</p>
         ${lineChart(cycles.map(c => ({ label: monthLabel(c.period), value: c.median_days_total })),
-          { label: "days end to end" })}
+          { label: "days end to end", fmt: v => v + " days" })}
       </section>
     </div>
 
@@ -364,7 +365,7 @@ async function drawInner({ auto = false } = {}) {
         <h2>Why work is lost${info("lost", "Why work is lost")}</h2>
         <p class="note">By value, not by count. Losing one large job to price matters more than three
           small ones going quiet.</p>
-        ${barList(lostByReason, { fmt: money, accent: true })}
+        ${barList(lostByReason, { fmt: money, accent: true, unit: "quotes" })}
       </section>
 
       <section class="panel">
@@ -378,9 +379,10 @@ async function drawInner({ auto = false } = {}) {
     <div class="pair">
       <section class="panel">
         <h2>Delivered on time, by product${info("delivery", "Delivered on time, by product")}</h2>
-        <p class="note">Against the date the customer was actually given.</p>
+        <p class="note">Against the date the customer was actually given. The dashed line is the rate
+          across everything, so anything sitting left of it is pulling the average down.</p>
         ${byProduct.length
-          ? barList(byProduct.map(p => ({ ...p, value: p.value })), { fmt: v => v + "%" })
+          ? dotPlot(byProduct, { reference: s.on_time_rate, refLabel: "All jobs" })
           : `<p class="thin-note">No completed jobs with a promised date in this period.</p>`}
         ${byProduct.some(p => isThin(p.n))
           ? `<p class="thin-note" style="margin-top:.6rem">Products with fewer than ${THIN_N} jobs are

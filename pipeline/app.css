@@ -198,8 +198,10 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 .drawer > footer .msg.err{color:var(--bad)} .drawer > footer .msg.ok{color:var(--ok)}
 
 /* ---------- dashboard ---------- */
-.tiles{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-bottom:1.3rem}
-.tile{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:1rem 1.1rem}
+.tiles{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(208px,1fr));margin-bottom:1.4rem}
+.tile{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:1rem 1.1rem 1.05rem;
+  box-shadow:0 1px 2px rgba(23,26,24,.04);transition:box-shadow .2s var(--ease)}
+.tile:hover{box-shadow:var(--shadow-s)}
 .tile h3{font-family:var(--body);font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
   color:var(--slate);margin-bottom:.45rem}
 .tile .big{font-family:var(--display);font-size:2.1rem;line-height:1;letter-spacing:-.02em}
@@ -214,11 +216,15 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 .tile-go .go{display:inline-block;margin-top:.55rem;font-size:.74rem;font-weight:600;color:var(--green)}
 .tile-go:hover .go{text-decoration:underline}
 
-.panel{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:1.1rem 1.2rem;margin-bottom:1.1rem}
-.panel > h2{font-size:1.15rem;margin-bottom:.15rem}
-.panel > .note{font-size:.8rem;color:var(--mute-tx);margin:0 0 .9rem}
-.pair{display:grid;gap:1.1rem}
-@media (min-width:960px){.pair{grid-template-columns:1fr 1fr}}
+.panel{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:1.25rem 1.35rem 1.35rem;
+  margin-bottom:1rem;box-shadow:0 1px 2px rgba(23,26,24,.04)}
+.panel > h2{font-size:1.2rem;margin-bottom:.2rem}
+.panel > .note{font-size:.82rem;color:var(--mute-tx);margin:0 0 1.1rem;max-width:74ch;line-height:1.55}
+.pair{display:grid;gap:1rem}
+@media (min-width:1040px){.pair{grid-template-columns:1fr 1fr}}
+/* The charts are drawn on a 900-unit canvas and get shorter as the column
+   narrows, so they need a floor or the labels collide. */
+.panel svg.chart{min-height:150px}
 figure{margin:0}
 svg.chart{display:block;width:100%;height:auto;overflow:visible}
 svg.chart text{font-family:var(--body);font-size:10px;fill:var(--mute-tx)}
@@ -255,10 +261,80 @@ svg.chart.cap .wk:hover .bar.over{fill:#8D6A30}
 /* Drawn last, over everything, with a pale halo so it stays legible
    where it crosses a bar. */
 svg.chart.cap .capline{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round;
-  paint-order:stroke;stroke-dasharray:none;
-  filter:drop-shadow(0 0 2px rgba(252,251,249,.95))}
+  paint-order:stroke;filter:drop-shadow(0 0 2px rgba(252,251,249,.95))}
 svg.chart.cap .today{stroke:var(--slate);stroke-width:1.2;stroke-dasharray:4 3}
 svg.chart.cap .today-l{font-size:11px;font-weight:700;fill:var(--slate)}
+
+/* ---------- shared chart furniture ----------
+   Gridlines and axes are one step off the surface and hairline, so they
+   never compete with the data. Text wears text tokens, never a series
+   colour, because a mark beside a label carries identity better than a
+   coloured word does. */
+svg.chart .grid{stroke:var(--rule);stroke-width:1}
+svg.chart .tick{font-size:11.5px;fill:var(--mute-tx)}
+svg.chart .name{font-size:12.5px;fill:var(--slate);font-weight:600}
+svg.chart .val{font-size:12.5px;fill:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+svg.chart .nn{font-size:10.5px;fill:var(--mute-tx);font-weight:500}
+svg.chart .hit{fill:transparent;pointer-events:all}
+
+/* ---------- line ---------- */
+svg.chart.line-c .line{fill:none;stroke:var(--green);stroke-width:2;
+  stroke-linejoin:round;stroke-linecap:round}
+svg.chart.line-c .wash{fill:var(--green);opacity:.1;stroke:none}
+svg.chart.line-c .dot{fill:var(--green);stroke:#fff;stroke-width:2}
+svg.chart.line-c .dot.end{fill:var(--green-dp)}
+svg.chart.line-c .pt .dot{opacity:0;transition:opacity .15s var(--ease)}
+svg.chart.line-c .pt:hover .dot{opacity:1}
+
+/* ---------- funnel ----------
+   One hue: the bar length already carries magnitude, so a second
+   encoding would be decoration. Brass marks the single worst drop. */
+svg.chart.funnel-c .seg{fill:var(--green);transition:fill .2s var(--ease)}
+svg.chart.funnel-c .seg.bad{fill:var(--brass)}
+svg.chart.funnel-c .stage:hover .seg{fill:var(--green-dp)}
+svg.chart.funnel-c .stage:hover .seg.bad{fill:#8D6A30}
+svg.chart.funnel-c .val{fill:#fff}
+svg.chart.funnel-c .pc{font-size:11.5px;fill:var(--mute-tx);font-weight:600;font-variant-numeric:tabular-nums}
+svg.chart.funnel-c .name{font-size:13px;fill:var(--ink)}
+svg.chart.funnel-c .lead{stroke:var(--rule-dk);stroke-width:1}
+svg.chart.funnel-c .drop{font-size:11.5px;fill:var(--mute-tx);font-weight:600}
+svg.chart.funnel-c .drop.bad{fill:var(--brass-tx);font-weight:700}
+
+/* ---------- variance ----------
+   A diverging pair about a real zero: one green in two steps for "not
+   late", brass for late.
+
+   ON THE PALETTE, because the numbers look wrong until you run them.
+   The dataviz validator fails this green on a categorical palette's
+   lightness and chroma bands - it is dark and nearly grey. Lightening it
+   to pass those two checks destroys the one that matters: green against
+   brass goes from delta-E 23.1 to 1.7 under protanopia, because green and
+   gold ARE the classic confusion pair and all of the separation is
+   carried by lightness. A mid-green would look healthier in isolation and
+   be unreadable to a red-green colourblind reader. The dark green stays.
+   Every mark here also carries its own text label, so identity is never
+   on colour alone. Do not "fix" this without re-running
+   scripts/validate_palette.js on the pair. */
+svg.chart.var-c .zero{stroke:var(--rule-dk);stroke-width:1.5}
+svg.chart.var-c .seg{transition:opacity .2s var(--ease)}
+svg.chart.var-c .seg.early{fill:var(--green);opacity:.72}
+svg.chart.var-c .seg.ontime{fill:var(--green)}
+svg.chart.var-c .seg.late{fill:var(--brass)}
+svg.chart.var-c .vb:hover .seg{opacity:1}
+svg.chart.var-c .name{font-size:12px;fill:var(--slate);font-weight:600}
+svg.chart.var-c .cap{font-size:11.5px;font-weight:700;letter-spacing:.03em}
+svg.chart.var-c .cap.early{fill:var(--green)}
+svg.chart.var-c .cap.late{fill:var(--brass-tx)}
+
+/* ---------- dot plot ---------- */
+svg.chart.dot-c .track{stroke:var(--sage);stroke-width:3;stroke-linecap:round}
+svg.chart.dot-c .stem{stroke:var(--green);stroke-width:3;stroke-linecap:round;opacity:.4}
+svg.chart.dot-c .stem.below{stroke:var(--brass)}
+svg.chart.dot-c .dot{fill:var(--green);stroke:#fff;stroke-width:2}
+svg.chart.dot-c .dot.below{fill:var(--brass)}
+svg.chart.dot-c .refline{stroke:var(--ink);stroke-width:1.5;stroke-dasharray:4 3}
+svg.chart.dot-c .reflbl{font-size:11px;fill:var(--slate);font-weight:700}
+svg.chart.dot-c .dp:hover .dot{r:7}
 
 /* Bars grow from the axis, left to right, then the capacity line draws
    across once they have settled. */
@@ -274,38 +350,53 @@ svg.chart.cap .capline{stroke-dasharray:4000;stroke-dashoffset:4000;
   animation:cap-draw 1.1s var(--ease) .3s forwards}
 svg.chart.cap .today,svg.chart.cap .today-l{animation:fade-in .4s var(--ease) .8s backwards}
 
+/* Horizontal marks grow from their own baseline, so the funnel taper and
+   the diverging split are both read as they arrive. */
+@keyframes grow-x{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+svg.chart.funnel-c .seg{transform-box:fill-box;transform-origin:50% 50%;
+  animation:grow-x .45s var(--ease) backwards}
+svg.chart.var-c .seg.early{transform-box:fill-box;transform-origin:100% 50%;
+  animation:grow-x .45s var(--ease) backwards}
+svg.chart.var-c .seg.late,svg.chart.var-c .seg.ontime{transform-box:fill-box;transform-origin:0 50%;
+  animation:grow-x .45s var(--ease) backwards}
+svg.chart.dot-c .stem{transform-box:fill-box;transform-origin:0 50%;
+  animation:grow-x .5s var(--ease) backwards}
+svg.chart.dot-c .dot{animation:fade-in .3s var(--ease) .35s backwards}
+
 /* A line chart draws itself along its own length. 4000 comfortably
    exceeds any path in a 1000-unit viewBox, so no measuring is needed. */
 @keyframes line-draw{to{stroke-dashoffset:0}}
 svg.chart .line{stroke-dasharray:4000;stroke-dashoffset:4000;
   animation:line-draw 1.15s var(--ease) .2s forwards}
-svg.chart .dot{animation:fade-in .4s var(--ease) 1s backwards}
+svg.chart.line-c .wash{animation:fade-in .6s var(--ease) .5s backwards}
+svg.chart .dot.end,svg.chart.line-c .val{animation:fade-in .4s var(--ease) 1s backwards}
 
 @media (prefers-reduced-motion:reduce){
-  svg.chart.cap .pipe,svg.chart.cap .bar,svg.chart.cap .capline,
-  svg.chart.cap .today,svg.chart.cap .today-l,
-  svg.chart .line,svg.chart .dot{animation:none}
+  svg.chart *{animation:none!important}
   svg.chart .line,svg.chart.cap .capline{stroke-dasharray:none;stroke-dashoffset:0}
 }
 
-.legend{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;font-size:.76rem;color:var(--slate);margin-top:.6rem}
+.legend{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;font-size:.76rem;color:var(--slate);margin-top:.7rem;
+  padding-top:.7rem;border-top:1px solid var(--rule)}
 .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:.35rem;vertical-align:-1px}
 .legend i.rule-key{width:18px;height:0;border-radius:0;border-top:2px solid var(--ink);vertical-align:4px}
 
-.funnel{list-style:none;margin:0;padding:0}
-.funnel li{display:flex;align-items:center;gap:.7rem;padding:.4rem 0;font-size:.86rem}
-.funnel .track{flex:1;height:22px;background:var(--sage);border-radius:4px;overflow:hidden}
-.funnel .fill{height:100%;background:var(--green);opacity:.85}
-.funnel .n{font-variant-numeric:tabular-nums;min-width:34px;text-align:right;font-weight:600}
-.funnel .pc{font-size:.74rem;color:var(--mute-tx);min-width:46px;text-align:right}
-.funnel .name{min-width:112px;color:var(--slate)}
-
-.bars{list-style:none;margin:0;padding:0}
-.bars li{display:grid;grid-template-columns:minmax(96px,1fr) 2fr auto;align-items:center;gap:.7rem;
-  padding:.32rem 0;font-size:.84rem}
-.bars .track{height:16px;background:var(--sage);border-radius:3px;overflow:hidden}
-.bars .fill{height:100%;background:var(--brass);opacity:.75}
-.bars .n{font-variant-numeric:tabular-nums;color:var(--slate);font-size:.8rem}
+/* ---------- ranked bar list ----------
+   The fills were spans with a width and no display, so every bar on the
+   dashboard rendered empty. An inline box ignores width and height. */
+.bars{list-style:none;margin:0;padding:0;display:grid;gap:.15rem}
+.bars li{display:grid;grid-template-columns:minmax(120px,1.1fr) 2.2fr minmax(72px,auto);
+  align-items:center;gap:.9rem;padding:.42rem .5rem;border-radius:6px;font-size:.86rem;
+  transition:background .18s var(--ease)}
+.bars li:hover{background:var(--green-sf)}
+.bars .lbl{display:flex;flex-direction:column;line-height:1.3;color:var(--slate);
+  text-transform:capitalize}
+.bars .lbl .nn{font-size:.7rem;color:var(--mute-tx);font-weight:500;text-transform:none}
+.bars .track{display:block;height:14px;background:var(--sage);border-radius:100px;overflow:hidden}
+.bars .fill{display:block;height:100%;background:var(--green);border-radius:100px;
+  animation:grow-x .55s var(--ease) backwards;transform-origin:0 50%}
+.bars.accent .fill{background:var(--brass)}
+.bars .n{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
 
 .thin-note{font-size:.74rem;color:var(--mute-tx);font-style:italic}
 
