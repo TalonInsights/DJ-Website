@@ -223,13 +223,18 @@ function renderTable(list) {
 
 /* ------------------------------------------------------------- drawer */
 
+/* Options are either plain strings, or {v, t} where v is the value the
+   database stores and t is what a person should read. The status list is
+   the reason this exists: the column holds survey_booked, and nobody
+   should be asked to pick that out of a menu. */
 function field(label, key, type = "text", value = "", hint = "", opts = null) {
   const v = value ?? "";
   let control;
   if (opts) {
+    const pairs = opts.map(o => (o && typeof o === "object") ? o : { v: o, t: o });
     control = `<select data-key="${key}">
       <option value="">Please choose…</option>
-      ${opts.map(o => `<option value="${esc(o)}" ${String(v) === String(o) ? "selected" : ""}>${esc(o)}</option>`).join("")}
+      ${pairs.map(o => `<option value="${esc(o.v)}" ${String(v) === String(o.v) ? "selected" : ""}>${esc(o.t)}</option>`).join("")}
     </select>`;
   } else if (type === "textarea") {
     control = `<textarea data-key="${key}">${esc(v)}</textarea>`;
@@ -318,13 +323,14 @@ async function openDrawer(id, opts = {}) {
         </div>
         <div class="frow two" style="margin-top:.7rem">
           ${field("First contacted on", "first_contacted_on", "date", current.first_contacted_on)}
-          ${field("Status", "status", "text", current.status, "", STATUSES.map(s => s.key))}
+          ${field("Status", "status", "text", current.status, "", STATUSES.map(s => ({ v: s.key, t: s.name })))}
         </div>
-        ${current.status === "lost" ? `<div class="frow two" style="margin-top:.7rem">
+        <div class="frow two" id="lostRow" style="margin-top:.7rem"
+             ${(opts.status || current.status) === "lost" ? "" : "hidden"}>
           ${field("Reason lost", "lost_reason", "text", current.lost_reason, "", [
             "Price", "Went elsewhere", "Project postponed", "No response", "Outside our area", "Timescale too long"])}
           ${field("Lost to", "lost_to", "text", current.lost_to)}
-        </div>` : ""}
+        </div>
         <div style="margin-top:.7rem">${field("Notes", "notes", "textarea", current.notes)}</div>
       </div>
     </div>
@@ -345,6 +351,13 @@ async function openDrawer(id, opts = {}) {
   $("drawerBody").querySelectorAll("[data-key]").forEach(el =>
     el.addEventListener("input", () => { dirty[el.dataset.key] = el.value; }));
 
+  /* Choosing Lost reveals the reason straight away, rather than after a
+     failed save. */
+  const statusSel = $("drawerBody").querySelector('[data-key="status"]');
+  const lostRow = $("lostRow");
+  const syncLost = () => { if (lostRow) lostRow.hidden = statusSel.value !== "lost"; };
+  if (statusSel) statusSel.addEventListener("change", syncLost);
+
   const msg = $("drawerMsg");
   msg.textContent = opts.message || "";
   msg.className = "msg" + (opts.message ? " err" : "");
@@ -359,7 +372,14 @@ async function openDrawer(id, opts = {}) {
     el.classList.add("needed");
     if (i === 0) el.querySelector("input,select,textarea")?.focus();
   });
-  if (opts.status) dirty.status = opts.status;
+  /* Arriving here because a drag was refused. The menu has to show the
+     status being moved to, or the drawer contradicts the message above
+     it and the save sends something the reader never chose. */
+  if (opts.status) {
+    dirty.status = opts.status;
+    if (statusSel) statusSel.value = opts.status;
+    syncLost();
+  }
 
   $("drawer").hidden = false;
   requestAnimationFrame(() => { $("drawer").classList.add("open"); $("scrim").classList.add("open"); });
@@ -381,6 +401,28 @@ async function save() {
     delete patch.product_type_single;
   }
   if ("billing_same" in patch) patch.billing_same = patch.billing_same === "true";
+
+  const wanted = patch.status;
+  if (wanted && current && wanted !== current.status) {
+    const gaps = missingFor(wanted, { ...current, ...patch });
+    if (gaps.length) {
+      msg.textContent = "Add " + gaps.map(f => (FIELD_LABEL[f] || f).toLowerCase()).join(" and ") +
+        " before moving this to " + (STATUS_NAME[wanted] || wanted).toLowerCase() + ".";
+      msg.className = "msg err";
+      $("drawerBody").querySelectorAll(".field.needed").forEach(el => el.classList.remove("needed"));
+      gaps.forEach((f, i) => {
+        const el = $("drawerBody").querySelector(`[data-field="${f}"]`);
+        if (!el) return;
+        el.classList.add("needed");
+        if (!i) {
+          el.scrollIntoView({ block: "center", behavior: "smooth" });
+          const input = el.querySelector("input,select,textarea");
+          if (input) input.focus();
+        }
+      });
+      return;
+    }
+  }
 
   try {
     $("btnSave").disabled = true;
