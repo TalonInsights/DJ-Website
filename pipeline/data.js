@@ -196,6 +196,22 @@ export async function getCapacity() {
   return data;
 }
 
+/* The archive, and the figures that survive a purge. */
+export async function getArchiveStatus() {
+  const { data, error } = await sb.from("v_archive_status").select("*");
+  if (error) fail("Could not load the archive status", error);
+  return data;
+}
+
+/* Grouped in SQL rather than here. The old version reduced
+   v_promise_vs_delivery rows in the browser, which put a metric in the
+   client and would have lost every month whose detail had been purged. */
+export async function getDeliveryByProduct({ from, to }) {
+  const { data, error } = await sb.rpc("delivery_by_product", { p_from: from, p_to: to });
+  if (error) fail("Could not load delivery by product", error);
+  return data;
+}
+
 export async function getJobPerformance() {
   const { data, error } = await sb.from("v_job_performance").select("*").order("baseline_start", { ascending: false });
   if (error) fail("Could not load job performance", error);
@@ -310,7 +326,9 @@ export const EXPLAIN = {
   delivery:
     "Of the jobs finished, the share that met the date the customer was given, broken down by what was being made.",
   sources:
-    "Which channels the money actually came from. It can only see work that started as an enquiry, so anything typed straight onto the schedule is missing from this."
+    "Which channels the money actually came from. It can only see work that started as an enquiry, so anything typed straight onto the schedule is missing from this.",
+  archive:
+    "Months older than about a year are stored as figures rather than as records. The counts, values and typical times are kept for good; the customer names and addresses behind them are deleted on a schedule. The charts above read the stored figures for those months, so the history is unbroken."
 };
 
 export async function refreshDashboard() {

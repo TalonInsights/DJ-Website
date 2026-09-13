@@ -14,7 +14,7 @@
 import { $, mountGate } from "./client.js";
 import {
   periodRange, getSummary, getFunnel, getCycleTimes, getLostAnalysis,
-  getCapacity, getJobPerformance, getPromiseVsDelivery, getSourcePerformance,
+  getCapacity, getJobPerformance, getDeliveryByProduct, getSourcePerformance, getArchiveStatus,
   refreshDashboard, money, num, monthLabel, isThin, THIN_N, EXPLAIN
 } from "./data.js";
 import { capacityChart, lineChart, varianceChart, barList, funnelChart, dotPlot } from "./charts.js";
@@ -55,6 +55,26 @@ function startAuto() {
 }
 
 /* Age of the figures, in words, plus what the page does about it. */
+/* Says plainly what has been compressed and what has been deleted, so
+   nobody is surprised to find last year's enquiries gone, and nobody
+   assumes the figures went with them. */
+function archiveNote(rows) {
+  if (!rows || !rows.length) return "";
+  const stored = rows.length;
+  const figuresOnly = rows.filter(r => r.state === "figures only").length;
+  const sealed = rows.filter(r => r.state === "sealed").length;
+  if (!figuresOnly && !sealed) return "";
+
+  const parts = [];
+  if (sealed) parts.push(`${sealed} older month${sealed === 1 ? " is" : "s are"} final`);
+  if (figuresOnly) parts.push(`${figuresOnly} kept as figures only, with the customer records deleted`);
+
+  return `<p class="thin-note" style="margin-top:.35rem">
+    ${stored} month${stored === 1 ? "" : "s"} of history stored. ${esc(parts.join(", "))}.
+    The charts above read those figures, so the trend lines are unbroken.
+    ${info("archive", "How the history is kept")}</p>`;
+}
+
 function stamp(at, rebuilt) {
   const el = $("stamp");
   if (!el) return;
@@ -202,7 +222,7 @@ async function drawInner({ auto = false } = {}) {
   const dash = $("dash");
   if (!auto) dash.innerHTML = `<p class="thin-note">Loading…</p>`;
 
-  let s, funnel, cycles, lost, capacity, jobs, delivery, sources;
+  let s, funnel, cycles, lost, capacity, jobs, delivery, sources, archive;
   let rebuilt = false;
   try {
     /* Fetch the summary first so its age can be judged before anything
@@ -216,9 +236,10 @@ async function drawInner({ auto = false } = {}) {
       catch (e) { /* keep the stale figures rather than showing nothing */ }
     }
 
-    [funnel, cycles, lost, capacity, jobs, delivery, sources] = await Promise.all([
+    [funnel, cycles, lost, capacity, jobs, delivery, sources, archive] = await Promise.all([
       getFunnel(range), getCycleTimes(range), getLostAnalysis(range),
-      getCapacity(), getJobPerformance(), getPromiseVsDelivery(range), getSourcePerformance(range)
+      getCapacity(), getJobPerformance(), getDeliveryByProduct(range), getSourcePerformance(range),
+      getArchiveStatus()
     ]);
   } catch (e) {
     dash.innerHTML = `<div class="empty-state"><h3>Could not load the dashboard</h3>
@@ -299,15 +320,11 @@ async function drawInner({ auto = false } = {}) {
     return m;
   }, {})).sort((a, b) => b.value - a.value);
 
-  /* ---- promise vs delivery, by product ---- */
-  const byProduct = Object.values(delivery.reduce((m, d) => {
-    const k = d.product_type || "Not recorded";
-    m[k] = m[k] || { label: k, on: 0, n: 0 };
-    m[k].n += 1;
-    if (d.on_time) m[k].on += 1;
-    return m;
-  }, {})).map(p => ({ label: p.label, value: p.n ? Math.round(p.on / p.n * 100) : 0, n: p.n }))
-    .sort((a, b) => b.n - a.n);
+  /* Grouped by the database. Nothing here does arithmetic; it renames
+     the view's columns for the chart and stops. */
+  const byProduct = (delivery || []).map(p => ({
+    label: p.product_type, value: Number(p.on_time_rate ?? 0), n: Number(p.n ?? 0)
+  }));
 
   /* ---- sources ---- */
   const bySource = Object.values(sources.reduce((m, r) => {
@@ -397,7 +414,8 @@ async function drawInner({ auto = false } = {}) {
       </section>
     </div>
 
-    <p class="thin-note" id="stamp"></p>`;
+    <p class="thin-note" id="stamp"></p>
+    ${archiveNote(archive)}`;
 
   wireInfo(dash);
   stamp(s.generated_at, rebuilt);

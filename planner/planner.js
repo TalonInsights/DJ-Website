@@ -342,10 +342,25 @@ function loadByDay(){
   return counts;
 }
 
+/* How far back the board carries finished work. Everything older lives
+   in the analytics archive as figures, which is where it is actually
+   read from. Six months is enough to answer "what did we do for them
+   last time" without dragging a year of completed jobs over the wire on
+   every load. */
+const FINISHED_MONTHS_ON_BOARD = 6;
+
 async function loadJobs(){
+  const cutoff = new Date();
+  cutoff.setMonth(cutoff.getMonth() - FINISHED_MONTHS_ON_BOARD);
+  const since = iso(cutoff);
+
+  /* Live work always, whatever age; finished work only if it finished
+     recently. Filtering here rather than in the browser means the old
+     rows never travel. */
   const { data, error } = await sb
     .from("jobs")
     .select("id,ref,name,client,deadline,phases,actual_end")
+    .or("actual_end.is.null,actual_end.gte." + since)
     .order("deadline", {ascending:true, nullsFirst:false});
 
   if(error){ syncError = error.message; setSync(); return false; }
